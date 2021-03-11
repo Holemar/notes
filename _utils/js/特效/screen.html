@@ -1,0 +1,72 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>测试IE和屏幕</title>
+</head>
+
+<body>
+
+<!-- 显示屏幕的大小 -->
+<textarea id='showMsg' style='width:350px;height:300px;' readonly='true'></textarea>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+
+</body>
+</html>
+
+<script language="javascript" type="text/javascript">
+/**
+ * 页面的鼠标滚动事件
+ */
+function scrollFunc(event) {
+    var showObj = document.getElementById('showMsg');
+
+    //鼠标滚动的值
+    /*event = event || window.event;
+    var value = (event.wheelDelta ? event.wheelDelta / 120 : -(event.detail % 3 == 0 ? event.detail : event.detail / 3));*/
+
+    // 页面滚动后，改变显示区的坐标，以便随时看到
+    var top = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+    var left = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+    showObj.style.position = 'absolute';
+    showObj.style.top = (top + 10) + 'px';
+    showObj.style.left = (left + 10) + 'px';
+    // 改变里面的值,以便查看
+    showObj.value = getPageMsg();
+}
+// 定时改变
+setInterval(scrollFunc, 30);
+
+
+/**
+ *  返回页面大小信息
+ */
+function getPageMsg()
+{
+    var  s = "";
+    s += "网页可见区域宽："+ window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    s += "\n网页可见区域高："+ window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    s += "\n网页可见区域宽："+ document.body.offsetWidth  +" (包括边线的宽)";
+    s += "\n网页可见区域高："+ document.body.offsetHeight +" (包括边线的高)";
+    s += "\n网页正文全文宽："+ Math.max(document.body.scrollWidth, document.documentElement.scrollWidth);
+    s += "\n网页正文全文高："+ Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    s += "\n网页被卷去的高："+ window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+    s += "\n网页被卷去的左："+ window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+    s += "\n网页正文部分上："+ window.screenTop;
+    s += "\n网页正文部分左："+ window.screenLeft;
+    s += "\n屏幕分辨率的高："+ window.screen.height;
+    s += "\n屏幕分辨率的宽："+ window.screen.width;
+    s += "\n屏幕可用工作区高度："+ window.screen.availHeight;
+    s += "\n屏幕可用工作区宽度："+ window.screen.availWidth;
+    s += "\n你的屏幕设置是screen.colorDepth："+ window.screen.colorDepth +" 位彩色";
+    return s;
+}
+</script>

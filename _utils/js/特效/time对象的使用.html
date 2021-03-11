@@ -1,0 +1,68 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html>
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+<center>
+	时间:&nbsp;<span id="showTime"></span><br />
+	倒计时:&nbsp;<span id="showTime2"></span><br />
+	指定时间:&nbsp;<span id="showTime3"></span>
+</center>
+</body>
+</html>
+
+<script type="text/javascript" language="JavaScript">
+/**
+ * 动态显示时间
+ */
+function timeUpdate()
+{
+    //当前时间
+    var nowTime = new Date();
+
+    //设置显示的时间
+    var timePlace = document.getElementById("showTime");
+    timePlace.innerHTML = nowTime.toLocaleString();
+    //显示倒计时
+    var endTime = "2011/03/05 22:00:00";
+    //距离时间
+    var jtime = new Date(endTime).getTime() - nowTime.getTime();
+    var leaveTime = new Date(jtime + new Date("1900/01/01").getTime());
+    //倒计时天数
+    var leaveDays = parseInt(jtime / (24 * 60 * 60 * 1000), 10);
+    var timePlace2 = document.getElementById("showTime2");
+    timePlace2.innerHTML = leaveDays + "天" + leaveTime.getHours() + ":" + leaveTime.getMinutes() + ":" + leaveTime.getSeconds();
+}
+
+/**
+ * 显示指定时间
+ * @param time 指定时间的字符串
+ */
+function showTime(time)
+{
+    //指定时间,如果没指定则显示当前时间
+    time = time || new Date().getTime();
+    var leaveTime = new Date(time);
+    var timePlace2 = document.getElementById("showTime3");
+    //取得时间
+    var year = leaveTime.getFullYear(); // getYear()取得的年份火狐上是2位或者3位，但IE上是完整年份
+    var month = leaveTime.getMonth()+1; // 月份从0开始
+    var date = leaveTime.getDate();
+    var hours = leaveTime.getHours();
+    var minutes = leaveTime.getMinutes();
+    var seconds = leaveTime.getSeconds();
+    //获取星期几
+    var weekday = '星期' + '日一二三四五六'.charAt(leaveTime.getDay());
+    //显示
+    timePlace2.innerHTML = year + "年" + month + "月" + date+"日 " + hours + "时" + minutes + "分" + seconds + "秒  " +  weekday;
+}
+
+
+//动态显示当前时间,每隔多少毫秒执行一次
+setInterval("timeUpdate()",1000);
+//显示指定的时间
+showTime("2011/05/4 22:05:30");
+</script>

@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>页面滚动图片加载</title>
+<style>
+    body{text-align:center;}
+    .list{margin-bottom:40px;}
+</style>
+</head>
+<body>
+<div>
+    <div>
+        <h1>聂微东-页面滚动图片加载</h1>
+        <div>这些书本人大多都看过，其中几本是前端必看，想了解可以去本人以前的文章 - <a target="_blank" href="http://www.cnblogs.com/Darren_code/archive/2011/06/29/javascript-learn.html">《说说我的web前端之路,分享些前端的好书》</a>看看。<br /><br />最后一本目前正在看，有种看小说的感觉，看的很过瘾，推荐给大家..</div><br /><br />
+        <div id="content">
+			<script type="text/javascript">
+			    var main = "";
+			    for (var i = 1; i < 21; i ++) {
+			        main += '<div class="list"><img class="scrollLoading" xSrc="http://images.cnblogs.com/cnblogs_com/Darren_code/311197/o_' + i + '.jpg" src="http://images.cnblogs.com/cnblogs_com/Darren_code/302725/o_pixel.gif" width="200" height="250" style="background:url(http://images.cnblogs.com/cnblogs_com/Darren_code/302725/o_108.gif) no-repeat center;" /><br />图片' + i + '</div>';
+			    }
+			    document.getElementById("content").innerHTML = main;
+			</script>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+    function scrollLoad(options) {
+        options = options || {};
+        // 参数值,没有参数则使用默认值
+        var defaults = {
+            src: options.src || 'xSrc',
+            time: options.time || 300 // 时间不应延迟太大，否则等得太久
+        };
+        var camelize = function (s) {
+            return s.replace(/-(\w)/g, function (strMatch, p1) {
+                return p1.toUpperCase();
+            });
+        };
+        var getStyle = function (element, property) {
+            if (arguments.length != 2) return false;
+            var value = element.style[camelize(property)];
+            if (!value) {
+                if (document.defaultView && document.defaultView.getComputedStyle) {
+                    var css = document.defaultView.getComputedStyle(element, null);
+                    value = css ? css.getPropertyValue(property) : null;
+                } else if (element.currentStyle) {
+                    value = element.currentStyle[camelize(property)];
+                }
+            }
+            return value == 'auto' ? '' : value;
+        };
+        var _init = function () {
+            var docImg = document.images;
+            var _len = docImg.length;
+            if (!_len) return false;
+            // 获得当前页面相对于窗口显示区左上角的 Y 位置(top).
+            var pageTop = window.pageYOffset || window.document.documentElement.scrollTop;
+            // top + 窗口的文档显示区的高度，以像素计(top + height)
+            var pageButtom = pageTop + Number(window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight);
+            // 遍历各张图片
+            for (var i = 0; i < _len; i++) {
+                var element = docImg[i];
+                if (!element) continue;
+                var attrSrc = element.getAttribute(defaults.src),
+                    tag = element.nodeName.toLowerCase();
+                if (attrSrc && tag === "img") {
+                    // 获取页面元素的位置(top)
+                    var elementTop = element.getBoundingClientRect().top + window.document.documentElement.scrollTop + window.document.body.scrollTop;
+                    // 获取页面元素的位置(top + height)
+                    var elementButtom = elementTop + Number(getStyle(element, 'height').replace('px', ''));
+                    if ((elementTop > pageTop && elementTop < pageButtom) || (elementButtom > pageTop && elementButtom < pageButtom)) {
+                        element.setAttribute("src", attrSrc);
+                        element.removeAttribute(defaults.src); // 去掉此属性，以免重复加载
+                        element = null; // 释放对象,减少内存
+                    }
+                }
+            }
+        };
+
+        var fun = function () {
+            // 延迟执行,执行前先释放setTimeout,以免冲突。不停地滚动时，停留时间不长的，也会不加载，减少服务器消耗。
+            try { clearTimeout(scrollLoad.timeout); } catch (e) {}
+            scrollLoad.timeout = setTimeout(_init, defaults.time);
+        };
+        // 页面滚动时触发
+        if (window.attachEvent) { // IE
+            window.attachEvent('onscroll', fun);
+        }
+        else if (window.addEventListener) { // firfox
+            window.addEventListener('scroll', fun, false);
+        }
+        // 页面加载后，还没滚动也要执行一次，以便当前页面的图片可以加载
+        return _init();
+    }
+    scrollLoad();
+</script>
+<!--
+原理：
+    1.给页面绑定滚动事件；
+    2.加载页面的时候把真正的图片地址放在某属性中；
+    3.然后再滚动过程中判断元素是否进入当前浏览器窗口内；
+    4.最后加载图片，当然加载什么，用什哪种用户体验都得由你决定；
+
+难点：
+　　浏览器兼容是造成难点的原因所在，DOM标准和IE标准，每天前端的工作都在和它们打交道。
+    思考下面的几段代码
+
+　　1. window.pageYOffset || window.document.documentElement.scrollTop
+        目的:获得当前页面相对于窗口显示区左上角的 Y 位置.
+        DOM标准:window.pageYOffset;
+        IE标准:window.document.documentElement.scrollTop
+
+　　2. window.innerHeight || document.documentElement.clientHeight
+        目的:声明了窗口的文档显示区的高度和宽度，以像素计.
+        DOM标准:innerheight 和 innerwidth;
+        IE标准:document.documentElement 或 ducument.body （与 DTD 相关）的 clientWidth 和 clientHeight 属性作为替代
+
+　　3. element.getBoundingClientRect().top + window.document.documentElement.scrollTop + window.document.body.scrollTop
+        目的:获取页面元素的位置.
+        当浏览器为 非webkit内核 时，document.body.scrollTop值恒定为0，使用 document.documentElement.scrollTop才能取到正确值 ;
+        当浏览器为 webkit内核 时，document.documentElement.scrollTop值恒定为0，使用 document.body;
+        我还搜索到一种说法是和DTD相关（即 当页面指定了 DOCTYPE时，使用 document.documentElement ; 当页面没有指定了 DOCTYPE时，使用 document.body），请确定知道的朋友帮忙指出下，不胜感谢。
+
+
+细节：
+    1.因为真正的地址最初是在某属性中(默认是xsrc，可自己设置)，所以默认的图片地址最好是一个像素的透明图片，这样可以避免在浏览器中出现红X；
+    2.在图片load的时候可以加入等待的图片，这样用户才会知道这里有图片需要加载，良好的用户体验是前端一直所追求的(例子中有体现)；
+    3.在图片load成功后可以加入合适的显示效果(例子中木有体现，可以自己尝试)；
+
+-->

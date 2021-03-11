@@ -1,0 +1,731 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>拖动</title>
+    <meta content="IE=7" http-equiv="X-UA-Compatible" />
+    <style type="text/css">
+body { background-color:#fff; font-size:12px; word-wrap:break-word; margin:0px; padding:0px; background-repeat:repeat-x; color:#333;}
+a{ TEXT-DECORATION:none}
+a:hover { TEXT-DECORATION:underline;}
+
+/*中间*/
+#nb_container{ width:976px; background-repeat:repeat-x; margin:0 auto; background-color:#bdd0df}/*skin*/
+#nb_content{ background-color:#fff; margin:5px; padding:5px;overflow:hidden}
+
+.null{ clear:both}
+
+/*板块通用*/
+.move_up{ padding:3px; }
+.more {text-align:right; padding:5px; font-weight:bold ; clear:both}
+.line_bg{ background-position:bottom; height:3px; border-bottom:1px dashed #dbe1e6 } /*skin*/
+/*斑马线样式*/
+.zebra{ background-color:#f9fafa}/*skin*/
+
+/*tabs统一头样式*/
+.Tabs{border:1px solid #dbe1e6; margin-bottom:10px}/*skin*/
+.Tabs_T{height:27px; background-color:#f9fafa;border-bottom:1px solid #dbe1e6;}/*skin*/
+.Tabs_T_word{ font-weight:bold; color:#16387c; font-size:14px; float:left; padding:5px 10px 5px 10px; border-right:1px solid #dbe1e6;height:17px;}/*skin*/
+.Tabs_T_word a{ color:#16387c;text-decoration:none}
+.Tabs_T_word a:visited {  color:#16387c; text-decoration:none}
+.Tabs_T_word a:hover {  color:#2b2b2b;text-decoration:none }
+.Tabs_active { font-weight:bold; color:#16387c; font-size:14px; float:left; padding:5px 10px 5px 10px; border-right:1px solid #dbe1e6;background-color:#fff;border-bottom:1px solid #fff;  margin-top:1px ;height:16px;}/*skin*/
+.Tabs_active a{ color:#16387c; text-decoration:none}
+.Tabs_active a:visited { color:#16387c; text-decoration:none}
+.Tabs_active a:hover { color:#2b2b2b;text-decoration:none }
+.Tabs_active_mini{font-weight:bold; color:#16387c; font-size:12px; float:left; padding:5px; border-right:1px solid #dbe1e6;background-color:#fff;border-bottom:1px solid #fff;  margin-top:1px ;height:16px;}/*skin*/
+
+/*通知*/
+.Notice{ margin-bottom:10px;border:1px solid #dbe1e6; } /*skin*/
+.Notice_T{height:27px; background-color:#f9fafa;border-bottom:1px solid #dbe1e6;} /*skin*/
+.Notice_T h3{ margin:0; margin-top:1px}/*modify*/
+.Notice_T_word{ font-weight:bold; color:#16387c; font-size:14px; float:left; padding:5px}
+.Notice_Content{ clear:both; line-height:25px;font-size:14px; }
+.Notice_Content ul{  margin:0px;padding:0px;  color:#6f6f6f; list-style:none;}
+.Notice_Content ul li {  clear:both; padding-left:20px; background-repeat:no-repeat; background-position:2px 5px}
+.Notice_Content ul li span{ float:right;  padding-right:3px; font-size:12px}
+
+.spanDiv{ position: relative; width: 5px; height: 5px;}
+.dragDiv, .nodragDiv{ position: relative; filter: alpha(opacity=100); opacity: 1; margin-bottom: 6px; background-color: #FFFFFF;}
+    </style>
+</head>
+<body>
+    <div id="nb_container">
+        <div id="nb_content">
+            <table id="dragTable" cellpadding="3" style="border: solid 0px green; width: 100%;">
+                <tr>
+                    <td valign="top" style="width: 19%" class="column">
+                        <div class="dragDiv Notice" id="dragDiv1">
+                            <div class="box_fast" id="titleBar1">
+                                <div class="box_fast_T">快捷功能</div>
+                                <ul>
+                                    <li><span><a href="javascript:;">检索功能</a></span></li>
+                                    <li><span><a href="javascript:;">境外浏览</a></span></li>
+                                    <li><span><a href="javascript:;">热点舆情</a></span></li>
+                                    <li><span><a href="javascript:;">聚焦岛图</a></span></li>
+                                    <li><span><a href="javascript:;">检索功能</a></span></li>
+                                    <li><span><a href="javascript:;">境外浏览</a></span></li>
+                                </ul>
+                                <div class="more"><a href="javascript:;" class="blue_12">更多>></a></div>
+                            </div>
+                        </div>
+                        <div class="dragDiv Notice" id="dragDiv2">
+                            <div class="box_fast" id="titleBar2">
+                                <div class="box_fast_T">系统菜单</div>
+                                <ul>
+                                    <li><span><a href="javascript:;">舆情服务</a></span>
+                                        <ul id="child_open">
+                                            <li><a href="javascript:;">分类专题</a></li>
+                                            <li><a href="javascript:;">专题统计</a></li>
+                                            <li><a href="javascript:;">境外浏览</a></li>
+                                            <li><a href="javascript:;">热点舆情</a></li>
+                                            <li><a href="javascript:;">聚焦岛图</a></li>
+                                            <li><a href="javascript:;">热点舆情</a></li>
+                                            <li><a href="javascript:;">检索功能</a></li>
+                                            <li><a href="javascript:;">国内热点排行榜</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><span><a href="javascript:;">境外浏览</a></span></li>
+                                    <li><span><a href="javascript:;">热点舆情</a></span></li>
+                                    <li><span><a href="javascript:;">聚焦岛图</a></span></li>
+                                    <li><span><a href="javascript:;">检索功能</a></span></li>
+                                    <li><span><a href="javascript:;">境外浏览</a></span></li>
+                                </ul>
+                                <div class="more"><a href="javascript:;" class="blue_12">更多>></a></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td valign="top" style="width: 50%">
+                        <div class="dragDiv" id="dragDiv3">
+                            <div class="plate_max" id="titleBar3">
+                                <div class="Hot_news Notice">
+                                    <div class="Hot_news_T"><span class="Hot_news_T_word">涉甬看点</span></div>
+                                    <div class="Hot_news_Content">
+                                        <div class="line_bg"></div>
+                                        <div class="Hot_news_list_T"><a href="javascript:;">商务部：个别地区食盐抢购源于社会传言和谣言</a></div>
+                                        <div class="Hot_news_list_C">
+                                            3月16日以来，全国部分地区出现抢购食用盐现象。商务部市场运行调节司负责人就此回答记者提问时表示，我国盐的产能达到8000多万吨，食盐一年销量只有800多万吨，目前全国食盐储备非常充足，盐业公司一般都会有三个月的库存量，食盐供应是完全有保障的。当前个别地区出现的抢购现象，主要是由于社会传言和谣言引起的。</div>
+                                        <div class="line_bg"></div>
+                                        <div class="Hot_news_list_T"><a href="javascript:;">商务部：个别地区食盐抢购源于社会传言和谣言</a></div>
+                                        <div class="Hot_news_list_C">
+                                            3月16日以来，全国部分地区出现抢购食用盐现象。商务部市场运行调节司负责人就此回答记者提问时表示，我国盐的产能达到8000多万吨，食盐一年销量只有800多万吨，目前全国食盐储备非常充足，盐业公司一般都会有三个月的库存量，食盐供应是完全有保障的。当前个别地区出现的抢购现象，主要是由于社会传言和谣言引起的。</div>
+                                        <div class="line_bg"></div>
+                                        <div class="more"><a href="javascript:;" class="blue_12">更多>></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dragDiv" id="dragDiv4">
+                            <div class="plate_max" id="titleBar4">
+                                <div class="Notice">
+                                    <div class="Notice_T">
+                                        <h3 class="Tabs_active" id="a0" onmouseover="secBoard('a',0)">
+                                            <a href="javascript:;">境外涉甬</a></h3>
+                                        <h3 class="Tabs_T_word" id="a1" onmouseover="secBoard('a',1)">
+                                            <a href="javascript:;">涉甬微博</a></h3>
+                                        <h3 class="Tabs_T_word" id="a2" onmouseover="secBoard('a',2)">
+                                            <a href="javascript:;">Q群话题</a></h3>
+                                    </div>
+                                    <div class="weibo_Content" id="atab0">
+                                        <ul>
+                                            <li><span>[新浪]</span><a href="javascript:;">上海食盐供应恢复平稳 销量下降库存充</a></li>
+                                            <li class="zebra"><span>[太平洋]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                            <li><span>[网易]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                            <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                            <li><span>[腾讯]</span><a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                            <li class="zebra"><span>[腾讯]</span><a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难</a></li>
+                                            <li><span>[腾讯]</span><a href="javascript:;">年春季旅游旺季西湖景区交通组织事项</a></li>
+                                            <li class="zebra"><span>[腾讯]</span><a href="javascript:;">上海食盐供应恢复平稳 销量下降库存充</a></li>
+                                            <li><span>[腾讯]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                            <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                            <li><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                        </ul>
+                                        <div class="more">
+                                            <a href="javascript:;" class="blue_12">更多>></a></div>
+                                    </div>
+                                    <!--//第一部分结束-->
+                                    <div class="weibo_Content" id="atab1">
+                                        <ul>
+                                            <li class="Article_title5"><span class="sitename">朱棣超：</span><a href="javascript:;">520是个好日子，黄黄一早就去民政局排队了，据她现场发回..</a><span>30秒前</span><span>[新浪微博]</span></li>
+                                            <li class="Article_Property5 Property_cssStyle" style="font-size: 12px; background-image: none;
+                                                border: 1px dashed #efefef; margin: 0px 5px 5px 5px">520是个好日子，黄黄一早就去民政局排队了，据她现场发回的报道，赶在今天领证的人多的一米米，此刻她已经顺利成为已婚妇女&名正言顺的军嫂，恭喜，希望我的闺蜜永远幸福！PS：伴娘@当鼻炎遇上感冒
+                                                比新娘还激动～～ &nbsp;<a href="javascript:;"><span class="sitename">评论(11)</span></a>&nbsp;|&nbsp;<a
+                                                    href="javascript:;"><span class="sitename">转发(1211)</span></a> </li>
+                                            <li class="zebra"><a href="javascript:;"><span class="sitename">全球女性时尚：</span>她八岁开始滑冰，坚持十一年却未能入选国家队；她..
+                                            </a><span>30秒前</span><span>[新浪微博]</span></li>
+                                            <li><a href="javascript:;"><span class="sitename">凉凉2010：</span>不以结婚为目的的私奔都是耍流氓！</a><span>30秒前</span><span>[新浪微博]</span></li>
+                                            <li class="zebra"><a href="javascript:;"><span class="sitename">我天下一家：</span>北京长安街醉驾案被告获无期 赔偿受害方366万</a><span>30秒前</span><span>[新浪微博]</span></li>
+                                            <li><a href="javascript:;"><span class="sitename">超级卖手：</span>发现我有少数民族情结，是不是本身民族自带的压抑感让人疲倦呢？</a><span>30秒前</span><span>[新浪微博]</span></li>
+                                            <li class="zebra"><a href="javascript:;"><span class="sitename">白色火星：</span>央行苏州支行建豪华别墅 称员工个人行为</a><span>30秒前</span><span>[新浪微博]</span></li>
+                                        </ul>
+                                        <div class="more">
+                                            <a href="javascript:;" class="blue_12">更多>></a></div>
+                                    </div>
+                                    <!--//第二部分结束-->
+                                    <div class="weibo_Content" id="atab2">
+                                        <ul>
+                                            <li class="Article_title5"><span class="sitename">朱棣超：</span><a href="javascript:;">520是个好日子，黄黄一早就去民政局排队了，据她现场发回..</a><span>30秒前</span><span>[QQ群号]</span></li>
+                                            <li class="zebra"><a href="javascript:;"><span class="sitename">全球女性时尚：</span>她八岁开始滑冰，坚持十一年却未能入选国家队；她..
+                                            </a><span>30秒前</span><span>[QQ群号]</span></li>
+                                            <li><a href="javascript:;"><span class="sitename">凉凉2010：</span>不以结婚为目的的私奔都是耍流氓！</a><span>30秒前</span><span>[新浪微博]</span></li>
+                                            <li class="zebra"><a href="javascript:;"><span class="sitename">我天下一家：</span>北京长安街醉驾案被告获无期 赔偿受害方366万</a><span>30秒前</span><span>[QQ群号]</span></li>
+                                            <li><a href="javascript:;"><span class="sitename">超级卖手：</span>发现我有少数民族情结，是不是本身民族自带的压抑感让人疲倦呢？</a><span>30秒前</span><span>[QQ群号]</span></li>
+                                            <li class="zebra"><a href="javascript:;"><span class="sitename">白色火星：</span>央行苏州支行建豪华别墅 称员工个人行为</a><span>30秒前</span><span>[QQ群号]</span></li>
+                                        </ul>
+                                        <div class="more">
+                                            <a href="javascript:;" class="blue_12">更多>></a></div>
+                                    </div>
+                                    <!--//第三部分结束-->
+                                    <div class="null"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dragDiv" id="dragDiv5">
+                            <div class="plate_max" id="titleBar5">
+                                <div class="Notice">
+                                    <div class="Notice_T">
+                                        <span class="Notice_T_word">重点人物关注</span>
+                                    </div>
+                                    <div class="List_Text_Content">
+                                        <ul>
+                                            <li class="Article_title3"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>上海食盐供应恢复平稳
+                                                销量下降库存充足</a></li>
+                                            <li class="Article_Property3 Property_cssStyle" style="font-size: 12px; background-image: none">
+                                                <!-- Article_Property为jquery控制显示或隐藏（可更改你的js），Property_cssStyle是css样式（不能少）-->
+                                                <span><a href="javascript:;" class="Favorite">[收藏]</a></span> <span><a href="javascript:;" class="LinkICP">[ICP]</a></span>
+                                                <span><a href="javascript:;" class="Violation">[违规]</a></span> <span><a href="javascript:;" class="Article">
+                                                    [正文]</a></span> <span><a href="javascript:;" class="Abstract">[摘要]</a></span> <span><a href="javascript:;"
+                                                        class="BSnapshot">[快照]</a></span> <span><a href="javascript:;" class="sameInformation">[相同文章(6)]</a></span>
+                                                <span><a href="javascript:;" class="titleMatch">[标题匹配]</a></span> </li>
+                                            <li class="zebra"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>温家宝总理赴云南盈江指导抗震救灾纪实</a></li>
+                                            <li><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>存款准备金率上调0.5个百分点</a></li>
+                                            <li class="zebra"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>存款准备金率上调0.5个百分点</a></li>
+                                            <li><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                            <li class="zebra"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>胡锦涛前往日本驻华使馆吊唁地震遇难者</a></li>
+                                            <li class="Article_title4"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>上海食盐供应恢复平稳
+                                                销量下降库存充足</a></li>
+                                            <li class="Article_Property4 Property_cssStyle" style="font-size: 12px; background-image: none">
+                                                <!-- Article_Property为jquery控制显示或隐藏（可更改你的js），Property_cssStyle是css样式（不能少）-->
+                                                <span><a href="javascript:;" class="Favorite">[收藏]</a></span> <span><a href="javascript:;" class="LinkICP">[ICP]</a></span>
+                                                <span><a href="javascript:;" class="Violation">[违规]</a></span> <span><a href="javascript:;" class="Article">
+                                                    [正文]</a></span> <span><a href="javascript:;" class="Abstract">[摘要]</a></span> <span><a href="javascript:;"
+                                                        class="BSnapshot">[快照]</a></span> <span><a href="javascript:;" class="sameInformation">[相同文章(6)]</a></span>
+                                                <span><a href="javascript:;" class="titleMatch">[标题匹配]</a></span> </li>
+                                            <li class="zebra"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>温家宝总理赴云南盈江指导抗震救灾纪实</a></li>
+                                            <li><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>存款准备金率上调0.5个百分点</a></li>
+                                            <li class="zebra"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>存款准备金率上调0.5个百分点</a></li>
+                                            <li><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                            <li class="zebra"><span>2010-05-19</span><a href="javascript:;"><font class="sitename">张小刚：</font>胡锦涛前往日本驻华使馆吊唁地震遇难者</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="more"><a href="javascript:;" class="blue_12">更多>></a></div>
+                                    <div class="null"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td valign="top" style="width: 31%">
+                        <div class="dragDiv" id="dragDiv7">
+                            <div class="plate_small" id="titleBar7">
+                                <div class="Photo_Text">
+                                    <div class="Photo_Text_T">
+                                        <span class="Photo_Text_T_word">热点舆情</span>
+                                    </div>
+                                    <div class="Photo_Text_Content">
+                                        <a href="javascript:;">上海食盐供应恢复平稳</a><br />
+                                        <a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾纪实</a><br />
+                                        <a href="javascript:;">存款准备金率上调0.5个百分点</a><br />
+                                        <a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a><br />
+                                    </div>
+                                    <div class="Photo_Text_Content">
+                                        <a href="javascript:;">存款准备金率上调0.5个百分点</a><br />
+                                        <a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a><br />
+                                        <a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难者</a><br />
+                                        <a href="javascript:;">2011年春季旅游旺季西湖景区交通组织事项的通告</a><br />
+                                    </div>
+                                    <div class="null"></div>
+                                    <div class="more"><a href="javascript:;" class="blue_12">更多>></a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dragDiv" id="dragDiv8">
+                            <div class="plate_small" id="titleBar8">
+                                <div class="Tabs">
+                                    <div class="Tabs_T">
+                                        <h3 class="Tabs_active" id="b0" onmouseover="secBoard('b',0)">
+                                            <a href="javascript:;">市内论坛话题</a></h3>
+                                        <h3 class="Tabs_T_word" id="b1" onmouseover="secBoard('b',1)">
+                                            <a href="javascript:;">涉甬论坛话题</a></h3>
+                                    </div>
+                                    <div id="btab0">
+                                        <div class="List_Text_Content">
+                                            <ul>
+                                                <li><span>[新浪]</span><a href="javascript:;">上海食盐供应恢复平稳 销量下降库存充</a></li>
+                                                <li class="zebra"><span>[太平洋]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                                <li><span>[网易]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">年春季旅游旺季西湖景区交通组织事项</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">上海食盐供应恢复平稳 销量下降库存充</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">年春季旅游旺季西湖景区交通组织事项</a></li>
+                                                <li><span>[新浪]</span><a href="javascript:;">上海食盐供应恢复平稳 销量下降库存充</a></li>
+                                                <li class="zebra"><span>[太平洋]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                                <li><span>[网易]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">年春季旅游旺季西湖景区交通组织事项</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="more">
+                                            <a href="javascript:;" class="blue_12">更多>></a></div>
+                                    </div>
+                                    <!--//第一部分结束-->
+                                    <div id="btab1">
+                                        <div class="List_Text_Content">
+                                            <ul>
+                                                <li><span>[新浪]</span><a href="javascript:;">存款准备金率上调 销量下降库存充</a></li>
+                                                <li class="zebra"><span>[太平洋]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                                <li><span>[网易]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">年春季旅游旺季西湖景区交通组织事项</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">上海食盐供应恢复平稳 销量下降库存充</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">年春季旅游旺季西湖景区交通组织事项</a></li>
+                                                <li><span>[新浪]</span><a href="javascript:;">上海食盐供应恢复平稳 销量下降库存充</a></li>
+                                                <li class="zebra"><span>[太平洋]</span><a href="javascript:;">温家宝总理赴云南盈江指导抗震救灾</a></li>
+                                                <li><span>[网易]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">存款准备金率上调0.5个百分点</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">天津市生猪养殖场 拉网排查“瘦肉精”</a></li>
+                                                <li class="zebra"><span>[腾讯]</span><a href="javascript:;">胡锦涛前往日本驻华使馆吊唁地震遇难</a></li>
+                                                <li><span>[腾讯]</span><a href="javascript:;">年春季旅游旺季西湖景区交通组织事项</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="more">
+                                            <a href="javascript:;" class="blue_12">更多>></a></div>
+                                    </div>
+                                    <!--//第二部分-->
+                                    <div class="null"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+var Common = {
+    getEvent: function() {//ie/ff
+        if (document.all) {
+            return window.event;
+        }
+        func = getEvent.caller;
+        while (func != null) {
+            var arg0 = func.arguments[0];
+            if (arg0) {
+                if ((arg0.constructor == Event || arg0.constructor == MouseEvent) || (typeof (arg0) == "object" && arg0.preventDefault && arg0.stopPropagation)) {
+                    return arg0;
+                }
+            }
+            func = func.caller;
+        }
+        return null;
+    },
+    getMousePos: function(ev) {
+        if (!ev) {
+            ev = this.getEvent();
+        }
+        if (ev.pageX || ev.pageY) {
+            return {
+                x: ev.pageX,
+                y: ev.pageY
+            };
+        }
+
+        if (document.documentElement && document.documentElement.scrollTop) {
+            return {
+                x: ev.clientX + document.documentElement.scrollLeft - document.documentElement.clientLeft,
+                y: ev.clientY + document.documentElement.scrollTop - document.documentElement.clientTop
+            };
+        }
+        else if (document.body) {
+            return {
+                x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+                y: ev.clientY + document.body.scrollTop - document.body.clientTop
+            };
+        }
+    },
+    getElementPos: function(el) {
+        el = this.getItself(el);
+        var _x = 0, _y = 0;
+        do {
+            _x += el.offsetLeft;
+            _y += el.offsetTop;
+        } while (el = el.offsetParent);
+        return { x: _x, y: _y };
+    },
+    getItself: function(id) {
+        return "string" == typeof id ? document.getElementById(id) : id;
+    },
+    getViewportSize: { w: (window.innerWidth) ? window.innerWidth : (document.documentElement && document.documentElement.clientWidth) ? document.documentElement.clientWidth : (document.body ? document.body.offsetWidth : 0), h: (window.innerHeight) ? window.innerHeight : (document.documentElement && document.documentElement.clientHeight) ? document.documentElement.clientHeight : (document.body ? document.body.offsetHeight : 0) },
+    isIE: document.all ? true : false,
+    setOuterHtml: function(obj, html) {
+        var Objrange = document.createRange();
+        obj.innerHTML = html;
+        Objrange.selectNodeContents(obj);
+        var frag = Objrange.extractContents();
+        obj.parentNode.insertBefore(frag, obj);
+        obj.parentNode.removeChild(obj);
+    },
+    firstChild: function(parentObj, tagName) {
+        if (Common.isIE) {
+            return parentObj.firstChild;
+        }
+        else {
+            tagName = tagName || '*';
+            var arr = parentObj.getElementsByTagName(tagName);
+            return arr[0];
+        }
+    },
+    lastChild: function(parentObj, tagName) {
+        if (Common.isIE) {
+            return parentObj.lastChild;
+        }
+        else {
+            tagName = tagName || '*';
+            var arr = parentObj.getElementsByTagName(tagName);
+            return arr[arr.length - 1];
+        }
+    },
+    create: function(arg) {
+        function _fun() {
+            if (this.init && typeof this.init == 'function') this.init.apply(this, arguments);
+        }
+        if (arg && typeof arg == 'object') _fun.prototype = arg;
+        return _fun;
+    },
+    getElementsByClassName: function(className, dom){
+        dom = dom || document;
+        var elems = dom.getElementsByTagName("*");
+        var result=[];
+        for (i=0; j=elems[i]; i++){
+          if ((" "+j.className+" ").indexOf(" "+className+" ")!=-1){
+           result.push(j);
+          }
+        }
+        return result;
+    }
+};
+
+///------------------------------------------------------------------------------------------------------
+var Drag = Common.create({
+    init: function(dragDiv, titleBar, Options) {
+        dragDiv = Common.getItself(dragDiv);
+        titleBar = Common.getItself(titleBar) || Common.firstChild(dragDiv, 'DIV');
+        this.dragArea = { maxLeft: -9999, maxRight: 9999, maxTop: -9999, maxBottom: 9999 };
+        if (Options) {
+            //设置点击是否透明，默认透明60%
+            this.opacity = parseInt(Options.opacity) || 100;
+            if (Options.area) {
+                if (Options.area.left && !isNaN(parseInt(Options.area.left))) { this.dragArea.maxLeft = Options.area.left };
+                if (Options.area.right && !isNaN(parseInt(Options.area.right))) { this.dragArea.maxRight = Options.area.right };
+                if (Options.area.top && !isNaN(parseInt(Options.area.top))) { this.dragArea.maxTop = Options.area.top };
+                if (Options.area.bottom && !isNaN(parseInt(Options.area.bottom))) { this.dragArea.maxBottom = Options.area.bottom };
+            }
+        }
+        else {
+            this.opacity = 60;
+        }
+        this.originDragDiv = null;
+        this.tmpX = 0;
+        this.tmpY = 0;
+        this.moveable = false;
+        this.dragArray = [];
+
+        var dragObj = this;
+        var dragTbl = document.getElementById("dragTable");
+
+        titleBar.onmousedown = function(e) {
+
+            var ev = e || window.event || Common.getEvent();
+            //只允许通过鼠标左键进行拖拽,IE鼠标左键为1 FireFox为0
+            if (Common.isIE && ev.button == 1 || !Common.isIE && ev.button == 0) {
+            }
+            else {
+                return false;
+            }
+
+            //处理特殊情况：在最上/下面MOVE时不碰到现有DIV的情况下，又回到起始拖拽的列最上/下方
+            var tmpColId;
+            for (var c = 0; c < dragTbl.rows[0].cells.length; c++) {
+                for (var k = 0; k < dragTbl.rows[0].cells[c].getElementsByTagName("DIV").length; k++) {
+                    if (dragDiv.id == dragTbl.rows[0].cells[c].getElementsByTagName("DIV")[k].id) {
+                        tmpColId = c;
+                        break;
+                    }
+                }
+            }
+
+            var tmpPosFirstChild = Common.getElementPos(Common.firstChild(dragTbl.rows[0].cells[tmpColId], "DIV"));
+            var tmpPosLastChild = Common.getElementPos(Common.lastChild(dragTbl.rows[0].cells[tmpColId], "DIV"));
+            var tmpObj = { colId: tmpColId, firstChildUp: tmpPosFirstChild.y, lastChildDown: tmpPosLastChild.y + Common.lastChild(dragTbl.rows[0].cells[tmpColId], "DIV").offsetHeight };
+
+            //保存当前可拖拽各容器的所在位置
+            dragObj.dragArray = dragObj.RegDragsPos();
+
+            //插入虚线框
+            var dashedElement = document.createElement("div");
+            dashedElement.style.cssText = dragDiv.style.cssText;
+            dashedElement.style.border = " dashed 2px #aaa ";
+            dashedElement.style.marginBottom = "6px";
+            var dashedElementWidth = dragDiv.offsetWidth - 2 * parseInt(dashedElement.style.borderWidth);
+            if (dashedElementWidth <= 0) {
+                dashedElementWidth = 0;
+            }
+            dashedElement.style.width = dashedElementWidth + "px"; //减去boderWidth使虚线框大小保持与dragDiv一致
+            var dashedElementHeight = dragDiv.offsetHeight - 2 * parseInt(dashedElement.style.borderWidth);
+            if (dashedElementHeight <= 0) {
+                dashedElementHeight = 0;
+            }
+            dashedElement.style.height = dashedElementHeight + "px"; //加上px 保证FF正确
+            dashedElement.style.position = "relative";
+            if (dragDiv.nextSibling) {
+                dragDiv.parentNode.insertBefore(dashedElement, dragDiv.nextSibling);
+            }
+            else {
+                dragDiv.parentNode.appendChild(dashedElement);
+            }
+            //拖动时变为absolute
+            dragDiv.style.width = dragDiv.offsetWidth + "px";
+            // 变为absolute时,如果样式有 float 则可能会移位,先保存起来
+            var dragDivOffsetLeft = dragDiv.offsetLeft;
+            var dragDivOffsetTop = dragDiv.offsetTop;
+            dragDiv.style.position = "absolute";
+            // 还原移位
+            dragDiv.style.left = dragDivOffsetLeft + "px";
+            dragDiv.style.top = dragDivOffsetTop + "px";
+
+            dragObj.moveable = true;
+            dragDiv.style.zIndex = dragObj.GetZindex() + 1;
+
+            var downPos = Common.getMousePos(ev);
+            dragObj.tmpX = downPos.x - dragDivOffsetLeft;
+            dragObj.tmpY = downPos.y - dragDivOffsetTop;
+
+            if (Common.isIE) {
+                dragDiv.setCapture();
+            } else {
+                window.captureEvents(Event.mousemove);
+            }
+
+            // 设成透明
+            dragObj.SetOpacity(dragDiv, dragObj.opacity);
+
+            //FireFox 去除容器内拖拽图片问题
+            if (ev.preventDefault) {
+                ev.preventDefault();
+                ev.stopPropagation();
+            }
+
+            document.onmousemove = function(e) {
+                if (dragObj.moveable) {
+                    var ev = e || window.event || Common.getEvent();
+                    //IE 去除容器内拖拽图片问题
+                    if (document.all) {
+                        ev.returnValue = false;
+                    }
+
+                    var movePos = Common.getMousePos(ev);
+                    dragDiv.style.left = Math.max(Math.min(movePos.x - dragObj.tmpX, dragObj.dragArea.maxRight), dragObj.dragArea.maxLeft) + "px";
+                    dragDiv.style.top = Math.max(Math.min(movePos.y - dragObj.tmpY, dragObj.dragArea.maxBottom), dragObj.dragArea.maxTop) + "px";
+
+                    var targetDiv = null;
+                    for (var k = 0; k < dragObj.dragArray.length; k++) {
+                        if (dragDiv == dragObj.dragArray[i]) {
+                            continue;
+                        }
+
+                        if (movePos.x > dragObj.dragArray[k].PosLeft && movePos.x < dragObj.dragArray[k].PosLeft + dragObj.dragArray[k].PosWidth
+                            && movePos.y > dragObj.dragArray[k].PosTop && movePos.y < dragObj.dragArray[k].PosTop + dragObj.dragArray[k].PosHeight
+                        ) {
+                            targetDiv = document.getElementById(dragObj.dragArray[k].DragId);
+                            if (movePos.y < dragObj.dragArray[k].PosTop + dragObj.dragArray[k].PosHeight / 2) {
+                                //往上移
+                                dashedElement.style.width = targetDiv.offsetWidth - 2 * parseInt(dashedElement.style.borderWidth) + "px";
+                                targetDiv.parentNode.insertBefore(dashedElement, targetDiv);
+                            }
+                            else {
+                                //往下移
+                                dashedElement.style.width = targetDiv.offsetWidth - 2 * parseInt(dashedElement.style.borderWidth) + "px";
+                                if (targetDiv.nextSibling) {
+                                    targetDiv.parentNode.insertBefore(dashedElement, targetDiv.nextSibling);
+                                }
+                                else {
+                                    targetDiv.parentNode.appendChild(dashedElement);
+                                }
+                            }
+                        }
+                    }
+
+                    for (var j = 0; j < dragTbl.rows[0].cells.length; j++) {
+                        var startLeft = Common.getElementPos(dragTbl.rows[0].cells[j]).x;
+                        if (movePos.x > startLeft && movePos.x < startLeft + dragTbl.rows[0].cells[j].offsetWidth) {
+                            ///列无DIV
+                            if (dragTbl.rows[0].cells[j].getElementsByTagName("div").length == 0) {
+                                dashedElement.style.width = dragTbl.rows[0].cells[j].offsetWidth - 2 * parseInt(dashedElement.style.borderWidth) + "px";
+                                dragTbl.rows[0].cells[j].appendChild(dashedElement);
+                            }
+                            else {
+                                var posFirstChild = Common.getElementPos(Common.firstChild(dragTbl.rows[0].cells[j], "DIV"));
+                                var posLastChild = Common.getElementPos(Common.lastChild(dragTbl.rows[0].cells[j], "DIV"));
+                                //处理特殊情况：在最上/下面MOVE时不碰到现有DIV的情况下，又回到起始拖拽的列最上/下方
+                                var tmpUp, tmpDown;
+                                if (tmpObj.colId == j) {
+                                    tmpUp = tmpObj.firstChildUp;
+                                    tmpDown = tmpObj.lastChildDown;
+                                }
+                                else {
+                                    tmpUp = posFirstChild.y;
+                                    tmpDown = posLastChild.y + Common.lastChild(dragTbl.rows[0].cells[j], "DIV").offsetHeight;
+                                }
+
+                                if (movePos.y < tmpUp) {///从最上面插入虚线框
+                                    var dashedElementWidth1 = Common.firstChild(dragTbl.rows[0].cells[j], "DIV").offsetWidth - 2 * parseInt(dashedElement.style.borderWidth);
+                                    if (dashedElementWidth1 <= 0) {
+                                        dashedElementWidth1 = 0;
+                                    }
+                                    dashedElement.style.width = dashedElementWidth1 + "px";
+                                    dragTbl.rows[0].cells[j].insertBefore(dashedElement, Common.firstChild(dragTbl.rows[0].cells[j], "DIV"));
+                                }
+                                else if (movePos.y > tmpDown) {///从最下面插入虚线框
+                                    var dashedElementWidth2 = Common.lastChild(dragTbl.rows[0].cells[j], "DIV").offsetWidth - 2 * parseInt(dashedElement.style.borderWidth);
+                                    if (dashedElementWidth2 <= 0) {
+                                        dashedElementWidth2 = 0;
+                                    }
+                                    dashedElement.style.width = dashedElementWidth2 + "px";
+                                    dragTbl.rows[0].cells[j].appendChild(dashedElement);
+                                }
+
+                            }
+                        }
+                    }
+                }
+            };
+
+            document.onmouseup = function() {
+                if (dragObj.moveable) {
+                    if (Common.isIE) {
+                        dragDiv.releaseCapture();
+                    }
+                    else {
+                        window.releaseEvents(dragDiv.mousemove);
+                    }
+                    dragObj.SetOpacity(dragDiv, 100);
+                    dragObj.moveable = false;
+                    dragObj.tmpX = 0;
+                    dragObj.tmpY = 0;
+
+                    //务必写在此IF内
+                    dragDiv.style.left = "";
+                    dragDiv.style.top = "";
+                    dragDiv.style.width = "";
+                    dragDiv.style.position = "";
+                    dashedElement.parentNode.insertBefore(dragDiv, dashedElement);
+                    dashedElement.parentNode.removeChild(dashedElement);
+                }
+            };
+        }
+    },
+    SetOpacity: function(dragDiv, n) {
+        if (Common.isIE) {
+            dragDiv.filters.alpha.opacity = n;
+        }
+        else {
+            dragDiv.style.opacity = n / 100;
+        }
+
+    },
+    GetZindex: function() {
+        var maxZindex = 0;
+        var divs = document.getElementsByTagName("div");
+        for (z = 0; z < divs.length; z++) {
+            maxZindex = Math.max(maxZindex, divs[z].style.zIndex);
+        }
+        return maxZindex;
+    },
+    RegDragsPos: function() {
+        var arrDragDivs = new Array();
+        var dragTbl = document.getElementById("dragTable");
+        var divs = dragTbl.getElementsByTagName("div");
+        var tmpDiv, tmpPos, length;
+        for (i = 0, length = divs.length; i < length; i++) {
+            tmpDiv = divs[i];
+            if (tmpDiv.className == "dragDiv") {
+                tmpPos = Common.getElementPos(tmpDiv);
+                arrDragDivs.push({ DragId: tmpDiv.id, PosLeft: tmpPos.x, PosTop: tmpPos.y, PosWidth: tmpDiv.offsetWidth, PosHeight: tmpDiv.offsetHeight });
+            }
+        }
+        return arrDragDivs;
+    }
+});
+
+
+function secBoard(id, n) {
+    for (i = 0; i < 5; i++) {
+        var t1 = document.getElementById(id + i),
+            t2 = document.getElementById(id + "tab" + i);
+        if (t1) {
+            t1.className = "Tabs_T_word";
+        }
+        if (t2) {
+            t2.style.display = "none";
+        }
+    }
+    var tn = document.getElementById(id + n),
+        tn2 = document.getElementById(id + "tab" + n);
+    if (tn) {
+        tn.className = "Tabs_active";
+    }
+    if (tn2) {
+        tn2.style.display = "block";
+    }
+}
+
+
+window.onload = function() {
+    // dragTable 里面，所有含有 class = 'dragDiv' 的div都设为可拖动
+    var dragTbl = document.getElementById("dragTable");
+    var divs = Common.getElementsByClassName('dragDiv', dragTbl);
+    for (var index = 0, length = divs.length; index < length; index++) {
+        new Drag(divs[index]);
+    }
+    // 单独的设一个对象可拖动
+    //new Drag("dragDiv1");
+    //new Drag("dragDiv2");
+
+    // 可切换的标签,选中活动项(触发它的 onmouseover 事件)
+    var Tabs_actives = Common.getElementsByClassName('Tabs_active', dragTbl);
+    for (var index = 0, length = Tabs_actives.length; index < length; index++) {
+        var id = Tabs_actives[index].id;
+        secBoard(id.charAt(0), id.charAt(1));
+    }
+}
+
+</script>

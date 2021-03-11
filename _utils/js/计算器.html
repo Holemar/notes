@@ -1,0 +1,256 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>计算器</title>
+    <META http-equiv='content-type' content="text/html; charset=utf-8"/>
+<style type="text/css">
+.btn {height:41px; width:67px; font-size:30px; font-weight:bolder;}
+.text{height:41px; width:100%; font-size:23px; font-weight:bolder;}
+.text2{height:40px; width:100px; font-size:23px; font-weight:bolder;}
+</style>
+</head>
+<body>
+    <table align="center">
+        <tr><td colspan="4" style="text-align: center;"><input class="text" id='Text1' type="text"/></td></tr>
+        <tr>
+            <td><input class='btn' title="1" type="button" value="1"/></td>
+            <td><input class='btn' title="2" type="button" value="2"/></td>
+            <td><input class='btn' title="3" type="button" value="3"/></td>
+            <td><input class='btn' title="加" type="button" value="+"/></td>
+        </tr>
+        <tr>
+            <td><input class='btn' title="4" type="button" value="4"/></td>
+            <td><input class='btn' title="5" type="button" value="5"/></td>
+            <td><input class='btn' title="6" type="button" value="6"/></td>
+            <td><input class='btn' title="减" type="button" value="-"/></td>
+        </tr>
+        <tr>
+            <td><input class='btn' title="7" type="button" value="7"/></td>
+            <td><input class='btn' title="8" type="button" value="8"/></td>
+            <td><input class='btn' title="9" type="button" value="9"/></td>
+            <td><input class='btn' title="乘" type="button" value="*"/></td>
+        </tr>
+        <tr>
+            <td><input class='btn' title="小数点" type="button" value="."/></td>
+            <td><input class='btn' title="0" type="button" value="0"/></td>
+            <td><input class='btn' title="计算结果" type="button" value="=" onclick="ev()" /></td>
+            <td><input class='btn' title="除" type="button" value="/"/></td>
+        </tr>
+        <tr>
+            <td><input class='btn' title='开根号' type="button" value="√" onclick="SQRT()" /></td>
+            <td><input class="btn" title='平方' type="button" value="²" onclick="Pow()" /></td>
+            <td><input class="btn" title='清空' type="button" value="C" onclick="clean()" /></td>
+            <td><input class="btn" title='删除一位' type="button" value="←" onclick="del()" /></td>
+        </tr>
+    </table>
+
+    <div>运算记录：</div>
+    <textarea style="width:98%" rows="15" id="logText"></textarea>
+    注：输入框可键盘输入，也可用小键盘点击输入。输入框内按回车或者“=”会自动计算结果<br/>
+    交流QQ群:26651479 <br/><br/><br/>
+
+    <div>
+        升降幅度对比:
+        <input class="text2" id='hight_txt' type="text"/><span id='add_hight_txt'></span>&nbsp;&nbsp;&nbsp;
+        <input class="text2" id='now_txt' type="text"/>
+        <input class="text2" id='low_txt' type="text"/><span id='add_low_txt'></span>&nbsp;&nbsp;&nbsp;
+    </div>
+</body>
+</html>
+
+
+<script language="javascript" type="text/javascript">
+
+/**
+ * 这是错误调试程序
+ * 当页面发生错误时，提示错误讯息；仅测试环境里会提示，正式环境下不提示错误。
+ * 注意：仅IE、fiefox有效,w3c标准里面没有此定义, chrome、opera 和 safari 浏览器不支持此事件
+ */
+window.onerror = function(msg, url, sLine) {
+    var hostUrl = window.location.href;
+    // 判断网址,测试时可以提示出错信息;正式发布时不提示
+    if (hostUrl.indexOf("http://localhost") === 0 || hostUrl.indexOf("http://127.0.0.1") === 0 ||
+        hostUrl.indexOf("http://192.168.") === 0 || hostUrl.indexOf("file://") === 0) {
+        var errorMsg = "当前页面的javascript发生错误.\n\n";
+        errorMsg += "错误: " + msg + "\n";   // 出错信息
+        errorMsg += "URL: " + url + "\n";    // 出错文件的地址
+        errorMsg += "行: " + sLine + "\n\n"; // 发生错误的行
+        errorMsg += "点击“确定”以继续。\n\n";
+        window.alert( errorMsg );
+    }
+    // 返回true,会消去 IE下那个恼人的“网页上有错误”的提示
+    return true;
+};
+
+// 输入框
+var inputText = document.getElementById('Text1');
+// 运算记录
+var logText = document.getElementById('logText');
+
+// 给文本框赋值
+function addText(event) {
+    event = event || window.event;
+    var element = event.target || event.srcElement;
+    inputText.value += element.value;
+    // 设置焦点
+    inputText.focus();
+}
+
+// 计算文本框内的表达式
+function ev() {
+    var value = inputText.value;
+    if (value) {
+        try {
+            var result = eval(value);
+            // 显示结果
+            inputText.value = result;
+
+            // 记录结果
+            logText.value = value + '=' + result + '\n' + logText.value;
+        }
+        catch (e) {
+            alert(e.description);
+        }
+    }
+    // 设置焦点
+    inputText.focus();
+}
+
+//把文本框内的内容清空
+function clean() {
+    inputText.value = '';
+    // 设置焦点
+    inputText.focus();
+}
+
+//开根号
+function SQRT() {
+    inputText.value = Math.sqrt(inputText.value);
+    // 设置焦点
+    inputText.focus();
+}
+
+//平方
+function Pow() {
+    inputText.value = Math.pow(inputText.value, 2);
+    // 设置焦点
+    inputText.focus();
+}
+
+//删除一位
+function del() {
+    var value = inputText.value;
+    if (value) inputText.value = value.substring(0, value.length - 1);
+    // 设置焦点
+    inputText.focus();
+}
+
+
+/***** 升降幅度对比 start *********/
+//  输入框
+var hight_input = document.getElementById('hight_txt');
+var now_input = document.getElementById('now_txt');
+var low_input = document.getElementById('low_txt');
+// 升降幅度对比 文本显示框
+var hight_span = document.getElementById('add_hight_txt');
+var low_span = document.getElementById('add_low_txt');
+
+// 升降幅度对比
+function compare() {
+    var hight_value = hight_input.value;
+    var now_value = now_input.value;
+    var low_value = low_input.value;
+
+    // 没有参考值，没法对比
+    if (!now_value) {
+        hight_span.innerHTML = '';
+        low_span.innerHTML = '';
+        return; 
+    }
+    now_value = parseFloat(now_value);
+    if (now_value == 0) {
+        hight_span.innerHTML = '';
+        low_span.innerHTML = '';
+        return; 
+    }
+
+    // 涨幅对比
+    if (hight_value) {
+        hight_value = parseFloat(hight_value);
+        var hight_compare = (hight_value - now_value) / now_value; // 计算涨幅
+        hight_span.innerHTML = (hight_compare * 100).toFixed(2) + '%'; // 四舍五入到两位小数
+        if (hight_compare > 0) {
+            hight_span.style.color = "red";
+        } else if (hight_compare < 0) {
+            hight_span.style.color = "green";
+        } else {
+            hight_span.style.color = "black";
+        }
+    }
+    // 涨幅对比
+    if (low_value) {
+        low_value = parseFloat(low_value);
+        var low_compare = (low_value - now_value) / now_value; // 计算涨幅
+        low_span.innerHTML = (low_compare * 100).toFixed(2) + '%'; // 四舍五入到两位小数
+        if (low_compare > 0) {
+            low_span.style.color = "red";
+        } else if (low_compare < 0) {
+            low_span.style.color = "green";
+        } else {
+            low_span.style.color = "black";
+        }
+    }
+}
+/***** 升降幅度对比 end *********/
+
+
+// 添加事件
+(function() {
+    var elements = document.getElementsByTagName('input');
+    for (var i=0, len=elements.length; i<len; i++) {
+        var element = elements[i];
+        // 按钮, 点击事添加一个符号到输入框(有 onclick 事件的表示有自己独特的事件,这里不处理)
+        if (element.type == 'button' && !element.onclick) {
+            element.onclick = addText;
+        }
+        // 输入框, 输入“=”号或者按回车, 则计算结果
+        else if (element === inputText) {
+            element.onkeydown = function(event) {
+                event = event || window.event;
+                var currentKey = event.keyCode || event.charCode;
+                // 13:回车键, “=”号在火狐是61,在IE是187
+                if (13==currentKey || (event.shiftKey === false && (61==currentKey || 187==currentKey))) {
+                    ev();
+                    return false;
+                }
+                return true;
+            };
+        }
+        // 输入框, 输入“=”号或者按回车, 则计算结果
+        else if (element === hight_input || element === now_input || element === low_input) {
+            element.onkeydown = function(event) {
+                event = event || window.event;
+                var currentKey = event.keyCode || event.charCode;
+                // 输入数字时、小数点、删除时，不管
+                if (currentKey>=48 && currentKey<=57 || currentKey>=96 && currentKey<=105 || // 数字0-9
+                    currentKey==8 || currentKey==46 || // 删除
+                    currentKey==190 || currentKey==110) { // 小数点
+                    return true;
+                }
+                // 输入回车时计算
+                if (currentKey==13) {
+                    compare();
+                    return true;
+                }
+                return false;
+            };
+            // 值修改时触发计算
+            element.onchange = compare;
+        }
+    }
+    // 设置焦点
+    inputText.focus();
+})();
+</script>

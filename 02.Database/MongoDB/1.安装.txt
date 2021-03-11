@@ -1,0 +1,325 @@
+
+安装 mongodb
+    要求:
+        需要密码，不能裸奔。
+        需要定期备份，一星期一次。
+
+1.下载:
+    curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1804-4.2.1.tgz
+    curl -O https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.9.tgz
+
+2. 解压
+    tar -zxvf mongodb-linux-x86_64-ubuntu1804-4.2.1.tgz
+
+3. 重命名并移动到安装目录（可自定义）
+    mv mongodb-linux-x86_64-ubuntu1804-4.2.1 /data/db/mongodb   # 将解压包拷贝到指定目录进行安装
+
+4. 创建 mongo 的数据目录
+    MongoDB 默认的数据目录是 /data/db/ ，可以直接使用默认的。
+
+    $ sudo mkdir -p /data/db/mongodb/db    # 创建数据存储目录
+    $ sudo chmod 755 /data/db/mongodb/*    # 赋予目录权限
+
+5. 启动配置
+    添加mongodb的bin目录到path，用于启动
+
+    linux:
+        vi /etc/profile
+        增加 export PATH=$PATH:<mongodb-install-directory>/bin
+        然后 source /etc/progile
+
+    mac:
+        临时加上环境变量：
+        export PATH=/usr/local/mongodb/bin:$PATH
+
+        永久加上环境变量：
+        修改 ~/.bash_profile 文件，里面加上路径
+        export PATH=$PATH:/usr/local/mongodb/bin
+
+        终端中使用命令更新配置，使配置文件生效（此步骤可以用重启终端代替）
+        source .bash_profile
+
+        使用命令查看当前系统环境变量
+        echo $PATH
+
+5.1.自定义命令
+    linux:
+        # 编辑这个文件
+        sudo vi /etc/bashrc
+
+        # 加入内容：重写 mongod,mongo 两个命令，也可以自定义命令
+        alias mongod='sudo mongod -f /data/mongodb.conf &'
+        alias mongo='mongo --host=13.70.31.147:57017 -u admin -p belloai --authenticationDatabase=admin'
+
+        # 让新内容生效
+        source /etc/bashrc
+
+    mac:
+        # 编辑这个文件
+        vi ~/.bash_profile
+
+        # 加入内容：重写 mongod,mongo 两个命令，也可以自定义命令
+        alias mongod='mongod -f /data/mongodb.conf'
+        alias mongo='mongo --host=13.70.31.147:57017 -u admin -p belloai --authenticationDatabase=admin'
+
+        # 让新内容生效
+        source ~/.bash_profile
+
+
+mac 可以使用 Homebrew 安装 MongoDB
+    省去上面的下载解压，及配置环境变量
+
+    # 普通安装
+    brew install mongodb
+
+    # 支持 TLS / SSL 的安装
+    brew install mongodb --with-openssl
+
+    # 安装最新开发版本
+    brew install mongodb --devel
+
+
+6. 启动数据库
+   首先我使用的不是他的默认地址，所以需要手工创建一个目录并且指定位置，如果下面语句执行没问题，就证明已经服务ok了
+
+   启动mongodb的服务端 mongod
+   mongod --dbpath /data/mongodb/db --logpath=/data/mongodb/log/log.txt --host=127.0.0.1 --fork &  # 直接命令行参数启动
+   mongod -f /etc/mongod.conf  # 以配置文件启动
+   mongod --config /etc/mongod.conf  # 以配置文件启动,同上
+   mongod --setParameter failIndexKeyTooLong=false  --wiredTigerCacheSizeGB 2 # 限制内存占用及取消索引长度限制
+
+   # 配置文件参考
+   https://www.jianshu.com/p/f179ce608391
+
+   启动shell客户端开始玩耍
+   mongo
+
+
+7. 开机启动:
+    linux:
+        1、开机自启的配置文件:mongodb.conf : /etc/mongodb.conf
+        2、开启自启用到的 mongod: /usr/bin/mongod 如果不想开机自启，只要把它移到其他地方即可
+
+    mac:
+        如果是用 brew 安装，会自动创建 plist 文件，链接到自启动目录即可。
+            ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents
+
+        手动安装，则需要自己写一个 plist 文件，放到自启动目录。
+
+        用户登陆后，自启动目录：
+        ~/Library/LaunchAgents
+
+        注：
+            LaunchDaemons /Library/LaunchDaemons/  # 用户登陆前运行 plist（程序）
+            LaunchAgents ~/Library/LaunchAgents  # 用户登录后运行相应的 plist（程序）
+
+        里面加文件： io.mongodb.mongod.plist
+        文件内容如下：
+
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            <dict>
+                <key>Label</key>
+                <string>io.mongodb.mongod</string>
+                <key>ProgramArguments</key>
+                <array>
+                    <string>/usr/local/mongodb/bin/mongod</string>
+					<!-- 下面传参给启动程序 mongod，没有参数可不写 -->
+					<string>-f</string>
+					<string>/usr/local/mongodb/mongod.conf</string>
+                </array>
+                <key>RunAtLoad</key>
+                <true/>
+            </dict>
+            </plist>
+
+        将 plist 文件载入到 launchd，重启以后，mongo就可以开机启动了。
+            $ launchctl load ~/Library/LaunchAgents/io.mongodb.mongod.plist
+            $ sudo launchctl load /Library/LaunchDaemons/io.mongodb.mongod.plist  # 这目录的话，需要这样执行
+
+        如果不想重新启动，也可以使用如下命令：
+            $ sudo launchctl start io.mongodb.mongod
+
+        如果想关闭mongo的话，使用如下命令：
+            $ sudo launchctl stop io.mongodb.mongod
+
+8.在本机客户端添加数据库用户
+    MongoDB的用户分为两种，一种是admin用户，另一种是特定数据库用户。
+    admin用户拥有最高的权限，而特定数据库用户则只能访问特定的数据库。
+    当MongoDB的admin库里没有任何用户的时候，也就是说整个MongoDB没有一个MongoDB用户的时候，即便–auth权限需求打开了，用户还是可以通过localhost界面进入MongoDB进行用户设置，否则的话整个MongoDB就完全没法访问了。
+    而当这个用户创建完成之后，之后的用户登录和操作就需要授权了，不是直接登录就能使用的了。
+
+    MongoDB有一个比较奇怪的设置是，即便是一个admin用户，授权也必须在admin数据库下进行，而不能在其他数据库下进行。
+    而授权之后admin用户就可以在任何数据库下进行任何操作了。当然数据库级别的用户在他自己的数据库下授权之后是不能到其他数据库进行操作的。
+
+    启动mongod服务，在sehll中输入命令:
+    mongo   # 进入mongo shell
+    show dbs   # 显示所有数据库
+    show users  # 查看所有用户
+    use admin  # 进入admin数据库
+    db.system.users.find();  # 查看一下所有的用户
+    # 创建一个用户，身份是超级管理员
+    db.createUser({user: "admin", pwd: "belloai", roles: [ { role: "root", db: "admin" },{ role: "userAdminAnyDatabase", db: "admin" } ]})
+
+    这时我们创建好了超级管理员，现在退出shell,重新进入mongo shell，输入命令:
+    use admin
+    db.auth("admin","belloai")
+    若返回为1，则认证成功！现在，我们超级管理员也创建好了，可以为其他数据库创建用户了。(建议在 admin 库里面建其他库的用户)
+
+    use bello_nlp  # 切换至 bello_nlp 数据库(库名自定义)
+    # 创建用户,用户对数据库 bello_nlp 的权限为读写
+    db.createUser({user: "belloai", pwd: "fsdfehjyrtWE3423g", roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]})
+    # db.addUser('belloai', 'fsdfehjyrtWE3423g')
+    db.auth('belloai', 'fsdfehjyrtWE3423g')
+
+    db.removeUser('admin') # 删除用户
+    # 添加权限
+    db.system.users.update({"_id" : "admin.admin"}, {"$push":{"roles":{"role" : "dbOwner", "db" : "bello_nlp"}}})
+
+
+MongoDB基本的角色:
+    1.数据库用户角色:read、readWrite;
+    2.数据库管理角色:dbAdmin、dbOwner、userAdmin；
+    3.集群管理角色:clusterAdmin、clusterManager、clusterMonitor、hostManager；
+    4.备份恢复角色:backup、restore；
+    5.所有数据库角色:readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase
+    6.超级用户角色:root
+    还有几个角色间接或直接提供了系统超级用户的访问（dbOwner 、userAdmin、userAdminAnyDatabase）
+    其中MongoDB默认是没有开启用户认证的，也就是说游客也拥有超级管理员的权限。
+    userAdminAnyDatabase:有分配角色和用户的权限，但没有查写的权限
+
+
+mongod 启动参数
+    # 参数都可以写入 mongod.conf 配置文档里
+    mongod -h # 查看所有的参数
+    --setParameter failIndexKeyTooLong=false  # 取消索引长度限制
+    --wiredTigerCacheSizeGB 2  # 内存占用大小限制,单位 GB
+
+    # 基础参数
+    --quiet    # 安静输出
+    --port arg    # 指定服务端口号，默认端口27017
+    --bind_ip arg    # 绑定服务IP，若绑定127.0.0.1，则只能本机访问，不指定默认本地所有IP
+    --logpath arg    # 指定MongoDB日志文件，注意是指定文件不是目录
+    --logappend    # 使用追加的方式写日志
+    --pidfilepath arg    # PID File 的完整路径，如果没有设置，则没有PID文件
+    --keyFile arg    # 集群的私钥的完整路径，只对于Replica Set 架构有效
+    --unixSocketPrefix arg    # UNIX域套接字替代目录,(默认为 /tmp)
+    --fork    # 以守护进程的方式运行MongoDB，创建服务器进程
+    --auth    # 启用验证
+    --cpu    # 定期显示CPU的CPU利用率和iowait
+    --dbpath arg    # 指定数据库路径
+    --diaglog arg    # diaglog选项 0=off 1=W 2=R 3=both 7=W+some reads
+    --directoryperdb    # 设置每个数据库将被保存在一个单独的目录
+    --journal    # 启用日志选项，MongoDB的数据操作将会写入到journal文件夹的文件里
+    --journalOptions arg    # 启用日志诊断选项
+    --ipv6    # 启用IPv6选项
+    --jsonp    # 允许JSONP形式通过HTTP访问（有安全影响）
+    --maxConns arg    # 最大同时连接数 默认2000
+    --noauth    # 不启用验证
+    --nohttpinterface    # 关闭http接口，默认关闭27018端口访问
+    --noprealloc    # 禁用数据文件预分配(往往影响性能)
+    --noscripting    # 禁用脚本引擎
+    --notablescan    # 不允许表扫描
+    --nounixsocket    # 禁用Unix套接字监听
+    --nssize arg (=16)    # 设置信数据库.ns文件大小(MB)
+    --objcheck    # 在收到客户数据,检查的有效性，
+    --profile arg    # 档案参数 0=off 1=slow, 2=all
+    --quota    # 限制每个数据库的文件数，设置默认为8
+    --quotaFiles arg    # number of files allower per db, requires --quota
+    --rest    # 开启简单的rest API
+    --repair    # 修复所有数据库run repair on all dbs
+    --repairpath arg    # 修复库生成的文件的目录,默认为目录名称dbpath
+    --slowms arg (=100)    # value of slow for profile and console log
+    --smallfiles    # 使用较小的默认文件
+    --syncdelay arg (=60)    # 数据写入磁盘的时间秒数(0=never,不推荐)
+    --sysinfo    # 打印一些诊断系统信息
+    --upgrade    # 如果需要升级数据库
+    # Replicaton
+    --fastsync    # 从一个dbpath里启用从库复制服务，该dbpath的数据库是主库的快照，可用于快速启用同步
+    --autoresync    # 如果从库与主库同步数据差得多，自动重新同步，
+    --oplogSize arg    # 设置oplog的大小(MB)
+    # 主/从参数
+    --master    # 主库模式
+    --slave    # 从库模式
+    --source arg    # 从库 端口号
+    --only arg    # 指定单一的数据库复制
+    --slavedelay arg    # 设置从库同步主库的延迟时间
+    # Replica set(副本集)选项
+    --replSet arg    # 设置副本集名称
+    # Sharding(分片)选项
+    --configsvr    # 声明这是一个集群的config服务,默认端口27019，默认目录/data/configdb
+    --shardsvr    # 声明这是一个集群的分片,默认端口27018
+    --noMoveParanoia    # 关闭偏执为moveChunk数据保存
+
+
+mongodump 备份
+    生成目录及二进制档案，无法直接阅读，但空间占用小
+    --uri <连接字符串> # 使用这个参数，则不再需要下面的 host,port,username,password,db 等参数
+    --host / -h <dbhost>
+    --port <dbport>
+    --username <dbusername>
+    --password <dbpassword>
+    --db / -d <库名>
+    --collection <表名>
+    --out / -o <out_directory>
+    --gzip 是否使用压缩
+    --archive  导出为归档（Archive）文件。 用法:mongodump --archive=fileName
+
+    实例:
+    mongodump --uri "mongodb://user123:pwd123@127.0.0.1:27017/spider?authSource=admin" --collection spider_resume_test --gzip --archive=filename.gz
+
+mongorestore 恢复
+    语法: mongorestore -h <hostname><:port> -d dbname <path>
+    --host <:port>, -h <:port>：    MongoDB所在服务器地址，默认为： localhost:27017
+    --db , -d ：    需要恢复的数据库实例，例如：test，当然这个名称也可以和备份时候的不一样，比如test2
+    --drop：    恢复的时候，先删除当前数据，然后恢复备份的数据。就是说，恢复后，备份后添加修改的数据都会被删除，慎用哦！
+    --nsInclude ：指定还原的集合，支持通配符（*）
+    --nsExclude：指定不还原的集合，支持通配符（*）
+    --nsFrom：修改集合名称，原来集合的名称，支持使用变量
+    --nsTo：修改集合名称，修改之后集合的名称，支持使用变量
+
+    <path>：    mongorestore 最后的一个参数，设置备份数据所在位置，例如：c:\data\dump\test。
+    --dir：    指定备份的目录
+    你不能同时指定 <path> 和 --dir 选项，--dir也可以设置备份目录。
+
+    ### 还原指定数据库的指定集合 ###
+    mongorestore --collection collection --db database filePath  # 写法1
+    mongorestore --nsInclude database.collections filePath  # 写法2(推荐写法)
+    # 注：写法1的filePath是json、bson文件所在的目录，一般为"./dump/database"，写法2的filePath是数据库备份的根目录，一般为 "./dump"
+
+    ### 使用通配符 * 导入匹配的集合
+    # --nsInclude指定要 还原 的集合，--nsExclude指定 不还原 的集合
+    mongorestore --nsInclude database.* --nsExclude database.* filePath
+
+    ### 在还原过程中修改集合的名称(单集合)
+    mongorestore --nsInclude database.collection --nsFrom database.collectio --nsTo newCollectionName
+
+    ### 高级应用:使用模式匹配在备份过程中修改集合名称
+        假设现在有如下的集合，集合名称分别为
+        sales_customer1
+        sales_customer2
+        users_customer1
+        users_customer2
+    # 我们可以看到上面的集合名称都是有规律的，都是A_B这种模式的名称，A匹配sales，users,B匹配customer1,customer2,customer3，我们可以使用如下命令修改集合名称
+    # $$ 之间的值可以当成一个变量使用，可以看到下边的命令将A和B的位置调换了，注意这里的单引号不能省略
+    mongorestore --nsInclude 'database.*' --nsFrom 'data.$A$_$B$' --nsTo '$B$_$A$'
+        最终还原之后的，mongodb会把集合名称形如 A_B 的改为 B_A ，如下所示
+        customer1_sales
+        customer2_sales
+        customer1_users
+        customer2_users
+
+
+mongoexport 备份
+    生成 json 文件，可以直接阅读，但空间占用会比 mongodump 大几倍
+    mongoexport --uri "mongodb://data_190403:E53pm73930d5QeQ@10.0.0.16:27017/spider?authSource=admin" --collection spider_jobs -v --out ~/desktop/spider_jobs.json
+    mongoexport --uri "mongodb://data_190403:E53pm73930d5QeQ@10.0.0.16:27017/spider?authSource=admin" --collection spider_resume_test -v --out ./spider_resume.json
+
+mongoimport 导入
+    导入json格式文件，一般是由 mongoexport 生成的内容
+	注： 不支持 --uri 参数
+    mongoimport --port=57017 -d bello_nlp -c jds --drop /data/db/jds_duplicate_removal.json
+
+
+

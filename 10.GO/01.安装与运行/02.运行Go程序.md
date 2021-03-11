@@ -1,0 +1,26 @@
+## 运行 Go 程序
+
+让我们来看下如何编写 Go 代码并执行它。步骤如下：  
+1. 打开编辑器如Sublime2，将以上代码添加到编辑器中。  
+2. 将以上代码保存为 hello.go  
+3. 打开命令行，并进入程序文件保存的目录中。  
+4. 输入命令 go run hello.go 并按回车执行代码。  
+5. 如果操作正确你将在屏幕上看到 "Hello World!" 字样的输出。  
+
+	$ go run hello.go  
+	Hello, World!  
+
+6. 我们还可以使用 `go build` 命令来生成二进制文件：  
+    windows下生成 hello.exe 文件
+
+	$ go build hello.go   
+	$ ls  
+	hello    hello.go  
+	$ ./hello   
+	Hello, World!  
+
+使用 Go 自带的更加方便的工具来构建应用程序：
+
+- `go run` 运行文件
+- `go build` 编译自身包和依赖包
+- `go install` 编译并安装自身包和依赖包

@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</style>
+</head>
+
+<body>
+<hr width="1300"/>
+<span style="cursor:pointer" onclick="Xwin({id:'div1',model:false,width:'400px',height:'250px'})">显示窗(非模式)口</span><br/>
+<span style="cursor:pointer" onclick="Xwin({id:'div1',model:true,width:'400px',height:'250px'})">显示窗口(模式)</span><br/>
+<span style="cursor:pointer" onclick="Xwin({id:'div2'})">显示窗口2(模式)</span>
+
+<div id="div1" style="display:none;visibility:hidden;">
+    <p>d</p>
+    <p>55555555555</p>
+    <p>eee</p>
+</div>
+
+<div id="div2" style="display:none;visibility:hidden;">
+    5555555555555555<br>
+    sdasdasdasdasdas
+</div>
+
+<div style="width:20px; height:1500px; background-color:#FFC"></div>
+
+</body>
+</html>
+
+<script type="text/javascript" language="JavaScript">
+/* Help-------------------------------------------------------------------------------------------------------
+ * 调用时使用 Xwin(property)
+ * 参数可接受4个属性,例如 Xwin({id:'div1',model:true,width:'400px',height:'250px'})
+ * id为必须的属性,表示要被弹出的对象(推荐为div的对象)
+ * width和height可以在对象本身的style中定义也可在此处定义(二者必有其一),如同时定义则以此处为准,该属性表示弹出窗口的高度和宽度
+ * model可省略,默认为false(即:非模式窗口)
+ * 撤销时调用 Xwin.remove() 方法即可,或者按Esc键
+ *
+ * 【注意:该框架是把id所代表的对象本身作为弹出窗口,所以样式可以在自身的style中设置】
+ */
+
+
+/**
+ * 条件初始化
+ */
+var Xwin = window.Xwin = function(attribute)
+{
+    var div_element = Xwin.el(attribute.id);
+	if (!div_element)
+	{
+		alert("id属性没有正确的设置参数！");
+		return;
+	}
+    // 设置样式
+    div_element.style.backgroundColor = "#E8F7FD";
+    div_element.style.border = "3px #39F double";
+    // 关闭按钮
+    var close_div = '<DIV id="close_div" style="BACKGROUND-COLOR:#B0E0E6;FLOAT:right;COLOR:red;CURSOR:pointer;MARGIN-RIGHT:5px;MARGIN-TOP:2px;" href="javascript:void(0);" onclick="Xwin.remove()">&nbsp;X&nbsp;</DIV><BR>';
+    if (div_element.getElementsByTagName("DIV").length == 0 || div_element.getElementsByTagName("DIV")[0].getAttribute("id") !== "close_div")
+    {
+        div_element.innerHTML = close_div + div_element.innerHTML;
+    }
+
+	/*显示Div*/
+	div_element.style.position = "absolute";
+	div_element.style.display = "block";
+	div_element.style.visibility = "visible";
+	div_element.style.zIndex = 51;
+
+    // 获取高度和宽度
+	var div_width;
+	var div_height;
+	if (attribute.width)
+	{
+		div_width = attribute.width;
+	}
+	else
+	{
+		div_width = div_element.style.width || div_element.offsetWidth || div_element.scrollWidth || div_element.clientWidth;
+	}
+    div_width = ("" + div_width).replace(/px/,"");
+
+	if (attribute.height)
+	{
+		div_height = attribute.height;
+	}
+	else
+	{
+		div_height = div_element.style.height || div_element.offsetHeight || div_element.scrollHeight || div_element.clientHeight;
+	}
+    div_height = ("" + div_height).replace(/px/,"");
+
+	var regNum = /^\d+$/;
+	if(!regNum.test(div_height))
+	{
+		alert("没有正确的设置高度！");
+		return;
+	}
+	if(!regNum.test(div_width))
+	{
+		alert("没有正确的设置宽度！");
+		return;
+	}
+
+	attribute.height = parseInt(div_height);
+	attribute.width = parseInt(div_width);
+
+	if (attribute.model === true || attribute.model === "true")
+	{
+		/*隐藏滚动条*/
+		for(var i = 0 ; i < document.getElementsByTagName("html").length; i++ )
+		{
+			document.getElementsByTagName("html")[i].style.overflow = "hidden"
+		}
+		Xwin.cover();
+	}
+
+	Xwin.my_temp_attribute = attribute;//把attribute设置为全局变量
+	Xwin.show(attribute);
+
+	/* 窗口大小调整事件处理 */
+	window.onresize = function()
+	{
+		Xwin.show(attribute);
+		if (attribute.model === true || attribute.model === "true")
+		{
+			Xwin.cover();
+		}
+	}
+
+	/* 滚动条事件处理 */
+	window.onscroll = function()
+	{
+		Xwin.show(attribute);
+		if (attribute.model === true || attribute.model === "true")
+		{
+			Xwin.cover();
+		}
+	}
+
+	/* onkeypress事件处理 */
+	document.onkeypress = function(evt)
+	{
+		try
+		{
+			evt = evt || window.event;//IE
+			//Esc 撤销
+			if(evt.keyCode == 27)
+			{
+				Xwin.destroy(attribute);
+			}
+		}
+		catch(e)
+		{
+			alert(e.error);
+		}
+	}
+}
+
+/**
+ * 弹出窗口对象ID
+ */
+Xwin.my_temp_attribute = null;
+
+/**
+ * 获得浏览器窗口尺寸
+ */
+Xwin.findDimensions = function() //函数：获取尺寸
+{
+	var winWidth = 0;
+	var winHeight = 0;
+   	//获取窗口宽度
+   	if (window.innerWidth)
+   		winWidth = window.innerWidth;
+   	else if ((document.body) && (document.body.clientWidth))
+   		winWidth = document.body.clientWidth;
+   	//获取窗口高度
+   	if (window.innerHeight)
+   		winHeight = window.innerHeight;
+   	else if ((document.body) && (document.body.clientHeight))
+   		winHeight = document.body.clientHeight;
+   	//通过深入Document内部对body进行检测，获取窗口大小
+   	if (document.documentElement  && document.documentElement.clientHeight && document.documentElement.clientWidth)
+   	{
+   		winHeight = document.documentElement.clientHeight;
+   		winWidth = document.documentElement.clientWidth;
+   	}
+   	//封装并返回
+	return {width: winWidth, height:winHeight};
+}
+
+
+/**
+ * 显示覆盖层
+ */
+Xwin.cover = function()
+{
+	var dimension = Xwin.findDimensions();
+	var scrollDimension = Xwin.getScrollDimension();
+
+	var cssText = "position:absolute; ";
+	cssText += "width:" + dimension.width + "px;";
+	cssText += "height:" + dimension.height + "px;";
+	cssText += "z-index:50;";
+	cssText += "left: " + scrollDimension.width + "px;";
+	cssText += "top: " + scrollDimension.height + "px;";
+	cssText += "background-color: #D4D4D4;";
+	cssText += "filter:alpha(opacity=50);";
+	cssText += "-moz-opacity:0.50;";
+	cssText += "opacity:0.50;";
+	if(!Xwin.el("cover_div"))
+	{
+		var div = document.createElement("div");
+		div.style.cssText = cssText;
+		div.setAttribute("id","cover_div");
+		document.body.appendChild(div);
+	}
+	else
+	{
+		Xwin.el("cover_div").style.cssText = cssText;
+	}
+}
+
+/**
+ * 显示弹出窗口
+ */
+Xwin.show = function(attribute)
+{
+	var dimension = Xwin.findDimensions();
+	var scrollDimension = Xwin.getScrollDimension();
+    // 居中显示
+	Xwin.el(attribute.id).style.top = ((dimension.height - attribute.height)/2 + scrollDimension.height) + "px";
+	Xwin.el(attribute.id).style.left = ((dimension.width - attribute.width)/2 + scrollDimension.width) + "px";
+
+	Xwin.el(attribute.id).style.height = attribute.height + "px";
+	Xwin.el(attribute.id).style.width = attribute.width + "px";
+}
+
+/**
+ * 获取滚动条的高度和宽度
+ */
+Xwin.getScrollDimension = function()
+{
+	var scrollTop = 0;
+	var scrollLeft = 0;
+	if (typeof window.pageYOffset != 'undefined' && typeof window.pageXOffset != 'undefined')
+	{
+       scrollTop = window.pageYOffset;
+	   scrollLeft = window.pageXOffset;
+    }
+	else if (typeof window.document.compatMode != 'undefined' && window.document.compatMode != 'BackCompat')
+	{
+       scrollTop = window.document.documentElement.scrollTop;
+	   scrollLeft = window.document.documentElement.scrollLeft;
+    }
+	else if (typeof window.document.body != 'undefined')
+	{
+       scrollTop = window.document.body.scrollTop;
+	   scrollLeft = window.document.body.scrollLeft;
+    }
+	return {height: scrollTop, width: scrollLeft};
+}
+
+/**
+ * 关闭毁弹出窗口
+ */
+Xwin.remove = function()
+{
+	if(Xwin.my_temp_attribute==null)	return;
+	Xwin.destroy(Xwin.my_temp_attribute);
+}
+
+/**
+ * 销毁弹出窗口
+ */
+Xwin.destroy = function(temp_attribute)
+{
+	window.onresize=null;
+	window.onscroll = null;
+	document.onkeypress = null;
+	if (temp_attribute.model === true || temp_attribute.model === "true")
+	{
+		Xwin.el("cover_div").parentNode.removeChild(Xwin.el("cover_div"));
+	}
+
+	for(var i = 0 ; i < document.getElementsByTagName("html").length; i++ )
+	{
+		document.getElementsByTagName("html")[i].style.overflow = "";
+	}
+
+	Xwin.el(temp_attribute.id).style.display = "none";
+	Xwin.el(temp_attribute.id).style.visibility = "hidden";
+}
+
+/**
+ * 获取对象
+ */
+Xwin.el = function(id)
+{
+	return document.getElementById(id);
+}
+</script>

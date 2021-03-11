@@ -1,0 +1,359 @@
+mongodb 慢查询日志
+
+mongodb 的 Profiling 功能->慢查询功能
+    Profiling 把收集到的信息写入到 admin.system.profile 集合中，system.profile 集合是一个 capped collection。
+
+1.定位 mongodb 慢查询语句方法：
+    开启Profiling功能，通过定位慢查询日志，找到执行比较慢的语句，然后进行优化，思路如下：
+    a.查询慢查询日志（system.profile）找到超过定义时间的慢查询语句；
+    b.explain()查看执行计划，可以参考下面详解。
+    c.确定语句慢的原因，如缺少索引，业务批量问题等，思路与传统的rdbms的sql优化等同；
+
+
+2.开启慢查询：
+    2.1:Profiling级别说明：
+		0=off： 关闭，不收集任何数据。
+		1=slow：收集慢查询数据，默认是100毫秒。
+		2=all： 收集所有数据
+
+    2.2:数据库慢查询配置（注意写入配置文件，重启后生效）：
+		a.查看状态：级别和时间
+			> db.getProfilingStatus()
+			{ "was" : 1, "slowms" : 200 }  # was:级别, slowms:慢查询的毫秒数定义
+
+		b.查看级别
+			> db.getProfilingLevel()
+			1  # 即上面 was 的值
+
+		c.设置级别
+			>  db.setProfilingLevel(2)
+			{ "was" : 1, "slowms" : 200, "ok" : 1 }  # 返回之前的值，但已经更新成功
+
+		d.确认设置级别：
+			> db.getProfilingLevel()
+			2
+
+		e.设置级别和时间（1000 相当于1s）
+			> db.setProfilingLevel(1, 1000) ###（包括级别、时间参数，时间是毫秒单位）
+			{ "was" : 2, "slowms" : 1000, "ok" : 1 }
+
+		f.关闭Profiling：
+			a.关闭：
+				> db.setProfilingLevel(0)
+				{ "was" : 2, "slowms" : 1000, "ok" : 1 }  # 返回之前的值，但已经更新成功
+			b.确认：
+				> db.getProfilingStatus()
+				{ "was" : 0, "slowms" : 1000 }
+
+	2.3:在配置文件中开启慢查询：
+
+		operationProfiling: # 性能分析日志
+		   slowOpThresholdMs: 100 # 认定为查询速度缓慢的时间阈值，超过该时间的查询即为缓慢查询，会被记录到日志中, 默认100(毫秒)。仅当下面的 mode=slowOp 时生效。
+		   mode: slowOp # operationProfiling模式: off(不收集任何日志) / slowOp(收集慢查询日志) /all(收集所有日志) 默认off。
+
+3.修改system.profile的大小：
+
+	a.关闭Profiling:
+		> db.setProfilingLevel(0)
+		{ "was" : 0, "slowms" : 200, "ok" : 1 }
+
+	b.删除system.profile集合:
+		> db.system.profile.drop()
+		true
+
+	c.创建一个新的system.profile集合 - 10M:
+		>db.createCollection( "system.profile", { capped: true, size:10000000 } )
+		{ "ok" : 1 }
+
+	d.重新开启Profiling:
+		> db.setProfilingLevel(1)
+		{ "was" : 0, "slowms" : 200, "ok" : 1 }
+
+
+4.慢查询(system.profile)分析:
+	> db.system.profile.find()
+
+	a.查询大于指定时间如500毫秒：
+		db.system.profile.find({"millis":{$gte:500}})
+
+	b.查询指定时间慢查询：
+		db.system.profile.find({'ts' : {
+							  '$gt' : new ISODate("2018-10-22T03:01:45.976Z"),
+							  '$lt' : new ISODate("2018-10-22T03:01:48.976Z")
+							 }
+		})
+
+	c.显示5最近的事件：
+		show profile
+
+5.在mongodb的日志文件中同样记录慢查询日志，如果system.profile已经被覆盖，可以参考mongodb的后台日志。
+
+
+输出解读
+system.profile.op
+	这一项主要包含如下几类
+	insert
+	query
+	update
+	remove
+	getmore
+	command
+	代表了该慢日志的种类是什么，是查询、插入、更新、删除还是其他。
+
+system.profile.ns
+	该项表明该慢日志是哪个库下的哪个集合所对应的慢日志。
+
+system.profile.query
+	该项详细输出了慢日志的具体语句和行为
+
+system.profile.keysExamined
+	该项表明为了找出最终结果MongoDB搜索了多少个key
+
+system.profile.docsExamined
+	该项表明为了找出最终结果MongoDB搜索了多少个文档
+
+system.profile.keyUpdates
+	该项表名有多少个index key在该操作中被更改，更改索引键也会有少量的性能消耗，因为数据库不单单要删除旧Key，还要插入新的Key到B-Tree索引中
+
+system.profile.writeConflicts
+	写冲突发生的数量，例如update一个正在被别的update操作的文档
+
+system.profile.numYield
+	为了让别的操作完成而屈服的次数，一般发生在需要访问的数据尚未被完全读取到内存中，MongoDB会优先完成在内存中的操作
+
+system.profile.locks
+	在操作中产生的锁，锁的种类有多种，如下：
+		Global	Represents global lock.
+		MMAPV1Journal	Represents MMAPv1 storage engine specific lock to synchronize journal writes; for non-MMAPv1 storage engines, the mode forMMAPV1Journal is empty.
+		Database	Represents database lock.
+		Collection	Represents collection lock.
+		Metadata	Represents metadata lock.
+		oplog	Represents lock on the oplog.
+
+	锁的模式也有多种，如下：
+		Lock Mode	Description
+		R	Represents Shared (S) lock.
+		W	Represents Exclusive (X) lock.
+		r	Represents Intent Shared (IS) lock.
+		w	Represents Intent Exclusive (IX) lock.
+
+system.profile.locks.acquireCoun
+	在各种不用的种类下，请求锁的次数
+
+system.profile.nreturned
+	该操作最终返回文档的数量
+
+system.profile.responseLength
+	结果返回的大小，单位为bytes，该值如果过大，则需考虑limit()等方式减少输出结果
+
+system.profile.millis
+	该操作从开始到结束耗时多少，单位为毫秒
+
+system.profile.execStats
+	包含了一些该操作的统计信息，只有query类型的才会显示
+
+system.profile.execStats.stage
+	包含了该操作的详细信息，例如是否用到索引
+
+system.profile.ts
+	该操作执行时的时间
+
+system.profile.client
+	哪个客户端发起的该操作，并显示出该客户端的ip或hostname
+
+system.profile.allUsers
+	哪个认证用户执行的该操作
+
+system.profile.user
+	是否认证用户执行该操作，如认证后使用其他用户操作，该项为空
+
+
+
+explain() 查看执行计划
+	mongodb 3 explain 有三种模式
+		db.users.find({name:900}).explain()
+		db.users.find({name:900}).explain("queryPlanner")  #explain的默认模式
+		db.users.find({name:900}).explain("executionStats")
+		db.users.find({name:900}).explain("allPlansExecution")
+
+	说明：
+		queryPlanner模式下并不会去真正进行query语句查询，而是针对query语句进行执行计划分析并选出winning plan。
+
+
+
+> db.users.find({i:9}).explain("queryPlanner")
+	{
+     "queryPlanner" : {  #queryPlanner的返回
+         "plannerVersion" : 1,
+         "namespace" : "app_1.users",  #该值返回的是该query所查询的表
+         "indexFilterSet" : false,  #针对该query是否有indexfilter
+         "parsedQuery" : {
+             "i" : {
+                 "$eq" : 9
+             }
+         },
+         "winningPlan" : { #查询优化器针对该query所返回的最优执行计划的详细内容
+             "stage" : "FETCH", #最优执行计划的stage，这里返回是FETCH，可以理解为通过返回的index位置去检索具体的文档
+             "inputStage" : {  # 用来描述子stage，并且为其父stage提供文档和索引关键字
+                 "stage" : "IXSCAN",  #queryPlanner.winningPlan.stage的child stage，此处是IXSCAN，表示进行的是index scanning
+                 "keyPattern" : {  #扫描的index内容,此处是  "i" : 1
+                     "i" : 1
+                 },
+                 "indexName" : "i_1",  #winning plan所选用的index，使用db.users.getIndexes() 查看索引信息
+                 "isMultiKey" : false,  #是否是Multikey，此处返回是false，如果索引建立在array上，此处将是true
+                 "isUnique" : false, #是否为唯一键
+                 "isSparse" : false,
+                 "isPartial" : false,
+                 "indexVersion" : 1,
+                 "direction" : "forward", #query的查询顺序，此处是forward
+                 "indexBounds" : {
+                     "i" : [
+                         "[9.0, 9.0]"
+                     ]
+                 }
+             }
+         },
+         "rejectedPlans" : [ ]  #其他执行计划（非最优而被查询优化器reject的）的详细返回，具体信息与winningPlan的返回中意义相同
+     },
+     "serverInfo" : {   #server的一些信息
+         "host" : "my1.ml.com",  #主机名字
+         "port" : 27017,   #数据库端口
+         "version" : "3.2.13",   #数据库版本
+         "gitVersion" : "23899209cad60aaafe114f6aea6cb83025ff51bc"
+     },
+     "ok" : 1
+	 }
+
+
+
+executionStats分析：
+> db.users.find({i:9}).explain("executionStats")
+	{
+     "queryPlanner" : {
+         "plannerVersion" : 1,
+         "namespace" : "app_1.users",
+         "indexFilterSet" : false,
+         "parsedQuery" : {
+             "i" : {
+                 "$eq" : 9
+             }
+         },
+         "winningPlan" : {
+             "stage" : "FETCH",
+             "inputStage" : {
+                 "stage" : "IXSCAN",
+                 "keyPattern" : {
+                     "i" : 1
+                 },
+                 "indexName" : "i_1",
+                 "isMultiKey" : false,
+                 "isUnique" : false,
+                 "isSparse" : false,
+                 "isPartial" : false,
+                 "indexVersion" : 1,
+                 "direction" : "forward",
+                 "indexBounds" : {
+                     "i" : [
+                         "[9.0, 9.0]"
+                     ]
+                 }
+             }
+         },
+         "rejectedPlans" : [ ]
+     },
+     "executionStats" : {
+         "executionSuccess" : true,
+         "nReturned" : 1,  #查询返回的条目
+         "executionTimeMillis" : 0,    #该query的整体查询时间
+         "totalKeysExamined" : 1,  #索引扫描条目
+         "totalDocsExamined" : 1, #文档扫描条目     
+		 # 对于一个查询来讲，最理想的结果是：nReturned=totalKeysExamined=totalDocsExamined
+
+         "executionStages" : {
+             "stage" : "FETCH",   # 此类型比较重要，如下列出可能的类型：
+
+				stage的类型：
+					COLLSCAN：全表扫描
+					IXSCAN：索引扫描
+					FETCH：根据索引去检索指定document
+					SHARD_MERGE：将各个分片返回数据进行merge
+					SORT：表明在内存中进行了排序
+					LIMIT：使用limit限制返回数
+					SKIP：使用skip进行跳过
+					IDHACK：针对_id进行查询
+					SHARDING_FILTER：通过mongos对分片数据进行查询
+					COUNT：利用db.coll.explain().count()之类进行count运算
+					COUNTSCAN：count不使用Index进行count时的stage返回
+					COUNT_SCAN：count使用了Index进行count时的stage返回
+					SUBPLA：未使用到索引的$or查询的stage返回
+					TEXT：使用全文索引进行查询时候的stage返回
+					PROJECTION：限定返回字段时候stage的返回
+
+				对于普通查询，我希望看到stage的组合(查询的时候尽可能用上索引)：
+					Fetch+IDHACK
+					Fetch+ixscan
+					Limit+（Fetch+ixscan）
+					PROJECTION+ixscan
+					SHARDING_FITER+ixscan
+					COUNT_SCAN
+
+				如下的stage效率比较低下：
+					COLLSCAN(全表扫描),SORT(使用sort但是无index),不合理的SKIP,SUBPLA(未用到index的$or),COUNTSCAN(不使用index进行count)
+
+             "nReturned" : 1,
+             "executionTimeMillisEstimate" : 0,   #该query查询根据index去检索document获得1条数据的时间
+             "works" : 2,
+             "advanced" : 1,
+             "needTime" : 0,
+             "needYield" : 0,
+             "saveState" : 0,
+             "restoreState" : 0,
+             "isEOF" : 1,
+             "invalidates" : 0,
+             "docsExamined" : 1,
+             "alreadyHasObj" : 0,
+             "inputStage" : {
+                 "stage" : "IXSCAN",
+                 "nReturned" : 1,
+                 "executionTimeMillisEstimate" : 0,  #该查询扫描1行index所用时间
+                 "works" : 2,
+                 "advanced" : 1,
+                 "needTime" : 0,
+                 "needYield" : 0,
+                 "saveState" : 0,
+                 "restoreState" : 0,
+                 "isEOF" : 1,
+                 "invalidates" : 0,
+                 "keyPattern" : {
+                     "i" : 1
+                 },
+                 "indexName" : "i_1",
+                 "isMultiKey" : false,
+                 "isUnique" : false,
+                 "isSparse" : false,
+                 "isPartial" : false,
+                 "indexVersion" : 1,
+                 "direction" : "forward",
+                 "indexBounds" : {
+                     "i" : [
+                         "[9.0, 9.0]"
+                     ]
+                 },
+                 "keysExamined" : 1,
+                 "dupsTested" : 0,
+                 "dupsDropped" : 0,
+                 "seenInvalidated" : 0
+             }
+         }
+     },
+     "serverInfo" : {
+         "host" : "my1.ml.com",
+         "port" : 27017,
+         "version" : "3.2.13",
+         "gitVersion" : "23899209cad60aaafe114f6aea6cb83025ff51bc"
+     },
+     "ok" : 1
+	 }
+
+
+

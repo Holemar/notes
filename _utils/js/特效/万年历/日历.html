@@ -1,0 +1,149 @@
+﻿<html>
+<head>
+    <META http-equiv= 'Content-Type' content='text/html; charset=utf-8'/>
+    <title>当月的日历</title>
+</head>
+<body>
+    页面上的其它信息
+    <div id='showTime'></div>
+
+    <br/>日历的html：<br/>
+    <textarea style="width:90%" rows="20" id="params"></textarea>
+
+</body>
+</html>
+
+<script type="text/javascript" language="JavaScript">
+/**
+ * 生成日历
+ * @param elementId 日历要显示的对象id
+ * @param moveNum 月份偏移量(当月为0,上一月为-1,前两月为-2,下一月为1,后两月为2,其它依次类推)
+ */
+function showCalendar(elementId, moveNum) {
+    moveNum = moveNum || 0;
+    var now = new Date();  //取当前时间
+    if (moveNum != 0) { // 月份偏移
+        now.setUTCMonth(now.getUTCMonth() + moveNum);
+    }
+    var year = now.getFullYear();  //取“年”部分
+    var month = now.getMonth() + 1;  //取“月”部分,注意它是从0开始的
+    var monthName = month + '月';   // 将“月”的数值转换为描述
+    now = null;    //清除已经不需要的now变量
+    var firstDayInstance = new Date(year, month - 1, 1);    //构造本月一号的日期
+    var firstDay = firstDayInstance.getDay();    //取本月1日的“星期”值
+    firstDayInstance = null;  //清除已经不需要的firstDayInstance变量
+    //取本月的天数
+    var days = 31;
+    if (month == 2) { //二月(需判断闰年)
+        // （1）若某个年份能被4整除但不能被100整除，则是闰年。
+        // （2）若某个年份能被400整除，则也是闰年。
+        var leapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        days = leapYear ? 29 : 28;
+    }
+    // 四月,六月,九月,十一月: 30天
+    else if (month == 4 || month == 6 || month == 9 || month == 11) {
+        days = 30;
+    }
+    // 高亮的日期
+    var date = [];
+    for (var i = 0, len = showCalendar.highlight.length; i < len; i++) {
+        var temDate = new Date(showCalendar.highlight[i]);
+        // 如果列表在本月，则需要加入高亮
+        if (year == temDate.getFullYear() && month == temDate.getMonth() + 1) {
+            date.push(temDate.getDate());  //得到“日”部分
+        }
+    }
+    var text = showCalendar.draw(firstDay + 1, days, date, monthName, year, elementId, moveNum);  //开始绘制日历
+    document.getElementById(elementId).innerHTML = text;
+}
+
+// 需要高亮的日期列表
+showCalendar.highlight = [
+    '2013/1/19', '2013/2/1', '2013/2/5', '2013/2/12', '2013/2/20'
+];
+
+// 用表格绘制本月的日历。
+showCalendar.draw = function (firstDay, lastDate, date, monthName, year, elementId, moveNum) {
+    //以下变量控制日历外观
+    var headerHeight = 30;  //标题栏高度
+    var border = 1;  // 边框宽度
+    var cellspacing = 0;  //单元格间距
+    var headerColor = "000000";   //标题栏字体颜色
+    var headerSize = "+3";  //标题栏字体
+    var colWidth = 60;  //单元格宽度
+    var dayCellHeight = 25;  //“星期”单元格高度
+    var dayColor = "000000";  //“星期”字体颜色
+    var cellHeight = 40;  //“日”单元格高度
+    var todayColor = "red";   //“日”字体颜色
+    var timeColor = "purple";  //“当前时间”颜色
+    //以下开始构建日历表格主体
+    var text = '<CENTER>';
+    text += '<TABLE BORDER=' + border + ' CELLSPACING=' + cellspacing + '><tbody>';  //表格属性
+
+    //创建标题单元格(显示 年 和 月)
+    text += '<tr><TH COLSPAN="7" HEIGHT=' + headerHeight + '>';
+    text += '<A href="javascript:;" onclick="showCalendar(\'' + elementId + '\', ' + (moveNum - 1) + ')">&lt;&lt;</A>&nbsp;&nbsp;'; // 上一月
+    text += '<FONT COLOR="' + headerColor + '" SIZE=' + headerSize + '>';  //这定标题栏字体属性
+    text += year + '年 ' + monthName;
+    text += '</FONT>';
+    text += '<A href="javascript:;" onclick="showCalendar(\'' + elementId + '\', ' + (moveNum + 1) + ')">&gt;&gt;</A>&nbsp;&nbsp;'; // 下一月
+    text += '</TH></tr>';
+
+    // 这一行显示星期
+    var openCol = '<TD WIDTH=' + colWidth + ' HEIGHT=' + dayCellHeight + '>'; // 每格的开头
+    openCol += '<FONT COLOR="' + dayColor + '">';
+    var closeCol = '</FONT></TD>'; // 每格的结束
+    var weekDay = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+    text += '<TR ALIGN="center" VALIGN="center">';
+    for (var dayNum = 0; dayNum < 7; ++dayNum) {
+        text += openCol + weekDay[dayNum] + closeCol;
+    }
+    text += '</TR>';
+
+    // 以下是日期
+    var digit = 1;
+    var curCell = 1;
+    for (var row = 1, endRow = Math.ceil((lastDate + firstDay - 1) / 7); row <= endRow; ++row) {
+        text += '<TR ALIGN="center">';
+        for (var col = 1; col <= 7; ++col) {
+            // 结束日之后的框
+            if (digit > lastDate) {
+                text += '<TD>&nbsp;</TD>';
+                continue;
+            }
+            // 开始日之前的框
+            if (curCell < firstDay) {
+                text += '<TD>&nbsp;</TD>';
+                curCell++;
+            } else {
+                // 高亮的日期
+                var hasHighlight = false;
+                for (var i = 0, length = date.length; i < length; i++) {
+                    if (date[i] === digit) {
+                        text += '<TD HEIGHT=' + cellHeight + '>';
+                        text += '<FONT COLOR="' + todayColor + '">' + digit + '</FONT>';
+                        text += '</TD>';
+                        hasHighlight = true;break;
+                    }
+                }
+                // 普通的日期
+                if (!hasHighlight) {
+                    text += '<TD HEIGHT=' + cellHeight + '><A>' + digit + '</A></TD>';
+                }
+                digit++;
+            }
+        }
+        text += '</TR>';
+    }
+
+    text += '</tbody></TABLE>';
+    text += '</CENTER>';
+    return text; //返回要成的日历表格的代码
+}
+
+
+showCalendar('showTime');  //调用setCal，开始生成日历
+
+// 查看日历内容
+document.getElementById("params").value = document.getElementById("showTime").innerHTML;
+</SCRIPT>

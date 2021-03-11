@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+<title>Table Control</title>
+
+<style>
+#tab {
+    border:1px solid #aaa;
+    border-collapse:collapse;
+    width:80%;
+}
+#tab th{
+    border:1px solid #aaaaaa;
+    background:#ECE9D8;
+    border-collapse:collapse;
+    padding:5px;
+    text-align:left;
+}
+#tab td{
+    border:1px solid #d8d8d8;
+    border-collapse:collapse;
+    padding:5px;
+}
+.txt{
+   border:1px solid #888;
+background:#ECE9D8;
+}
+.checkBg{
+    border:1px solid #aaaaaa;
+    background:#ECE9D8;
+}
+.checkTxt{
+    border:1px solid #aaa;
+    background:##d8d8d8;
+}
+.button {
+   border:1px solid #888;margin:5px 0px;
+   width:80px;background:#ECE9D8;
+   height:22px;line-height:22px;
+}
+</style>
+
+<script language="javascript" type="text/javascript">
+<!--
+     function add(){
+        //insertRow(-1) 在行集合的末尾增加一行(即增加一个<tr>)，默认值“-1”
+        var otr = document.getElementById("tab").insertRow(-1);
+        var checkTd=document.createElement("td");
+        checkTd.innerHTML = '<input type="checkbox" class="check" onclick="ccolor()" name="checkItem">';
+        var otd1 = document.createElement("td");
+        otd1.innerHTML = '<input type="text" class="txt" name="infoName_txt" id="infoName_txt'+(document.getElementById('tab').rows.length-1)+'" maxlength="30" value=""/>';
+        var otd2 = document.createElement("td");
+        otd2.innerHTML = '<input type="text" class="txt" name="infoValue_txt" id="infoValue_txt'+(document.getElementById('tab').rows.length-1)+'" maxlength="30" value=""/>';
+
+        otr.appendChild(checkTd);
+        otr.appendChild(otd1);
+        otr.appendChild(otd2);
+     }
+
+     function ccolor()
+     {
+            var c1 = document.getElementsByName('checkItem');
+            for(var i=0; i<c1.length; i++)
+            if(c1[i].checked)
+            {
+                c1[i].parentNode.parentNode.className="checkBg";
+                c1[i].parentNode.nextSibling.firstChild.className="checkTxt";
+                c1[i].parentNode.nextSibling.nextSibling.firstChild.className="checkTxt";
+            }
+            else
+            {
+            	c1[i].parentNode.parentNode.className="";
+            	c1[i].parentNode.nextSibling.firstChild.className="";
+            	c1[i].parentNode.nextSibling.nextSibling.firstChild.className="";
+            }
+     }
+
+     function del(){
+        var c = document.getElementsByName('checkItem');
+        var idArray = new Array();
+        for(var i=0; i<c.length; i++)
+           if ( c[i].checked ) idArray.push(i);
+        var rowIndex;
+        for(var j=0;j< idArray.length;j++)
+        {
+          rowIndex = idArray[j]+1-j;
+          document.getElementById("tab").deleteRow(rowIndex);
+        }
+      }
+
+     function save(){
+           var postString = document.getElementById("postString");
+           var checkboxs = document.getElementsByName("checkItem");
+           var ttab = document.getElementsByName("infoName_txt");
+           var tt2 = document.getElementsByName("infoValue_txt");
+
+           var idArray = new Array();
+           for(i=0;i<checkboxs.length;i++)
+            {
+                idArray.push(ttab[i].value + "|" + tt2[i].value);
+            }
+
+           postString.value = idArray.join("-");
+           alert(postString.value);
+     }
+
+      //unknow that where use this method
+      function alldell()
+      {
+         var des =document.getElementsByName('checkItem');
+         for(var i=0;i<des.length;i++)
+         {
+            if(des[i].checked=document.getElementById('delall').checked){
+            des[i].parentNode.parentNode.className="checkBg";
+            des[i].parentNode.nextSibling.firstChild.className="checkTxt";
+            des[i].parentNode.nextSibling.nextSibling.firstChild.className="checkTxt";}
+            else{ des[i].parentNode.parentNode.className="";
+                des[i].parentNode.nextSibling.firstChild.className="";
+                des[i].parentNode.nextSibling.nextSibling.firstChild.className="";}
+         }
+      }
+-->
+</script>
+</head>
+
+<body>
+    <input name="addv_btn" id="addv_btn" type="button" class="button" onClick="add();" value="add" />
+    <input name="del_btn" id="del_btn" type="button" class="button" onClick="del();" value="del" />
+    <input name="save" id="save" type="button" class="button" onClick="save();" value="save" /><br>
+
+  <table id="tab" >
+  	  <tr>
+  	  	<th width="5%"> </th>
+  	  	<th width="40%">Name</th>
+  	  	<th width="55%">value</th>
+  	  </tr>
+  </table>
+
+  <p><input type="text" name="postString" id="postString"></p>
+</body>
+</html>

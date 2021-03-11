@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自定义滚动条</title>
+<style type="text/css">
+body,div,strong{padding:0;margin:0;}
+</style>
+<script type="text/javascript">
+window.onload=function()
+{
+    var oDiv=document.getElementById("div1");
+    var oPDiv=document.getElementById("pdiv");
+    var oTxt=document.getElementById("strong1");
+    var startX=startoDivLeft=0;
+    oDiv.onmousedown=function (e)
+    {
+        var e=e||window.event;
+        startX=e.clientX;
+        startoDivLeft=oDiv.offsetLeft;
+        if (oDiv.setCapture)
+        {
+            oDiv.onmousemove=doDarg;
+            oDiv.onmouseup=stopDarg;
+            oDiv.setCapture();
+        }
+        else
+        {
+            document.addEventListener("mousemove",doDarg,true);
+            document.addEventListener("mouseup",stopDarg,true);
+        }
+        function doDarg(e)
+        {
+            var e=e||window.event;
+            var l=e.clientX-startX+startoDivLeft;
+            if (l<0)  /* 防止超出滚动区域 */
+            {
+                l=0;
+            }
+            else if (l>oPDiv.offsetWidth-oDiv.offsetWidth)
+            {
+                l=oPDiv.offsetWidth-oDiv.offsetWidth;
+            }
+            oTxt.innerHTML=Math.ceil(l/(oPDiv.offsetWidth-oDiv.offsetWidth)*100)+"%";
+            oDiv.style.left=l+"px";
+        }
+        function stopDarg()
+        {
+            if (oDiv.releaseCapture)
+            {
+                oDiv.onmousemove=doDarg;
+                oDiv.onmouseup=stopDarg;
+                oDiv.releaseCapture();
+            }
+            else
+            {
+                document.removeEventListener("mousemove",doDarg,true);
+                document.removeEventListener("mouseup",stopDarg,true);
+            }
+            oDiv.onmousemove=null;
+            oDiv.onmouseup=null;
+        }
+    }
+}
+</script>
+</head>
+<body style="background:#000;">
+<div id="pdiv" style="width:800px;height:50px;background:#fff;margin:100px auto;position:relative;text-align:center;line-height:50px;">
+    <strong id="strong1">0%</strong>
+    <div id="div1" style="overflow:hidden;width:50px;height:50px;background:red;cursor:move;position:absolute;left:0;top:0;opacity:0.5;filter:alpha(opacity:50);"></div>
+</div>
+</body>
+</html>

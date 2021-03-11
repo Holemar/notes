@@ -1,0 +1,56 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
+<!-- 交流QQ群:26651479 -->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>增删节点测试</title>
+    <script language="javascript">
+    <!--
+        var i=0;
+        // js 增加节点
+        function insertStr ()
+        {
+            i++;
+            //alert("i="+i);
+            //var valued=document.getElementsByTagName("tag1")[0].value;
+            var valued=document.getElementById("text1").value;
+            var td = document.createElement("td");
+            var tr = document.createElement("tr");
+            var tbody = document.createElement("tbody");
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            var parNode = document.getElementById("table1");
+            parNode.appendChild(tbody);
+            tbody.setAttribute("name","tbody"+i);
+            tbody.setAttribute("id","tbody"+i);
+            // td.innerHTML="<input type='text' name='Tag"+i+"' id='Tag"+i+"' value='Tag"+i+valued+"'><input type='button' value='Delete' name='Delete"+i+"' id='Delete"+i+"'onClick='javascript:DeleteNode("+i+")'>";
+            td.innerHTML="<input type='text' name='Tag"+i+"' id='Tag"+i+"' value="+valued
+                + " readonly ><input type='button' value='删除' name='Delete"+i+"' id='Delete"+i
+                + "'onClick='javascript:DeleteNode("+i+")' >";
+            //记录下总的节点数
+            document.form1.total.value=i;
+        }
+
+        //JS 删除节点
+        function DeleteNode ( j )
+        {
+            var trnode=document.getElementById("tbody"+j);
+            trnode.parentNode.removeChild(trnode);
+        }
+    -->
+    </script>
+ </head>
+
+ <body>
+ <center>
+   <form name="form1" method="post" action="">
+     <input name="text1" type="text" id="text1" value="Tag1" />
+     <input name="insert" type="button" id="insert" value="增加" onClick="insertStr()" />
+     <input type="hidden" name="total" id="total" />
+   </form>
+
+   <table width="400" border="0" cellspacing="0" cellpadding="0" id="table1"> </table>
+ </center>
+ </body>
+</html>
