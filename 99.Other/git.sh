@@ -352,10 +352,10 @@
             配置一个Host，Host要取一个别名，Host主要配置HostName和IdentityFile两个属性即可
             Host的名字可以取为自己喜欢的名字，不过这个会影响git相关命令，
                 例如：Host mygithub 这样定义的话，命令如下，即git@后面紧跟的名字改为mygithub，例如：git clone git@mygithub:xxx/****.git
-            HostName 　　　　　　　   这个是真实的域名地址
-            IdentityFile 　　　　　　　  这里是id_rsa的地址
-            PreferredAuthentications    配置登录时用什么权限认证--可设为publickey,password publickey,keyboard-interactive等
-            User 　　　　　　　　　　   配置使用用户名
+            HostName 　　　　　　　  这个是真实的域名地址
+            IdentityFile 　　　　　　　 这里是id_rsa的地址
+            PreferredAuthentications  配置登录时用什么权限认证--可设为publickey,password publickey,keyboard-interactive等
+            User 　　　　　　　　　　  配置使用用户名
 
             配置如下：
                 Host mygithub  # 用 mygithub 代替 github.com
@@ -363,6 +363,14 @@
                     IdentityFile /data/program/id_rsa
                     PreferredAuthentications publickey
                     User holemar
+
+       5) 验证你的 GitHub 连接
+
+           ssh -T git@github.com
+
+          显示出下列信息表示连接成功
+             Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+
 
 四、Git Server
     建立一个 Git 代码共享仓库服务器。
@@ -584,7 +592,11 @@
 
         密钥类型可以用 -t 选项指定。如果没有指定则默认生成用于SSH-2的RSA密钥。这里使用的是rsa。
         同时在密钥中有一个注释字段，用-C来指定所指定的注释，可以方便用户标识这个密钥，指出密钥的用途或其他有用的信息。所以在这里输入自己的邮箱或者其他都行。
-        输入完毕后程序同时要求输入一个密语字符串(passphrase)，空表示没有密语。接着会让输入2次口令(password)，空表示没有口令。3次回车即可完成当前步骤，此时[c盘/用户/自己的用户名/.ssh]目录下已经生成好了。
+        输入完毕后程序同时要求输入一个密语字符串(passphrase)，空表示没有密语。接着会让输入2次口令(password)，空表示没有口令。
+        3次回车即可完成当前步骤，此时[c盘/用户/自己的用户名/.ssh]目录下已经生成好了。
+
+        创建时，如果输入了密码，后续每次使用都需要输入密码。如果不想每次都输入，可以使用命令(每次重启都只需要输入一次):
+          ssh-add ~/.ssh/id_rsa
 
         然后，登录github。打开setting->SSH keys，点击“New SSH key”，把生成好的公钥 id_rsa.pub 放进 key输入框中，再为当前的key起一个 title 来区分每个key。
 
@@ -604,16 +616,16 @@
         1. git remote add upstream git@github.com:coreos/etcd.git
         # 本地添加远程主分支，叫upstream。可以先 git remote -v 查看是否已添加远程分支，若已添加，该步骤略过。
 
-        2. git fetch upstream  # 获取主分支的最新修改到本地；
+        2. git fetch upstream #获取主分支的最新修改到本地；
            # git remote update upstream
            # git rebase upstream/master
 
-        3. git merge upstream/master  # 将 upstream 分支修改内容 merge 到本地个人分支；
-            # 该步骤或者可以分成2步：
-            1) git checkout master；  # checkout 到 master 分支
-            2) git merge upstream；   # 合并主分支修改到本地master分支；
+        3. git merge upstream/master # 将 upstream 分支修改内容 merge 到本地个人分支；
+            #该步骤或者可以分成2步：
+            1) gitcheckoutmaster； #checkout 到 master 分支
+            2) gitmergeupstream；  # 合并主分支修改到本地master分支；
 
-        4. git push  # 将本地修改提交到github上的个人分支
+        4. git push  # 将本地修改提交到github上的个人分支
 
     至此，主分支修改的代码完全同步到fork出来的个人分支上，后续在个人分支上修改提交pr时就不会冲突。
 
