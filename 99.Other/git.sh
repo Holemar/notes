@@ -8,7 +8,7 @@
     参考文档：http://progit.org/book/zh/
 
     真实常用操作:
-        0. git clone ssh://git@git.dianmi365.com:18122/chenyuan/dianmi.python.core.git
+        0. git clone ssh://git@git.xxx.com:18122/holemar/program_name.git
         1. git checkout develop  # 切换到此分支
         #2. git pull origin master # 把主分支的代码 pull 下来，且合并到此分支
         2. git pull origin develop # 把 develop 分支的代码 pull 下来
@@ -326,9 +326,9 @@
     8. 每次提交时，不用输入用户名和密码
 
        1) 增加远程地址的时候带上密码(推荐)
-            http://yourname:password@git.oschina.net/name/project.git
-            git clone http://yourname:password@git.oschina.net/name/project.git
-            区别于存有密码时的: git clone git@git.oschina.net:name/project.git
+            http://yourname:password@git.xxxx.com/name/project.git
+            git clone http://yourname:password@git.xxxx.com/name/project.git
+            区别于存有密码时的: git clone git@git.xxxx.com:name/project.git
 
             补充：使用客户端也可以存储密码的。
 
@@ -597,6 +597,7 @@
 
         创建时，如果输入了密码，后续每次使用都需要输入密码。如果不想每次都输入，可以使用命令(每次重启都只需要输入一次):
           ssh-add ~/.ssh/id_rsa
+          ssh-add -K ~/.ssh/id_rsa
 
         然后，登录github。打开setting->SSH keys，点击“New SSH key”，把生成好的公钥 id_rsa.pub 放进 key输入框中，再为当前的key起一个 title 来区分每个key。
 

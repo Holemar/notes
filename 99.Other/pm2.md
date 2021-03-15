@@ -116,6 +116,7 @@
         max_memory_restart: '1G',
         error_file: "./logs/worker.error.log", # 错误日志路径
         out_file: "./logs/worker.out.log", # 普通日志路径
+        env: sharedEnv # 环境参数
       }, {
         "name"        : "fis-receiver",  # 应用名称
         "script"      : "./bin/www",  # 实际启动脚本
@@ -129,9 +130,7 @@
         "out_file" : "./logs/app-out.log",
         "instances" : "max",   # 启用多少个实例，可用于负载均衡。如果配置 0 或者 max，则根据当前机器核数确定实例数目。配置 -1 表示当前机器核数 -1。
         "exec_mode" : "cluster" #  可选：fork(服务器单核推荐) cluster(多核推荐)
-        "env": { # 环境参数
-          "NODE_ENV": "production"
-        }
+        "env": sharedEnv # 环境参数
       }]
     };
 
@@ -154,8 +153,8 @@
     ```json
     {
         "env": { "NODE_ENV": "production", "REMOTE_ADDR": "http://www.example.com/" },
-        ​"env_dev": { "NODE_ENV": "development", "REMOTE_ADDR": "http://wdev.example.com/" },
-        ​"env_test": { "NODE_ENV": "test", "REMOTE_ADDR": "http://wtest.example.com/" }
+        "env_dev": { "NODE_ENV": "development", "REMOTE_ADDR": "http://wdev.example.com/" },
+        "env_test": { "NODE_ENV": "test", "REMOTE_ADDR": "http://wtest.example.com/" }
     }
     ```
     启动指明环境变量:
