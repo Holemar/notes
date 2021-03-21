@@ -38,23 +38,19 @@ def to_text(sour):
     :return {string}:转换后的字符串
     @example to_text("&nbsp;") 返回: " "
     """
-    # 以下逐一转换
-    # 先转换百分号
-    sour = sour.replace("&#37;", "%")
-    # 小于号,有三种写法
-    sour = sour.replace("&lt;", "<").replace("&LT;", "<").replace("&#60;", "<")
-    # 大于号,有三种写法
-    sour = sour.replace("&gt;", ">").replace("&GT;", ">").replace("&#62;", ">")
-    # 单引号
-    sour = sour.replace("&#39;", "'").replace("&#43;", "+")
-    # 换行符换行: <br/> ==> 换行符
-    sour = re.sub(r'\n?<[Bb][Rr]\s*/?>\n?', '\n', sour)
-    # 双引号号,有三种写法
-    sour = sour.replace("&quot;", '"').replace("&QUOT;", '"').replace("&#34;", '"')
-    # 空格,只有两种写法, &NBSP; 浏览器不承认
-    sour = sour.replace("&nbsp;", " ").replace("&#160;", " ")
-    # & 符号,最后才转换
-    sour = sour.replace("&amp;", "&").replace("&AMP;", "&").replace("&#38;", "&")
+    sour = sour.replace("&#37;", "%")  # 先转换百分号
+    sour = sour.replace("&lt;", "<").replace("&LT;", "<").replace("&#60;", "<")  # 小于号
+    sour = sour.replace("&gt;", ">").replace("&GT;", ">").replace("&#62;", ">")  # 大于号
+    sour = sour.replace("&#39;", "'").replace("&#43;", "+")  # 单引号
+    sour = re.sub(r'\n?<[Bb][Rr]\s*/?>\n?', '\r\n', sour)  # 转换换行符号
+    sour = sour.replace("&quot;", '"').replace("&QUOT;", '"').replace("&#34;", '"')  # 双引号号
+    sour = sour.replace("&nbsp;", " ").replace("&#160;", " ")  # 空格,只有两种写法, &NBSP; 浏览器不承认
+    sour = sour.replace("&amp;", "&").replace("&AMP;", "&").replace("&#38;", "&")  # & 符号,最后才转换
+    # 音标转换
+    sour = sour.replace("&#601;", "ə")
+    sour = sour.replace("&hellip;", "…")
+    sour = sour.replace("&rsquo;", "’")
+    sour = sour.replace("&lsquo;", "‘")
     return sour
 
 

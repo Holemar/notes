@@ -54,8 +54,10 @@ def send(url, param=None, method='GET', timeout=HTTP_TIME_OUT, ensure_ascii=True
     # get 方式的参数处理, 参数拼接
     if method == 'GET' and param:
         url += "&" if "?" in url else "?"
-        param = parse.urlencode(param) if isinstance(param, dict) else param
-        param = param.decode() if isinstance(param, (bytes, bytearray)) else param
+        if isinstance(param, dict):
+            param = {k: (v if isinstance(v, str) else json.dumps(v)) for k, v in param.items()}
+            param = parse.urlencode(param)
+        param = param.decode() if isinstance(param, (bytes, bytearray)) else str(param)
         url += param
         param = None
     # 请求参数
