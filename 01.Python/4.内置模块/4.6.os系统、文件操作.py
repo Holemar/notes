@@ -106,7 +106,7 @@ os 模块
         22.判断是否是目录: os.path.isdir(r"c:\python") --> True
         23.判断是否是文件: os.path.isfile(r"c:\python\hello.py") --> True
         24.判断是否是链接文件: os.path.islink(r"c:\python\hello.py") --> False
-        25.获取文件大小: os.path.getsize(filename)
+        25.获取文件大小: os.path.getsize(filename) --> 1024 # 返回文件的字节数
         26.*******: os.ismount("c:\\") --> True
         27.搜索目录下的所有文件: os.path.walk()
         28.文件的访问时间 :  os.path.getatime(myfile) # 这里的时间以秒为单位，并且从1970年1月1日开始算起
