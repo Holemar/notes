@@ -201,6 +201,7 @@ pymongo 提供原生的 MongoDB 操作
     db.集合名.update({"classifyid":"test1"}, {"$set":{"keyword.0.name":'test5'}})
     # 子表的查询
     db.集合名.find({"classifyid":"test1", "keyword.0.name":"test2"})
+    db.集合名.find({"classifyid":"test1", "keyword.name":"test2"})  # 忽略具体第几行时的写法
 
   9. 分批读取数据 batch_size
 	# 一次读取太多内容，会导致超时报错。可以分多次读取。

@@ -184,6 +184,7 @@ mongo 是 MongoDB 自带的交互式 Javascript shell，用来对 Mongod 进行�
     db.集合名.update({"classifyid":"test1"}, {"$set":{"keyword.0.name":'test5'}})
     // 子表的查询
     db.集合名.find({"classifyid":"test1", "keyword.0.name":"test2"})
+    db.集合名.find({"classifyid":"test1", "keyword.name":"test2"})  // 忽略具体第几行的写法
 
 
 
