@@ -315,6 +315,8 @@ mongoexport 备份
     生成 json 文件，可以直接阅读，但空间占用会比 mongodump 大几倍
     mongoexport --uri "mongodb://data_190403:E53pm73930d5QeQ@10.0.0.16:27017/spider?authSource=admin" --collection spider_jobs -v --out ~/desktop/spider_jobs.json
     mongoexport --uri "mongodb://data_190403:E53pm73930d5QeQ@10.0.0.16:27017/spider?authSource=admin" --collection spider_resume_test -v --out ./spider_resume.json
+    # 密码里面有特殊字符，需要 URL 转码，原密码："Mp#MB34543des@2020!"。 "-c" 参数跟 "--collection" 一样。 "-f"参数是字段。"-q"参数是查询条件。"-o"参数跟"--out"是输出文件。
+    mongoexport --uri 'mongodb://root:Mp%23MB34543des%402020!@127.0.0.1:3717/btp?authSource=admin' -c resume -f "_id,oss" -q '{"channel":"system.manpower.file"}' --csv -o resume.csv
 
 mongoimport 导入
     导入json格式文件，一般是由 mongoexport 生成的内容
