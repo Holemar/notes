@@ -65,7 +65,7 @@
         配置文件里有一行是
             daemonize no
         这是守护进程的开关，改为 yes
-            deamonize yes
+            daemonize yes
 
 
 二、 数据类型
