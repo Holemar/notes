@@ -7,6 +7,7 @@ url编码操作
     print(urllib.quote(s)) # url 转码,打印如: %E6%9D%AD%E5%B7%9E
     print(urllib.unquote('%E6%9D%AD%E5%B7%9E')) # url 解码,打印如: 杭州
     print(urllib.unquote('%BA%BC%D6%DD')) # 输入的是gbk编码,解码方式不变,打印如: 杭州
+    # py3 时： from urllib import parse; parse.unquote('xxx')
 
     # 按所用的编码来转码
     print(urllib.quote(s.decode(sys.stdin.encoding).encode('utf8'))) # 打印如: %E6%9D%AD%E5%B7%9E
