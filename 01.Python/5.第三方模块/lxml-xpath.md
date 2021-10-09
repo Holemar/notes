@@ -75,6 +75,7 @@ print(result.decode('utf-8'))  # etree会修复HTML文本节点,打印如下：
 # （3）获取所有节点
 # 如要获取li节点，可以使用//后面加上节点名称，然后调用xpath()方法
 print(html.xpath('//li'))  # 打印: [<Element li at 0x104b32c8>, <Element li at 0x10473308>, <Element li at 0x104b33c8>]
+print(html.xpath('//span'))  # 取不到的节点返回空数组，不报错。打印: []
 
 # （4）获取子节点
 # 通过/或者//即可查找元素的子节点或者子孙节点，下面选择所有li节点的所有直接a节点
