@@ -1038,8 +1038,8 @@ db.集合名.find({'data_id':{$in:[25,35,45]}})  // SELECT * FROM test WHERE dat
 db.集合名.find().sort({'data_id':-1})  // SELECT * FROM test ORDER BY data_id DESC
 db.集合名.distinct('name',{'data_id':{$lt:20}})  // SELECT DISTINCT(name) FROM test WHERE data_id<20
 db.集合名.group({key:{'name':true},cond:{'name':'foo'},reduce:function(obj,prev){prev.msum+=obj.marks;},initial:{msum:0}})  // SELECT name,SUM(marks) FROM test GROUP BY name
-db.集合名.find('this.data_id<20',{name:1})  // SELECT name FROM test WHERE data_id<20
-db.集合名.insert({'name':'foobar','age':25})  // INSERT INTO test ('name','age') VALUES('foobar',25)
+db.集合名.find("this.data_id<20", {name:1})  // SELECT name FROM test WHERE data_id<20
+db.集合名.insert({"name": 'foobar','age':25})  // INSERT INTO test ('name','age') VALUES('foobar',25)
 db.集合名.remove({})  // DELETE * FROM test
 db.集合名.remove({'age':20})  // DELETE test WHERE age=20
 db.集合名.remove({'age':{$lt:20}})  // SELETE test WHERE age<20
@@ -1049,6 +1049,24 @@ db.集合名.remove({'age':{$gte:20}})  // DELETE test WHERE age>=20
 db.集合名.remove({'age':{$ne:20}})  // DELETE test WHERE age!=20
 db.集合名.update({'name':'foobar'},{$set:{'age':36}})  // UPDATE test SET age=36 WHERE name='foobar'
 db.集合名.update({'name':'foobar'},{$inc:{'age':3}})  // UPDATE test SET age=age+3 WHERE NAME='foobar'
+
+
+// distinct 单字段去重
+db.getCollection("表名").distinct("字段名");  // 无条件去重
+db.getCollection("表名").distinct('字段名',{筛选条件})  // 有条件去重
+db.getCollection("表名").distinct("字段名.内嵌字段名")  // 对嵌入字段去重
+db.getCollection("表名").distinct("字段名").length;  // 获取去重后result的长度
+db.getCollection("表名").distinct('字段名',{筛选条件}, {  // options 选项: https://docs.mongodb.com/manual/reference/collation/
+  collation: {
+     locale: <string>,
+     caseLevel: <boolean>,
+     caseFirst: <string>,
+     strength: <int>,
+     numericOrdering: <boolean>,
+     alternate: <string>,
+     maxVariable: <string>,
+     backwards: <boolean>
+  }})
 
 /***************************************************************************/
 时间检索
