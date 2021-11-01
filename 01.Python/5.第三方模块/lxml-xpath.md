@@ -175,3 +175,18 @@ print(e.getroottree())  # 打印: <lxml.etree._ElementTree object at 0x103db3408
 - 上例（13）使用了 轴， [参考 xpath 的轴](../../03.Web/xpath/3.轴.md)
 
 
+# xml 的读取
+```python
+from lxml import etree
+
+text = b'''<?xml version="1.0" encoding="UTF-8"?>
+<xmlroot>
+    <message>
+        <![CDATA[ctmid=5475604&hruid=15041931&tokenid=fd959249-a9e8-4a0f-9ea3-e4b1ce37]]>
+    </message>
+    <showmessagebox>false</showmessagebox>
+</xmlroot>'''
+xml = etree.XML(text)  # 初始化生成一个XPath解析对象
+print(xml.xpath('/xmlroot/message/text()')[0].strip())
+# 打印: ctmid=5475604&hruid=15041931&tokenid=fd959249-a9e8-4a0f-9ea3-e4b1ce37
+```
