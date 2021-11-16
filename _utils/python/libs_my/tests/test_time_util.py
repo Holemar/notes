@@ -245,6 +245,8 @@ class TimeUtilTest(unittest.TestCase):
         self.assertEqual(add(test_time, seconds=1), datetime(2014, 10, 16, 0, 0, 1))  # 加 1 秒
         self.assertEqual(add(test_time, seconds=-1), datetime(2014, 10, 15, 23, 59, 59))  # 减 1 秒
         # 特殊日期(闰月)
+        self.assertEqual(add(datetime(2001, 1, 31), months=1), datetime(2001, 2, 28))
+        self.assertEqual(add(datetime(2000, 1, 31), months=1), datetime(2000, 2, 29))
         self.assertEqual(add(datetime(2000, 2, 1), months=1), datetime(2000, 3, 1))
         self.assertEqual(add(datetime(2000, 2, 1), months=1, days=-1), datetime(2000, 2, 29))
         self.assertEqual(add(datetime(1999, 2, 1), years=1, months=1), datetime(2000, 3, 1))
