@@ -44,6 +44,7 @@ def to_text(sour):
     sour = sour.replace("&#39;", "'").replace("&#43;", "+")  # 单引号
     sour = re.sub(r'\n?<[Bb][Rr]\s*/?>\n?', '\r\n', sour)  # 转换换行符号
     sour = sour.replace("&quot;", '"').replace("&QUOT;", '"').replace("&#34;", '"')  # 双引号号
+    sour = sour.replace("&ldquo;", '“').replace("&rdquo;", '”')  # 左右双引号号, 大写的浏览器不承认
     sour = sour.replace("&nbsp;", " ").replace("&#160;", " ")  # 空格,只有两种写法, &NBSP; 浏览器不承认
     sour = sour.replace("&amp;", "&").replace("&AMP;", "&").replace("&#38;", "&")  # & 符号,最后才转换
     # 音标转换
