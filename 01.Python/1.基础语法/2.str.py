@@ -499,4 +499,13 @@ str, unicode 对象的 encode 和 decode 方法
     print(user_input.translate(character_map))  # This string has some whitespaces...
 
 
+ASCII码与字符相互转换
+    # 字符 转 ASCII码
+    c = 'a'
+    print(c + " 的ASCII 码为", ord(c))  # a 的ASCII 码为 97
+
+    # ASCII码 转 字符
+    a = 101
+    print(a, " 对应的字符为", chr(a))  # 101 对应的字符为 e
+
 
