@@ -84,14 +84,14 @@ callable 函数的用法:
         dump(b.method) # 打印: <bound method B.method of <__main__.B instance at 0x01C2F0F8>> is callable
 
 		
-inspect 模块
+inspect 模块
 	对类，模块的操作，成员，类，模块类型的判断
 	获取源码
 	获取类或函数的参数信息
 	解析堆栈
 
 	inspect.getmembers(object[, predicate])
-	其实现了提取某个对象 object 中的所有成员，以（name,value）对组成的列表返回。
+	其实现了提取某个对象 object 中的所有成员，以（name,value）对组成的列表返回。
 	其中第二个参数通常可以根据需要调用如下16个方法：
 
 	inspect.ismodule(object)： 是否为模块
@@ -107,7 +107,7 @@ inspect 模块
 	inspect.isroutine(object)：是否为用户自定义或者built-in函数或方法
 	inspect.isabstract(object)：是否为抽象基类
 	inspect.ismethoddescriptor(object)：是否为方法标识符
-	inspect.isdatadescriptor(object)：是否为数字标识符，数字标识符有__get__ 和__set__属性； 通常也有__name__和__doc__属性
+	inspect.isdatadescriptor(object)：是否为数字标识符，数字标识符有 __get__ 和__set__属性； 通常也有 __name__ 和 __doc__ 属性
 	inspect.isgetsetdescriptor(object)：是否为getset descriptor
 	inspect.ismemberdescriptor(object)：是否为member descriptor
 
