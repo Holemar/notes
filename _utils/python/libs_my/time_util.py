@@ -3,7 +3,7 @@
 """
 公用函数(时间处理)
 Created on 2014/10/16
-Updated on 2021/1/26
+Updated on 2022/02/21
 @author: Holemar
 """
 import re
@@ -14,7 +14,8 @@ import logging
 
 __all__ = ('add', 'sub', 'to_string', 'to_time', 'to_datetime', 'to_date', 'to_timestamp', 'to_datetime_time',
            'datetime_time_to_str', 'is_dst', 'add_datetime_time', 'sub_datetime_time', 'get_datetime', 'get_week_range',
-           'get_month_range', 'get_month_list', 'get_time_string', 'calculate_age', 'utc_2_local', 'local_2_utc')
+           'get_month_range', 'get_month_list', 'get_time_string', 'calculate_age', 'utc_2_local', 'local_2_utc',
+           'spend_time')
 
 DEFAULT_FORMAT = '%Y-%m-%d %H:%M:%S'  # 默认时间格式
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'  # 默认日期格式
@@ -669,3 +670,35 @@ def local_2_utc(local_value):
     if local_value is None:
         return None
     return datetime.datetime.utcfromtimestamp(local_value.timestamp())
+
+
+def spend_time(second):
+    """
+    显示花费了多少时间
+    :param {int} second: 所花费的时间(秒)
+    :return {str}: 方便人看的时间(天、时、秒)
+    """
+    minute_second = 60
+    hour_second = 60 * 60
+    day_second = 24 * hour_second
+    left_seconds = second
+    show = []
+    # 花了多少天
+    use_days = left_seconds // day_second
+    if use_days:
+        show.append(str(use_days) + '天')
+        left_seconds = left_seconds % day_second
+    # 花了多少小时
+    use_hours = left_seconds // hour_second
+    if use_hours:
+        show.append(str(use_hours) + '小时')
+        left_seconds = left_seconds % hour_second
+    # 花了多少分钟
+    use_minutes = left_seconds // minute_second
+    if use_minutes:
+        show.append(str(use_minutes) + '分钟')
+        left_seconds = left_seconds % minute_second
+    # 剩下多少秒(去掉分钟、小时、天之后的)
+    if left_seconds:
+        show.append(str(left_seconds) + '秒')
+    return ''.join(show)

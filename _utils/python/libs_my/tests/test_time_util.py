@@ -3,7 +3,7 @@
 """
 公用函数 time_util.py 的测试
 Created on 2014/10/16
-Updated on 2019/8/30
+Updated on 2022/02/21
 @author: Holemar
 """
 import time
@@ -521,6 +521,17 @@ class TimeUtilTest(unittest.TestCase):
         local_now = now()
         self.assertNotEqual(local_now, utc_now)
         self.assertEqual(local_2_utc(local_now), utc_now)
+
+    # spend_time 测试
+    def test_spend_time(self):
+        self.assertEqual(spend_time(0), '')
+        self.assertEqual(spend_time(10), '10秒')
+        self.assertEqual(spend_time(60), '1分钟')
+        self.assertEqual(spend_time(1000), '16分钟40秒')
+        self.assertEqual(spend_time(3600), '1小时')
+        self.assertEqual(spend_time(10000), '2小时46分钟40秒')
+        self.assertEqual(spend_time(24*60*60), '1天')
+        self.assertEqual(spend_time(100000), '1天3小时46分钟40秒')
 
 
 if __name__ == "__main__":
