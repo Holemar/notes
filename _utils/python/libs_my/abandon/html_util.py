@@ -3,10 +3,11 @@
 """
 公用函数(html字符串处理)
 Created on 2015/1/19
-Updated on 2020/9/21
+Updated on 2021/3/11
 @author: Holemar
 """
 import re
+import html
 
 __all__ = ('to_html', 'to_text', 'remove_html', 'is_html_file', 'change_utf8_meta')
 
@@ -18,15 +19,11 @@ def to_html(sour):
     :return {string}: 转换后的字符串
     @example to_html(" ") 返回: &nbsp;
     """
-    # 以下逐一转换
-    sour = sour.replace("&", "&amp;")
-    sour = sour.replace("%", "&#37;")
-    sour = sour.replace("<", "&lt;")
-    sour = sour.replace(">", "&gt;")
+    sour = html.escape(sour)  # & 符号
     sour = sour.replace("\n", "\n<br/>")
-    sour = sour.replace('"', "&quot;")
+    # 强转下面不会 escape 的符号
     sour = sour.replace(" ", "&nbsp;")
-    sour = sour.replace("'", "&#39;")
+    sour = sour.replace("%", "&#37;")
     sour = sour.replace("+", "&#43;")
     return sour
 
@@ -38,20 +35,8 @@ def to_text(sour):
     :return {string}:转换后的字符串
     @example to_text("&nbsp;") 返回: " "
     """
-    sour = sour.replace("&#37;", "%")  # 先转换百分号
-    sour = sour.replace("&lt;", "<").replace("&LT;", "<").replace("&#60;", "<")  # 小于号
-    sour = sour.replace("&gt;", ">").replace("&GT;", ">").replace("&#62;", ">")  # 大于号
-    sour = sour.replace("&#39;", "'").replace("&#43;", "+")  # 单引号
+    sour = html.unescape(sour)  # & 符号
     sour = re.sub(r'\n?<[Bb][Rr]\s*/?>\n?', '\r\n', sour)  # 转换换行符号
-    sour = sour.replace("&quot;", '"').replace("&QUOT;", '"').replace("&#34;", '"')  # 双引号号
-    sour = sour.replace("&ldquo;", '“').replace("&rdquo;", '”')  # 左右双引号号, 大写的浏览器不承认
-    sour = sour.replace("&nbsp;", " ").replace("&#160;", " ")  # 空格,只有两种写法, &NBSP; 浏览器不承认
-    sour = sour.replace("&amp;", "&").replace("&AMP;", "&").replace("&#38;", "&")  # & 符号,最后才转换
-    # 音标转换
-    sour = sour.replace("&#601;", "ə")
-    sour = sour.replace("&hellip;", "…")
-    sour = sour.replace("&rsquo;", "’")
-    sour = sour.replace("&lsquo;", "‘")
     return sour
 
 
@@ -81,18 +66,24 @@ def remove_html(text):
 def is_html_file(file_io):
     """判断文件是否html内容"""
     content = str(file_io).lower()
-    value = '<html ' in content or '<html>' in content or '<div ' in content or '<div>' in content
+    value = '<html ' in content or '</html>' in content \
+            or '<div ' in content or '</div>' in content \
+            or '<meta ' in content or '<a ' in content
     return value
 
 
-def change_utf8_meta(html):
+def change_utf8_meta(content):
     """将HTML页面里的 <meta>标签指定编码改成 utf-8 编码"""
-    if not html:
-        return html
-    if not is_html_file(html):
-        return html
+    if not content:
+        return content
+    if not is_html_file(content):
+        return content
     after_meta = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'
     for code in ('gb2312', 'gbk', 'big5', 'gb18030'):
-        s = '<meta +(http-equiv=[\'"]?Content-Type[\'"]?)? *content=[\'"]text/html; *charset=' + code + '[\'"]/?>'
-        html = re.sub(s, after_meta, html, flags=re.M + re.I)
-    return html
+        s = '<meta +(http-equiv=[\'"]?Content-Type[\'"]?)? *content=[\'"]text/html; *charset=' + code + '[\'"] */?>'
+        if re.search(s, content):
+            content = re.sub(s, after_meta, content, flags=re.M + re.I)
+            break
+    # else:
+    #     content = content + after_meta
+    return content

@@ -3,7 +3,7 @@
 """
 公用函数(字符串处理) html_util.py 的测试
 Created on 2015/1/19
-Updated on 2019/1/18
+Updated on 2021/3/11
 @author: Holemar
 """
 import logging
@@ -17,8 +17,10 @@ class TestXhtml(unittest.TestCase):
     # html 测试
     def test_html(self):
         logging.info(u'测试 html_util')
-        self.assertEqual(html_util.to_html("  "), '&nbsp;&nbsp;')
-        self.assertEqual(html_util.to_text('&nbsp;xx&nbsp;'), " xx ")
+        self.assertEqual(html_util.to_html("  &%<>\n\r\n"), '&nbsp;&nbsp;&amp;&#37;&lt;&gt;\n<br/>\r\n<br/>')
+        self.assertEqual(html_util.to_html("""'"+"""), '&#x27;&quot;&#43;')
+        self.assertEqual(html_util.to_text('&nbsp;xx&nbsp;&#37;&LT;a&#60;&gt;&#39;&#43;&#160;'), " xx %<a<>'+ ")
+        self.assertEqual(html_util.to_text('&AMP;1&#38;&#601;&hellip;&rsquo;&lsquo;<br/><br>'), "&1&ə…’‘\r\n\r\n")
         self.assertEqual(html_util.remove_html("x<div>haha</div>x"), "xhahax")
         self.assertEqual(html_util.remove_html("""x<div>haha</div>x<!--点点滴滴-->啊啊
         <style>body {margin: 0;}</style>
@@ -28,17 +30,23 @@ class TestXhtml(unittest.TestCase):
 
     def test_change_utf8_meta(self):
         logging.info(u'测试 编码转换')
-        html = "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=gb2312\">\r\n<meta content=\"text/html; charset=gbk\">\r\n<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">\r\n</head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"
-        html2 = "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">\r\n</head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"
+        html = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=gb2312\">你好：<br>阳江招聘网【YJRC.NET】求职用户发给贵公司的求职简历<br><b>应聘职位：行政专员/助理</b><br><b>姓名：黄永清</b><br><b>联系电话：13168189036/13168189036</b><br><b>以下是本人工作经历：</b><br>2010年7月--2012年3月中山欧普照明，从事订单管理和客服！\r\n2012年4月--2014年1月广州聚晶能源科技有限公司，先后从事销售助理兼总经理助理，华南区域销售代表！\r\n2016年7月--2019年1月金维纳硅藻泥担任店长工作。\r\n2019年9月--2020年4月爱婴岛儿童百货担任店长。<br><br>如果邮件不支持Html方式查看，请点击<a href=\"http://www.yjrc.net/person/person_html.aspx?pid=101539\">查看个人简历</a> http://www.yjrc.net/person/person_html.aspx?pid=101539<br> 阳江招聘网http://www.yjrc.net<br>（注：这是由系统自动发出的邮件，请不要直接回复！）<br><a href=\"http://yjrc.net/info/contact.aspx\">邮件退订</a>\r\n\r\n"
+        html2 = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>你好：<br>阳江招聘网【YJRC.NET】求职用户发给贵公司的求职简历<br><b>应聘职位：行政专员/助理</b><br><b>姓名：黄永清</b><br><b>联系电话：13168189036/13168189036</b><br><b>以下是本人工作经历：</b><br>2010年7月--2012年3月中山欧普照明，从事订单管理和客服！\r\n2012年4月--2014年1月广州聚晶能源科技有限公司，先后从事销售助理兼总经理助理，华南区域销售代表！\r\n2016年7月--2019年1月金维纳硅藻泥担任店长工作。\r\n2019年9月--2020年4月爱婴岛儿童百货担任店长。<br><br>如果邮件不支持Html方式查看，请点击<a href=\"http://www.yjrc.net/person/person_html.aspx?pid=101539\">查看个人简历</a> http://www.yjrc.net/person/person_html.aspx?pid=101539<br> 阳江招聘网http://www.yjrc.net<br>（注：这是由系统自动发出的邮件，请不要直接回复！）<br><a href=\"http://yjrc.net/info/contact.aspx\">邮件退订</a>\r\n\r\n"
+        self.assertEqual(html_util.change_utf8_meta(html), html2)
+
+        html = "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=gb2312\">\r\n<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">\r\n</head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"
+        html2 = "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">\r\n</head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"
+        self.assertEqual(html_util.change_utf8_meta(html), html2)
+
+        html = "<html>\r\n<head>\r\n<meta content=\"text/html; charset=gbk\">\r\n<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">\r\n</head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"
+        html2 = "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">\r\n</head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"
         self.assertEqual(html_util.change_utf8_meta(html), html2)
 
         html = """<html>\r\n<head>
-            <meta http-equiv='Content-Type' content='text/html; charset=gb2312'/>
             <meta content='text/html; charset=gbk'/>
         <meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">
         </head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"""
         html2 = """<html>\r\n<head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">
         </head>\r\n<body>\r\n\r\n</body>\r\n</html>\r\n"""
