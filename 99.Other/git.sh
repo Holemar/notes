@@ -623,8 +623,8 @@
 
         3. git merge upstream/master # 将 upstream 分支修改内容 merge 到本地个人分支；
             #该步骤或者可以分成2步：
-            1) gitcheckoutmaster； #checkout 到 master 分支
-            2) gitmergeupstream；  # 合并主分支修改到本地master分支；
+            1) git checkout master； # checkout 到 master 分支
+            2) git merge upstream；  # 合并主分支修改到本地master分支；
 
         4. git push  # 将本地修改提交到github上的个人分支
 
