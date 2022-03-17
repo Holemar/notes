@@ -148,3 +148,28 @@ is 用于判断两个引用所指的对象是否相同
         print(getrefcount(b)) # 3
 
 
+计算 平方，乘方，平方根，n次方根
+
+1. 平方
+    print(num ** 2)     # 方式一
+    print(pow(num, 2))  # 方式二
+    import numpy
+    numpy.square(num)  # 方式三(需安装第三方库 numpy)
+
+2. 乘方
+    print(num ** 3)     # 方式一
+    print(pow(num, 3))  # 方式二
+
+3. 平方根
+    print(num ** 0.5)     # 方式一
+    print(pow(num, 0.5))  # 方式二
+    import math
+    math.sqrt(num)  # 方式三(使用系统库 math)
+
+4. 开n次方根
+    # 开3次方根
+    print(num ** (1/3))     # 方式一
+    print(pow(num, (1/3)))  # 方式二
+    # 开r次方根
+    print(num ** (1/r))     # 方式一
+    print(pow(num, (1/r)))  # 方式二
