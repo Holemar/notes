@@ -556,8 +556,8 @@ def excel_openpyxl_reader(url, sheet_name=None):
     :param {string} sheet_name: 需读取的 标签页名称
     :return {dict}: Excel 内容的dict, {标签页名称:按行列组成的二维数组table}
     """
-    # office 2007 文件读取
-    workbook = openpyxl.load_workbook(filename=url, read_only=True)
+    # office 2007 文件读取(data_only:是否取公式计算后的值,默认取那条公式)
+    workbook = openpyxl.load_workbook(filename=url, read_only=True, data_only=True)
     data = {}  # 数据容器,内容为 {标签页名称:内容}
     # active_sheet = workbook.active # 被选中的标签页
     # 遍历各标签页
