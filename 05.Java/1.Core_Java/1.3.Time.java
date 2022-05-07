@@ -33,3 +33,14 @@ java.util.Date
    long sTime = new Date().getTime(); //当前时间的毫秒数，最小毫秒
    long bs = Calendar.getInstance().getTimeInMillis(); //很精确
 
+
+获取格式化的时间：
+    import java.util.Date;
+    import java.text.SimpleDateFormat;
+    Date date = new Date();  // 此时date为当前的时间
+    System.out.println(date);  // 打印如：Sat May 07 16:34:03 CST 2022
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  // 设置当前时间的格式，为 年-月-日
+    System.out.println(dateFormat.format(date));  // 打印如：2022-05-07
+    SimpleDateFormat dateFormat_min = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");  // 设置当前时间的格式，为 年/月/日 时:分:秒
+    System.out.println(dateFormat_min.format(date));  // 打印如：2022/05/07 16:34:03
+
