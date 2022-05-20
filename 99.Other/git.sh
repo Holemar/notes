@@ -86,15 +86,18 @@
         $ git reset HEAD^ <file> # 恢复到上次某个提交状态, 可以是 HEAD^、HEAD~4、commit-id 的头几个字母, 还可以是 tag
         $ git reset --hard 17ccc1b2(版本id) # 回退到某版本
         $ git tag 标签值  # 创建简单标签
+        $ git tag -a v1.4 -m "my version 1.4"  # 创建标签并写上备注内容
         $ git tag  # 显示所有标签
         $ git show --stat 标签值  # 用标签显示提交基本信息
+        $ git push origin <tagname>  # 推送指定tag，因为默认的 `git push` 命令并不会传送标签到远程仓库服务器上。
+        $ git push origin --tags  # 一次性推送所有标签
         $ git rm INSTALL  # 删除文件,git里的删除
         $ git show <filename>   # 查看提交版本的具体信息
         $ git show HEAD^ <filename>   # 查看历史提交版本的具体信息
         $ git diff HEAD <filename>  # 查看工作目录和暂存区的差异
         $ git diff HEAD --staged <filename>  # 查看暂存区和代码仓库的差异
         $ git diff HEAD --cached <filename>  # 查看暂存区和代码仓库的差异
-        $ git config --global user.name "Q.yuhen"  # 添加变量到配置档： user.name=Q.yuhen
+        $ git config --global user.name "my.name"  # 添加变量到配置档： user.name=my.name
         $ git config --list  # 查看全局设置
         $ git fsck  # 检查损坏情况
         $ git gc  # 清理无用数据
