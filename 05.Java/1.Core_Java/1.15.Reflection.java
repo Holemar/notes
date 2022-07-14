@@ -92,7 +92,8 @@ class AA {
             System.out.println("方法: " + m1.toGenericString());
         }
         //反射出所有的成员
-        java.lang.reflect.Field[] f = c.getFields();
+        java.lang.reflect.Field[] f = c.getFields();  // 得到这类的public属性(不包含父类)
+		java.lang.reflect.Field[] declaredFieldsFather = c.getDeclaredFields();// 可以得到private default protected public属性
         for (int i=0; i<f.length; i++) {
             java.lang.reflect.Field f1 = f[i];// 拿其中的第i个方法
             System.out.println("属性: " + f1.getName() + " : " + f1.get(f1.getName()) + "<br/>");
@@ -114,3 +115,76 @@ class AA {
                  ...
                  构造数组的另一种用法(动态构造数组，不定长度)
 
+
+/************************/
+// 反射操作父类私有属性、方法
+package com.xxx.tests;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+class PrivateObject {
+    private String privateString = null;
+
+    public PrivateObject() {
+        privateString = "Hello World !";
+    }
+
+    private String privateMethod(String s, int i) {
+        return this.privateString + "  running " + s;
+    }
+}
+
+class ChildObject extends PrivateObject {
+
+    public void modifyFatherPrivateObjectByReflect() throws NoSuchFieldException, NoSuchMethodException,
+            SecurityException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException,
+            InvocationTargetException {
+
+        // 通过这种方法可以得到父类的所有属性 -→ 先得到父类class
+        Class<?> superclass = getClass().getSuperclass();
+        // Class<?> superclass = PrivateObject.class;  // 父类.class 也可以获取父类
+        // Class<?> superclass = Class.forName("com.xxx.tests.PrivateObject");  // 字符串为类的全名,可获取指定类,如 com.my.AA
+
+        // 获取私有字段(根据指定字段名)
+        Field privateStringField = superclass.getDeclaredField("privateString");
+
+        // 通过反射设置私有对象可以访问
+        privateStringField.setAccessible(true);
+
+        // 从父类中得到对象，并强制转换成想要得到的对象
+        String fieldValue = (String) privateStringField.get(this);
+        System.out.println("orginal fieldValue = " + fieldValue);
+
+        // 将私有对象设置成新的值
+        String str = "New Hello World !";
+        privateStringField.set(this, str);
+        String newStr = (String) privateStringField.get(this);
+
+        System.out.println("new fieldValue = " + newStr);
+
+
+        /**** 方法操作 *****/
+        // 获取私有方法(根据指定方法名，以及参数类型列表)
+        Class[] parameterTypes = {String.class, int.class}; // 列表里对应各参数的类型
+        Method privateMethod = superclass.getDeclaredMethod("privateMethod", parameterTypes);
+        System.out.println("方法名: " + privateMethod.toGenericString());
+
+        // 通过反射设置私有方法可以访问
+        privateMethod.setAccessible(true);
+
+        // 调用方法
+        Object[] parameters = {"out side", 111}; // 输入方法的各个参数(如: CoreJava,5)
+        String value = (String) privateMethod.invoke(this, parameters);
+        System.out.println("方法返回: " + value);
+    }
+}
+
+public class test{
+
+    public static void main(String[] args) throws Exception {
+        ChildObject t = new ChildObject();
+        t.modifyFatherPrivateObjectByReflect();
+    }
+}
+/************************/
