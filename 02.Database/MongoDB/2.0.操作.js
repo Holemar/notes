@@ -845,8 +845,9 @@ mongo 是 MongoDB 自带的交互式 Javascript shell，用来对 Mongod 进行�
 
      a.备份
         cd /program/mongodb-1.4/bin  // 进入 mongodb 安装目录
-        ./mongodump -h IP地址:端口号 -d 集合名 -o 保存的目录路径   // 备份的写法
-        ./mongodump -h 192.168.1.3:10000 -d test -o /home/abeen/work/ppf_web/dbback/`date '+%Y%m%d'`  // linux 下的示例
+        ./mongodump -h IP地址:端口号 -d 集合名 -c 表名 -o 保存的目录路径   // 备份的写法
+        ./mongodump -h 192.168.1.3:10000 -d test -o /home/work/dbback/`date '+%Y%m%d'`  // linux 下的示例
+        ./mongodump --uri 'mongodb://user_name:password@10.0.0.126:27017/test_db?authSource=admin' -c  -o '/home/work/dbback'
 
         window 的写法如：
         For /f "tokens=1, 2, 3, 4 delims=-/. " %%j In ('Date /T') do set "FILENAME=%~dp0dbback/%%j%%k%%l"
