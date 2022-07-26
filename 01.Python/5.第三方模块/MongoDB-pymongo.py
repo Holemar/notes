@@ -138,6 +138,7 @@ pymongo 提供原生的 MongoDB 操作
   5.7 统计总数(COUNT)
     print(db.users.count())  # select count(*) from users
     print(db.users.find({"age":{"$gt":30}}).count()) # select count(*) from users where age > 30
+    print(db.users.count_documents({"age":{"$gt":30}})) # py3.7之后的写法
     # distinct 去重
     db.getCollection('表名').distinct('字段名').length;  # 查询重复行数,没有 length 则是重复行,但总大小不能超过 16M
     db.表名.aggregate([{$group: {_id: {"phone": "$phone"}}}]).count()
