@@ -8,13 +8,14 @@ import json
 import time
 import logging
 from urllib import request, parse
+from urllib.parse import unquote
 
 import requests
 try:
     from flask import g
 except:
     g = None
-from .json_util import CustomJSONEncoder
+from .json_util import CustomJSONEncoder, decode2str
 
 # http 请求的超时时间，单位：秒
 HTTP_TIME_OUT = int(os.environ.get('HTTP_TIME_OUT') or 30)
@@ -160,3 +161,36 @@ def delete(url, param=None, headers=None, **kwargs):
     """发送delete请求"""
     kwargs.pop('method', None)
     return send(url, param=param, method='DELETE', headers=headers, **kwargs)
+
+
+def get_request_params(url):
+    """
+    获取url里面的参数,以字典的形式返回
+    :param {string} url: 请求地址
+    :return {dict}: 以字典的形式返回请求里面的参数
+    """
+    result = {}
+    if isinstance(url, (bytes, bytearray)):
+        url = decode2str(url)
+    if not isinstance(url, str):
+        if isinstance(url, dict):
+            return url
+        else:
+            return result
+
+    # li = re.findall(r'\w+=[^&]*', url) # 为了提高效率，避免使用正则
+    i = url.find('?')
+    if i != -1:
+        url = url[i + 1:]
+    li = url.split('&')
+
+    if not li:
+        return result
+
+    for ns in li:
+        if not ns: continue
+        (key, value) = ns.split('=', 1) if ns.find('=') != -1 else (ns, '')
+        value = value.replace('+', ' ')  # 空格会变成加号
+        result[key] = unquote(value)  # 值需要转码
+
+    return result
