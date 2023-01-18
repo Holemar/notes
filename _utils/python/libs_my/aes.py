@@ -13,9 +13,9 @@
 # http://www.apache.org/licenses/
 #
 """
-公用函数(aes加密)，仅支持 py2， 不支持py3(py3只支持纯英文)
+公用函数(aes加密)，支持 py2和py3
 Created on 2016/9/2
-Updated on 2016/9/7
+Updated on 2023/1/18
 @author: Holemar
 """
 import sys
@@ -678,6 +678,18 @@ def to_str(text):
         return str(text)
 
 
+def to_utf8_str(content):
+    """change str, bytes or bytearray to utf-8 str"""
+    if isinstance(content, str):
+        # unicode-escape
+        try_s = [ord(a) for a in content if ord(a) <= 256]
+        if len(try_s) == len(content):
+            return bytes(try_s).decode("utf-8")
+        # If that fails, ignore error messages
+        return content.encode('utf-8', 'ignore').decode()
+    return content
+
+
 def encryptData(data, key, mode=AES.MODE_CBC):
     """
     将明文字符串，用AES加密成密文
@@ -732,7 +744,7 @@ def decryptData(data, key, mode=AES.MODE_CBC):
     decr = moo.decrypt(data, None, mode, key, keysize, iv)
     if mode == AES.MODE_CBC:
         decr = strip_PKCS7_padding(decr)
-    return decr
+    return to_utf8_str(decr) if PY3 else decr
 
 
 if __name__ == "__main__":
@@ -754,8 +766,12 @@ if __name__ == "__main__":
     # iv = [random.randint(0, 255) for i in range(16)] # iv 的列表大小只能是 16 的倍数，且值在 0 ~ 255 之间
     iv = [200, 90, 200, 144, 210, 109, 121, 45, 153, 144, 236, 208, 235, 133, 119, 152]
     print(cypherkey, iv)
-    this_mode, orig_len, ciph = moo.encrypt(cleartext, mode, cypherkey, AES.KeySize_128, iv)
+    input_text = append_PKCS7_padding(to_str(cleartext))
+    this_mode, orig_len, ciph = moo.encrypt(input_text, mode, cypherkey, check_keysize(key), iv)
     print('m=%s, ol=%s (%s), ciph=%s' % (this_mode, orig_len, len(cleartext), ciph))
-    decr = moo.decrypt(ciph, orig_len, this_mode, cypherkey, AES.KeySize_128, iv)
+    decr = moo.decrypt(ciph, orig_len, this_mode, cypherkey, check_keysize(key), iv)
+    decr = strip_PKCS7_padding(decr)
+    if PY3:
+        decr = to_utf8_str(decr)
     print(decr)
-    assert decr == to_str(cleartext)
+    assert to_str(decr) == to_str(cleartext)

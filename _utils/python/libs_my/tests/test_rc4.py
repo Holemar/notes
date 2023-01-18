@@ -42,9 +42,9 @@ class RC4Test(unittest.TestCase):
                 assert secret_txt
                 assert rc4.decode(secret_txt, key) == txt.encode("utf-8")
                 check_unicode = True
-            except NameError:pass
+            except NameError:
+                pass
         assert check_unicode
-
 
     def test_param(self):
         key = "1bb762f7ce24ceee"
@@ -60,7 +60,6 @@ class RC4Test(unittest.TestCase):
         assert not real_text
         real_text = rc4.decode(None, key)
         assert not real_text
-
 
         # 加密 key 为空测试
         txt = '13800138000'
@@ -78,7 +77,6 @@ class RC4Test(unittest.TestCase):
             has_error = True
         assert has_error
 
-
         # 解密 key 为空测试
         has_error = False
         try:
@@ -94,7 +92,6 @@ class RC4Test(unittest.TestCase):
             has_error = True
         assert has_error
 
-
     def test_english_stress(self):
         # 纯英文+数字 性能 测试
         repeat_times = 100
@@ -104,7 +101,7 @@ class RC4Test(unittest.TestCase):
         start_time = time.time()
         cipher = rc4.encode(txt, key)
         end_time = time.time()
-        logging.info('*'*100)
+        logging.info('*' * 100)
         logging.info(u'单次加密耗时：%.4f秒' % (end_time - start_time))
 
         start_time = time.time()
@@ -123,8 +120,7 @@ class RC4Test(unittest.TestCase):
             decr = rc4.decode(cipher, key)
         end_time = time.time()
         logging.info(u'%d次解密耗时：%.4f秒' % (repeat_times, end_time - start_time))
-        logging.info('*'*100)
-
+        logging.info('*' * 100)
 
     def test_chinese_stress(self):
         # 中文 性能 测试
@@ -135,7 +131,7 @@ class RC4Test(unittest.TestCase):
         start_time = time.time()
         cipher = rc4.encode(txt, key)
         end_time = time.time()
-        logging.info('*'*100)
+        logging.info('*' * 100)
         logging.info(u'单次加密耗时：%.4f秒' % (end_time - start_time))
 
         start_time = time.time()
@@ -154,8 +150,7 @@ class RC4Test(unittest.TestCase):
             decr = rc4.decode(cipher, key)
         end_time = time.time()
         logging.info(u'%d次解密耗时：%.4f秒' % (repeat_times, end_time - start_time))
-        logging.info('*'*100)
-
+        logging.info('*' * 100)
 
     def test_symmetrical(self):
         key = "1bb762f7ce24ceee"
@@ -183,7 +178,8 @@ class RC4Test(unittest.TestCase):
                 assert secret_txt
                 assert rc4.decode_symmetrical(secret_txt, key) == txt.encode("utf-8")
                 check_unicode = True
-            except NameError:pass
+            except NameError:
+                pass
         assert check_unicode
 
         # 一一对应测试
@@ -193,9 +189,8 @@ class RC4Test(unittest.TestCase):
         v2 = rc4.encode_symmetrical(txt2, key)
         assert rc4.decode_symmetrical(v1, key) == txt
         assert rc4.decode_symmetrical(v2, key) == txt2
-        assert rc4.encode_symmetrical(txt+txt2, key) == v1 + v2
-        assert rc4.encode_symmetrical(txt2+txt, key) == v2 + v1
-
+        assert rc4.encode_symmetrical(txt + txt2, key) == v1 + v2
+        assert rc4.encode_symmetrical(txt2 + txt, key) == v2 + v1
 
     def test_symmetrical_param(self):
         key = "1bb762f7ce24ceee"
@@ -211,7 +206,6 @@ class RC4Test(unittest.TestCase):
         assert not real_text
         real_text = rc4.decode_symmetrical(None, key)
         assert not real_text
-
 
         # 加密 key 为空测试
         txt = '13800138000'
@@ -229,7 +223,6 @@ class RC4Test(unittest.TestCase):
             has_error = True
         assert has_error
 
-
         # 解密 key 为空测试
         has_error = False
         try:
@@ -245,18 +238,17 @@ class RC4Test(unittest.TestCase):
             has_error = True
         assert has_error
 
-
     def test_english_symmetrical_stress(self):
         # 纯英文+数字 性能 测试
         repeat_times = 100
         key = "1bb762f7ce24ceee"
         txt = '1525dsfsdijrwemrkwerw5484856er'
-        #txt = '1'*18
+        # txt = '1'*18
 
         start_time = time.time()
         cipher = rc4.encode_symmetrical(txt, key)
         end_time = time.time()
-        logging.info('='*100)
+        logging.info('=' * 100)
         logging.info(u'单次加密耗时：%.4f秒' % (end_time - start_time))
 
         start_time = time.time()
@@ -275,20 +267,19 @@ class RC4Test(unittest.TestCase):
             decr = rc4.decode_symmetrical(cipher, key)
         end_time = time.time()
         logging.info(u'%d次解密耗时：%.4f秒' % (repeat_times, end_time - start_time))
-        logging.info('='*100)
-
+        logging.info('=' * 100)
 
     def test_chinese_symmetrical_stress(self):
         # 中文 性能 测试
         repeat_times = 100
         key = "1bb762f7ce24ceee"
         txt = '15呵呵5@#E$$@#gh，。h()_=154中文4*4616'
-        #txt = '1'*18
+        # txt = '1'*18
 
         start_time = time.time()
         cipher = rc4.encode_symmetrical(txt, key)
         end_time = time.time()
-        logging.info('='*100)
+        logging.info('=' * 100)
         logging.info(u'单次加密耗时：%.4f秒' % (end_time - start_time))
 
         start_time = time.time()
@@ -307,7 +298,7 @@ class RC4Test(unittest.TestCase):
             decr = rc4.decode_symmetrical(cipher, key)
         end_time = time.time()
         logging.info(u'%d次解密耗时：%.4f秒' % (repeat_times, end_time - start_time))
-        logging.info('='*100)
+        logging.info('=' * 100)
 
 
 if __name__ == "__main__":

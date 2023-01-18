@@ -11,11 +11,12 @@ import logging
 import unittest
 
 from __init__ import *
-# from libs_my import aes
-from libs_my import aes_c as aes
+from libs_my import aes
+# from libs_my import aes_c as aes
 
 
-key = 'fgjtjirj4o234234' # 加密key，必须16、24、32 位，且值在 0 ~ 255 之间
+key = 'fgjtjirj4o234234'  # 加密key，必须16、24、32 位，且值在 0 ~ 255 之间
+
 
 class AES_Test(unittest.TestCase):
 
