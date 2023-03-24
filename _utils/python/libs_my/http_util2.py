@@ -70,6 +70,8 @@ def send(url, param=None, method='GET', timeout=HTTP_TIME_OUT, ensure_ascii=True
             headers.update({'Content-Type': 'application/json'})
     elif param and isinstance(param, dict) and 'files' not in kwargs:
         param = parse.urlencode(param).encode('utf-8')
+        if not headers.get('Content-Type'):
+            headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
     # 模拟浏览器
     if browser:
         headers.update({
