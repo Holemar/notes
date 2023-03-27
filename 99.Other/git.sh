@@ -634,5 +634,28 @@
     至此，主分支修改的代码完全同步到fork出来的个人分支上，后续在个人分支上修改提交pr时就不会冲突。
 
 
+执行git命令，报错 WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED
+    原因是系统有改变,导致加密的密钥改变,因此本地保存的密钥失效;
+    需要重新保存密钥在 ~/.ssh/known_hosts 中。
+    解决方法:
+    删除 ~/.ssh/known_hosts 文件中指定ip的密钥即可。不知道删哪个，可以全删。
+
+    报错大概如下：
+    [root]# git clone -b master $git_server
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+    Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+    It is also possible that the RSA host key has just been changed.
+    The fingerprint for the RSA key sent by the remote host is
+    28:24:ac:e6:84:e3:16:26:c0:65:66:d7:51:8f:6a:6c.
+    Please contact your system administrator.
+    Add correct host key in /root/.ssh/known_hosts to get rid of this message.
+    Offending key in /root/.ssh/known_hosts:1
+    RSA host key for 192.168.1.152 has changed and you have requested strict checking.
+    Host key verification failed.
+    fatal: The remote end hung up unexpectedly
+
 
 
