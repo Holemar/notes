@@ -66,14 +66,32 @@ def read_json():
             word_dict = {'pronounce': pronounce, 'mean': mean, 'right': 0, 'wrong': 0}
             json_words[word] = word_dict
 
+    json_values = {}
+    # 排序(字 按首个拼音排序)
+    for character in sorted(json_characters, key=lambda x: list(json_characters[x].keys())[0]):
+        value = json_characters[character]
+        json_values[character] = value
+    # 排序(词 按字数及首个拼音排序)
+    for word in sorted(json_words, key=lambda x: str(len(x)) + json_words[x].get('pronounce')):
+        value = json_words[word]
+        json_values[word] = value
+
     # 读取已存数据
     with open(target_path, 'r') as json_f:
         json_context = json_f.read()
-        json_values = json.loads(json_context)
-    # 排序(字按拼音排序)
-    for character in sorted(json_characters, key=lambda x: list(json_characters[x].keys())[0]):
-        json_values[character] = json_characters[character]
-    json_values.update(json_words)
+        old_values = json.loads(json_context)
+    # 加载已存储的数值
+    for character, word_dict in old_values.items():
+        # 词
+        if "pronounce" in word_dict:
+            json_values[character]["right"] = word_dict.get("right") or 0
+            json_values[character]["wrong"] = word_dict.get("wrong") or 0
+        # 字
+        else:
+            for pronounce, word_dict2 in word_dict.items():
+                json_values[character][pronounce]["right"] = word_dict2.get("right") or 0
+                json_values[character][pronounce]["wrong"] = word_dict2.get("wrong") or 0
+
     # 输出 json 文件
     with open(target_path, 'w', encoding='utf-8') as dump_file:
         value_json = json.dumps(json_values, ensure_ascii=False)
@@ -91,3 +109,17 @@ def static_mp3_file(audio):
 if __name__ == '__main__':
     read_json()
     # run(host='localhost', port=18081)
+
+'''
+
+# 下面算法，时间复杂度是 O（n）,优点是没有额外的空间占用，算法也还简单(数据量很大时会有性能问题，但估计不会有多少数据量)
+weight_sum = sum([obj.weight for obj in objects])
+num = random.randint(1, weight_sum)
+t = 0
+for obj in objects:
+    t += obj.weight
+    if t >= num:
+        return obj
+return objects[0]  # 实际上不会执行这一行,这里防止算法有误时会返回空值
+
+'''

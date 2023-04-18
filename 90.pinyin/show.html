@@ -1,0 +1,81 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <title>生僻字拼音学习</title>
+</head>
+<body>
+<center>
+
+<div id="do">
+    <br/>
+    <div id="t1" onclick="change();">查看全部生僻字</div><br/><br/><br/><br/><br/>
+    <div id="t4" ></div><br/>
+    <input type="text" id="t3" onkeydown="if(13==event.keyCode){again();}" style='width:50%;'/>
+</div>
+
+<div id="read" style="display:none;">
+<div id="t2" onclick="change();">查看全部生僻字</div>
+<textArea cols="100" rows="105">{#all_json#}
+{
+"愎": {"bì": {"words": "刚愎自用", "mean": "固执任性", "right": 0, "wrong": 0}},
+"敝": {"bì": {"words": "敝帚自珍、敝处", "mean": "破旧，坏。谦辞，用于与自己有关的事物", "right": 0, "wrong": 0}}
+}
+</textArea>
+</div>
+
+</center>
+</body>
+</html>
+
+<script language="JavaScript" type="text/javascript">
+    var count = 0;
+
+    //鼓励语句
+    var sentence = [
+         "事在人为，坚持到底！"
+		 ,'先能控制欲望和涙气，后能成才'
+        //,"现在不行，将来同样不行！挑战你的思想局限"
+        ,"现在不行，将来同样不行！"
+		,'自信是控制能力，连自己都控制不了，还谈什么自信？'
+        //,"连勇气都没有，怎么创业？！"
+        //,"慢一秒，我就赚少一秒！"
+       // ,"别等待，你需要发动挑战！"
+        ,"你杰出，因为你有胆量！"
+        //,"衣食住行，需符合你的形象！"
+        ,"肯定有第一，那人就是我！"
+        ,"你生下来，不是为了被打败的！"
+        ,"为我爱的人，以及我的后代，奋斗！"
+        ,"你跑得快，别人跑得更快！"
+		,'经常想象一个杰出的人，一个自己希望成为的人，他此时此刻会怎么做。'
+    ];
+
+    // 重复输入
+    function again() {
+        var obj = document.getElementById("t3");
+        var t1 = obj.value;
+        obj.value = "";
+		var t4_element = document.getElementById("t4");
+        if ( t4_element.innerHTML === t1) { count++; }
+        // 随机出现一个句子
+        var r = Math.floor(Math.random()*sentence.length);
+        document.getElementById("t4").innerHTML = sentence[r];
+        obj.focus();
+        if ( 0 !== count ) { document.getElementById("t2").innerHTML = "您已经完成了 " + count + " 次！"; }
+        if ( 20 == count ) { alert("已经" + count + "次了！"); }
+    }
+
+    function change() {
+        var readobj = document.getElementById("read"),
+            doObj = document.getElementById("do");
+        if ( "none" === readobj.style.display ){
+            readobj.style.display = "block";
+            doObj.style.display = "none";
+        } else {
+            readobj.style.display = "none";
+            doObj.style.display = "block";
+        }
+    }
+
+	document.getElementById("t4").innerHTML = sentence[Math.floor(Math.random()*sentence.length)];
+    document.getElementById("t3").focus();
+</script>
