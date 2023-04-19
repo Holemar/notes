@@ -91,7 +91,7 @@ def read_file(file_path):
             pass
 
 
-@route('/notes_web/<filename:re:.*\.js>')
+@route('/notes_web/<filename:re:.+>.js')
 def markdeep(filename):
     """markdeep.js加载"""
     return static_file('/notes_web/' + filename, root=BASE_PATH)
