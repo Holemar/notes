@@ -11,7 +11,7 @@
     <br/>
     <div id="character" style='font-size: 50;'>{#character#}</div><br/><br/>
     <input type="text" id="input_value" onkeydown="if(13==event.keyCode){show();}" style='width:20%;'/>
-    <input type="button" value="显示" onclick='show()' />
+    <input type="button" id="show_btn" value="显示" onclick='show()' />
     <br/><br/>
 </div>
 
@@ -39,6 +39,14 @@
     function show() {
         var readObj = document.getElementById("read");
         readObj.style.display = "block";
+        // 判断是否正确
+        var inputValue = document.getElementById("input_value");
+        var showBtn = document.getElementById("show_btn");
+        if ('{#letter#}' == inputValue.value) {
+            showBtn.value = 'v';
+        } else {
+            showBtn.value = 'x';
+        }
     }
 
     document.getElementById("input_value").focus();

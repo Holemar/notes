@@ -35,6 +35,15 @@ else:
     from urllib.parse import quote
     import urllib.request as http_request
 
+LETTERS = {
+    'ā': ('a', '1'), 'á': ('a', '2'), 'ǎ': ('a', '3'), 'à': ('a', '4'),
+    'ō': ('o', '1'), 'ó': ('o', '2'), 'ǒ': ('o', '3'), 'ò': ('o', '4'),
+    'ē': ('e', '1'), 'é': ('e', '2'), 'ě': ('e', '3'), 'è': ('e', '4'),
+    'ī': ('i', '1'), 'í': ('i', '2'), 'ǐ': ('i', '3'), 'ì': ('i', '4'),
+    'ū': ('u', '1'), 'ú': ('u', '2'), 'ǔ': ('u', '3'), 'ù': ('u', '4'),
+    'ü': ('v', '0'), 'ǖ': ('v', '1'), 'ǘ': ('v', '2'), 'ǚ': ('v', '3'), 'ǜ': ('v', '4'),  # 多一个 ü，轻声
+}
+
 
 def read_file(file_path):
     """读取文件，并返回其内容
@@ -97,6 +106,21 @@ def download_file(url, file_path):
         return False
 
 
+def get_letter(pronounce):
+    """将拼音转成字母加数字的形式
+    :param pronounce: 拼音
+    :return: 字母加数字形式的拼音(如 zhūn 返回 zhun1)
+    """
+    # 词
+    if ' ' in pronounce:
+        return ' '.join([get_letter(p) for p in pronounce.split(' ')])
+    # 字
+    else:
+        for c, v in LETTERS.items():
+            if c in pronounce:
+                return pronounce.replace(c, v[0]) + v[1]
+
+
 def sort_character(character, json_characters):
     """json_characters的排序迭代器"""
     keys = json_characters[character].keys()
@@ -112,7 +136,7 @@ def load_source_to_json():
     # 将文件内容，编译成 json
     json_characters = {}
     json_words = {}
-    # word_dict = {'character': None, 'pronounce': None, 'words': None, 'mean': None, 'right': 0, 'wrong': 0}
+    # word_dict = {'character', 'pronounce', 'words', 'mean', 'letter', 'right': 0, 'wrong': 0}
     for line in context.splitlines():
         line = line.strip()
         if not line or line.startswith(('字【拼音】', '词【拼音】', '-----')):
@@ -129,7 +153,7 @@ def load_source_to_json():
             pronounce = results[1].strip('【').strip('】')
             words = results[2]
             mean = ' '.join(results[3:])  # 允许含义中有空格
-            word_dict = {'words': words, 'mean': mean}
+            word_dict = {'words': words, 'mean': mean, 'letter': get_letter(pronounce)}
             json_characters.setdefault(character, {'right': 0, 'wrong': 0})[pronounce] = word_dict
         # 词
         else:
@@ -139,7 +163,7 @@ def load_source_to_json():
             pronounce[-1] = pronounce[-1].strip('】')
             pronounce = ' '.join(pronounce)
             mean = ' '.join(results[len(word) + 1:])  # 允许含义中有空格
-            word_dict = {'pronounce': pronounce, 'mean': mean, 'right': 0, 'wrong': 0}
+            word_dict = {'pronounce': pronounce, 'mean': mean, 'letter': get_letter(pronounce), 'right': 0, 'wrong': 0}
             json_words[word] = word_dict
 
     json_values = {}
@@ -169,10 +193,15 @@ def show_one():
     json_context = read_file('source.json')
     json_values = json.loads(json_context)
 
-    # 按 right, wrong 的次数来计算比重
+    # 取出 right + wrong 的最大值
+    max_weight = max([word_dict.get("wrong", 0) + word_dict.get("right", 0)
+                      for character, word_dict in json_values.items()])
+    max_weight = max([max_weight, 2])  # 保证最少为 1，不然没法继续
+    # 按 right, wrong 的次数来计算比重。
+    # right 次数越多的，比重越低。 wrong 次数越多的，比重越高。right 和 wrong 都为 0 的，要比不为 0 的比重高。
     weight_sum = 0
     for character, word_dict in json_values.items():
-        weight = word_dict.get("wrong", 0) - word_dict.get("right", 0)
+        weight = max_weight - word_dict.get("right", 0) + word_dict.get("wrong", 0) * 2
         weight = 1 if weight <= 0 else weight
         word_dict["weight"] = weight
         weight_sum += weight
@@ -237,11 +266,13 @@ def page(file_path):
     pronounce = word_dict.get('pronounce')
     if pronounce:  # 词
         pronounces = pronounce.split(' ')
+        letter = word_dict.get('letter')
     else:  # 字
         pronounces = [k for k in word_dict.keys() if k not in ('right', 'wrong', 'weight')]
+        letter = ' '.join([word_dict.get(p).get('letter') for p in pronounces])
     pronounces_html = '&nbsp;&nbsp;'.join([mp3_html.format(pronounce=p) for p in pronounces])
     text = text.replace('{#pronounces#}', pronounces_html)
-
+    text = text.replace('{#letter#}', letter)
     return text
 
 
