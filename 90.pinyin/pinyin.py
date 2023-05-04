@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 拼音学习，纠正自己不认识或者认不准的字词读音
+主要参考来源： https://www.zdic.net/
 """
 import os
 import sys
