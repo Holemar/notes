@@ -23,6 +23,7 @@ current_dir = os.path.abspath(current_dir)
 TIMEOUT = 30  # 下载的超时时间(秒)
 # 下载MP3拼音的地址
 MP3_DOWNLOAD = 'https://img.zdic.net/audio/zd/py/%s.mp3'
+MP3_DOWNLOAD2 = 'http://py.kaishicha.com/pinyin/%s.mp3'
 context = ssl._create_unverified_context()
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -226,7 +227,10 @@ def static_mp3_file(pronounce):
     # 文件找不到
     if not os.path.exists(file_path):
         url = MP3_DOWNLOAD % quote(pronounce)
-        download_file(url, file_path)
+        result = download_file(url, file_path)
+        if not result:
+            url2 = MP3_DOWNLOAD2 % get_letter(pronounce)
+            result = download_file(url2, file_path)
     return static_file(audio_path, root=current_dir)
 
 
