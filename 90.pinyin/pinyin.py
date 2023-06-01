@@ -262,8 +262,7 @@ def page(file_path):
     text = text.replace('{#values#}', value_json)
     # 显示拼音mp3
     mp3_html = """
-    <A href="javascript:document.getElementById('{pronounce}').play();">{pronounce}
-    <audio id="{pronounce}">
+    <A href="javascript:document.getElementById('{pronounce}').play();">{pronounce}<audio id="{pronounce}">
         <source src="/mp3/{pronounce}.mp3" type="audio/mp3" />
         <embed height="100" width="100" src="/mp3/{pronounce}.mp3" />
     </audio></A>
