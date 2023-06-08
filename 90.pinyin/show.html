@@ -22,9 +22,9 @@
     <br/><br/>
     <form action="/" method="post">
         <input type="hidden" name="character" value="{#character#}"/>
-        <input type="submit" name="submit_btn" value="认识" style='background-color:#66CCFF; width:10%' />
+        <input type="submit" name="submit_btn" id="submit_btn_right" value="认识" style='background-color:#66CCFF; width:10%' />
         &nbsp;|&nbsp;
-        <input type="submit" name="submit_btn" value="不认识" style='background-color:#FF3300; width:10%' />
+        <input type="submit" name="submit_btn" id="submit_btn_wrong" value="不认识" style='background-color:#FF3300; width:10%' />
         &nbsp;|&nbsp;
         <input type="submit" name="submit_btn" value="跳过" style='width:10%' />
         <br/><br/>
@@ -42,10 +42,14 @@
         // 判断是否正确
         var inputValue = document.getElementById("input_value");
         var showBtn = document.getElementById("show_btn");
+        var rightBtn = document.getElementById("submit_btn_right");
+        var wrongBtn = document.getElementById("submit_btn_wrong");
         if ('{#letter#}' == inputValue.value) {
             showBtn.value = 'v';
+            wrongBtn.style.cssText = "width:10%;"
         } else {
             showBtn.value = 'x';
+            rightBtn.style.cssText = "width:10%;"
         }
     }
 
