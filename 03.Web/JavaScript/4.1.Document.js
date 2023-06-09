@@ -37,3 +37,10 @@ Document对象
     write()	向文档职工写入文本
     writeln()	向文档职工写入文本,并向文档的末尾追加一个换行符
 
+遍历
+    // dom 遍历推荐使用 for of
+    // 而不推荐使用 for in, 因为 for in 返回的是 key 值，适合遍历固定枚举值
+    for (let elem of document.getElementsByTagName('audio')) {
+      elem.play();
+    }
+

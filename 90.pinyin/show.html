@@ -10,8 +10,9 @@
 <div id="do">
     <br/>
     <div id="character" style='font-size: 50;'>{#character#}</div><br/><br/>
-    <input type="text" id="input_value" onkeydown="if(13==event.keyCode){show();}" style='width:20%;'/>
+    <input type="text" id="input_value" onkeydown="if(13==event.keyCode){show();play()}" style='width:20%;'/>
     <input type="button" id="show_btn" value="显示" onclick='show()' />
+    <input type="submit" value="跳过" onclick='document.getElementById("submit_btn_skip").click();'/>
     <br/><br/>
 </div>
 
@@ -26,7 +27,7 @@
         &nbsp;|&nbsp;
         <input type="submit" name="submit_btn" id="submit_btn_wrong" value="不认识" style='background-color:#FF3300; width:10%' />
         &nbsp;|&nbsp;
-        <input type="submit" name="submit_btn" value="跳过" style='width:10%' />
+        <input type="submit" name="submit_btn" id="submit_btn_skip" value="跳过" style='width:10%' />
         <br/><br/>
     </form>
 </div>
@@ -50,6 +51,16 @@
         } else {
             showBtn.value = 'x';
             rightBtn.style.cssText = "width:10%;"
+        }
+    }
+
+    function play() {
+        var audioObjs = document.getElementsByTagName('audio');
+        var index = 0;
+        for (let elem of audioObjs) {
+            // 定时执行，800豪秒后执行
+            window.setTimeout(function(){elem.play();}, index * 800);
+            index += 1;
         }
     }
 
