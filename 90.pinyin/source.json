@@ -1,6 +1,7 @@
 {
 "愎": {"right": 2, "wrong": 0, "bì": {"words": "刚愎自用", "mean": "固执任性", "letter": "bi4"}}, 
 "敝": {"right": 2, "wrong": 0, "bì": {"words": "敝帚自珍、敝处", "mean": "破旧，坏。谦辞，用于与自己有关的事物", "letter": "bi4"}}, 
+"哺": {"right": 0, "wrong": 0, "bǔ": {"words": "哺乳、反哺、吐哺", "mean": "喂不会取食的幼儿。口里含着的食物", "letter": "bu3"}}, 
 "怆": {"right": 1, "wrong": 1, "chuàng": {"words": "悲怆、怆然泪下", "mean": "悲伤", "letter": "chuang4"}}, 
 "岔": {"right": 1, "wrong": 1, "chà": {"words": "岔道、打岔、岔开", "mean": "山脉分歧的地方，亦指道路、河流分歧的地方。转移话题。互相让开或调换", "letter": "cha4"}}, 
 "颤": {"right": 3, "wrong": 0, "chàn": {"words": "颤动、颤抖、颤音", "mean": "物体振动", "letter": "chan4"}}, 
