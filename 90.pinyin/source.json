@@ -43,6 +43,7 @@
 "壑": {"right": 2, "wrong": 4, "hè": {"words": "沟壑、欲壑难填", "mean": "坑谷，深沟", "letter": "he4"}}, 
 "阖": {"right": 1, "wrong": 0, "hé": {"words": "阖家、阖门静居", "mean": "全，总共。关闭。门扇", "letter": "he2"}}, 
 "涸": {"right": 0, "wrong": 0, "hé": {"words": "涸泽而渔、干涸、涸竭", "mean": "水干", "letter": "he2"}}, 
+"夯": {"right": 0, "wrong": 0, "hāng": {"words": "打夯、夯实、拿棍子夯", "mean": "砸地基用的工具。用夯砸。方言，用力打", "letter": "hang1"}}, 
 "窖": {"right": 0, "wrong": 1, "jiào": {"words": "地窖、窖藏", "mean": "收藏东西的地洞或坑。把东西藏在地窖里", "letter": "jiao4"}}, 
 "颊": {"right": 1, "wrong": 0, "jiá": {"words": "脸颊、双颊", "mean": "脸的两侧", "letter": "jia2"}}, 
 "芥": {"right": 3, "wrong": 0, "jiè": {"words": "芥末、草芥", "mean": "芥菜，称“芥末”，作调味品。小草，喻轻微纤细的事物", "letter": "jie4"}}, 
@@ -110,6 +111,7 @@
 "铩": {"right": 1, "wrong": 1, "shā": {"words": "铩羽而归", "mean": "摧残，伤残。古代一种长矛", "letter": "sha1"}}, 
 "殇": {"right": 0, "wrong": 1, "shāng": {"words": "幼子早殇、国殇", "mean": "未成年而死，为国战死者", "letter": "shang1"}}, 
 "邃": {"right": 3, "wrong": 2, "suì": {"words": "深邃、精邃", "mean": "深远", "letter": "sui4"}}, 
+"嗣": {"right": 0, "wrong": 0, "sì": {"words": "后嗣、子嗣、嗣后（以后）", "mean": "子孙。接续，继承", "letter": "si4"}}, 
 "夙": {"right": 3, "wrong": 0, "sù": {"words": "夙夜、夙怨、夙敌", "mean": "早。素有的，旧有的", "letter": "su4"}}, 
 "蜕": {"right": 0, "wrong": 1, "tuì": {"words": "蛇蜕、蜕皮、蜕变", "mean": "蝉或蛇等脱下来的皮。蛇、蝉等动物脱皮。鸟换毛。解脱，变化", "letter": "tui4"}}, 
 "湍": {"right": 3, "wrong": 1, "tuān": {"words": "湍急、湍流、湍濑", "mean": "急流，急流的水。 湍濑【lài】：石滩上的急流", "letter": "tuan1"}}, 
@@ -160,6 +162,7 @@
 "滞": {"right": 3, "wrong": 0, "zhì": {"words": "停滞、呆滞、滞穗", "mean": "凝积，不流通，不灵活。遗落", "letter": "zhi4"}}, 
 "炙": {"right": 0, "wrong": 1, "zhì": {"words": "炙手可热、焚炙忠良", "mean": "烤。烤肉。喻受到熏陶", "letter": "zhi4"}}, 
 "胄": {"right": 0, "wrong": 2, "zhòu": {"words": "甲胄、胄裔", "mean": "盔，古代战士戴的帽子。帝王或贵族的后代。泛指后代", "letter": "zhou4"}}, 
+"箴": {"right": 0, "wrong": 0, "zhēn": {"words": "箴言、箴规、箴谏、箴铭", "mean": "劝告，劝戒。古代一种文体，以告诫规劝为主", "letter": "zhen1"}}, 
 "谆": {"right": 0, "wrong": 4, "zhūn": {"words": "谆嘱、谆谆教诲", "mean": "恳切，诚恳。佐，辅助", "letter": "zhun1"}}, 
 "帚": {"right": 1, "wrong": 1, "zhǒu": {"words": "扫帚、笤【tiáo】帚", "mean": "扫除尘土、垃圾的用具", "letter": "zhou3"}}, 
 "攥": {"right": 0, "wrong": 1, "zuàn": {"words": "攥拳头、用手攥住", "mean": "握", "letter": "zuan4"}}, 
@@ -198,5 +201,6 @@
 "脍炙人口": {"pronounce": "kuài zhì rén kǒu", "mean": "切细的烤肉人人都爱吃。比喻好的诗文为众人所称美", "letter": "kuai4 zhi4 ren2 kou3", "right": 0, "wrong": 1}, 
 "披荆斩棘": {"pronounce": "pī jīng zhǎn jí", "mean": "砍倒荆棘开路。比喻在前进道路上清除障碍,克服困难", "letter": "pi1 jing1 zhan3 ji2", "right": 1, "wrong": 2}, 
 "嚣张跋扈": {"pronounce": "xiāo zhāng bá hù", "mean": "邪恶的势力、不良的风气增长;放肆。专横暴戾", "letter": "xiao1 zhang1 ba2 hu4", "right": 1, "wrong": 0}, 
+"一语成谶": {"pronounce": "yī yǔ chéng chèn", "mean": "谶：指将要应验的预言、预兆。一般指不吉利的预言或不幸言中的意思。", "letter": "yi1 yu3 cheng2 chen4", "right": 0, "wrong": 0}, 
 "嘬牙花子": {"pronounce": "zuō yá huā zǐ", "mean": "嘬:聚缩嘴唇而吸取。方言，形容束手无策、为难、惋惜的样子", "letter": "zuo1 ya2 hua1 zi3", "right": 1, "wrong": 0}
 }
