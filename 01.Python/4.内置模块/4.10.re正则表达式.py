@@ -224,4 +224,6 @@ match() vs search()
     print(romPattern.search('MMMDCCCLXXXVIII').groups()) # 打印： ('MMM', 'DCCC', 'LXXX', 'VIII')
     # match()、search()、sub()、findall() 等等都可以这样用
 
+# 去除HTML中的空标签对
+    html = re.sub(r'<([a-z]+\d?)\b[^>]*>( |[\s　])*</\1>', '', html)
 
