@@ -256,27 +256,31 @@ def page(file_path):
 
     # 显示一个字或者词
     text = read_file('show.html')
-    character, word_dict = show_one()  # 随机取一个字或者词
-    text = text.replace('{#character#}', character)
-    value_json = json.dumps(word_dict, ensure_ascii=False, indent=4)
-    text = text.replace('{#values#}', value_json)
-    # 显示拼音mp3
-    mp3_html = """
-    <A href="javascript:document.getElementById('{pronounce}').play();">{pronounce}<audio id="{pronounce}">
-        <source src="/mp3/{pronounce}.mp3" type="audio/mp3" />
-        <embed height="100" width="100" src="/mp3/{pronounce}.mp3" />
-    </audio></A>
-    """
-    pronounce = word_dict.get('pronounce')
-    if pronounce:  # 词
-        pronounces = pronounce.split(' ')
-        letter = word_dict.get('letter')
-    else:  # 字
-        pronounces = [k for k in word_dict.keys() if k not in ('right', 'wrong', 'weight')]
-        letter = ' '.join([word_dict.get(p).get('letter') for p in pronounces])
-    pronounces_html = '&nbsp;&nbsp;'.join([mp3_html.format(pronounce=p) for p in pronounces])
-    text = text.replace('{#pronounces#}', pronounces_html)
-    text = text.replace('{#letter#}', letter)
+    character, word_dict = None, None
+    try:
+        character, word_dict = show_one()  # 随机取一个字或者词
+        text = text.replace('{#character#}', character)
+        value_json = json.dumps(word_dict, ensure_ascii=False, indent=4)
+        text = text.replace('{#values#}', value_json)
+        # 显示拼音mp3
+        mp3_html = """
+        <A href="javascript:document.getElementById('{pronounce}').play();">{pronounce}<audio id="{pronounce}">
+            <source src="/mp3/{pronounce}.mp3" type="audio/mp3" />
+            <embed height="100" width="100" src="/mp3/{pronounce}.mp3" />
+        </audio></A>
+        """
+        pronounce = word_dict.get('pronounce')
+        if pronounce:  # 词
+            pronounces = pronounce.split(' ')
+            letter = word_dict.get('letter')
+        else:  # 字
+            pronounces = [k for k in word_dict.keys() if k not in ('right', 'wrong', 'weight')]
+            letter = ' '.join([word_dict.get(p).get('letter') for p in pronounces])
+        pronounces_html = '&nbsp;&nbsp;'.join([mp3_html.format(pronounce=p) for p in pronounces])
+        text = text.replace('{#pronounces#}', pronounces_html)
+        text = text.replace('{#letter#}', letter)
+    except Exception as e:
+        logging.exception("异常: character:%s, word_dict:%s", character, word_dict)
     return text
 
 
