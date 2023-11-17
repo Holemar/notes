@@ -2,22 +2,96 @@
 python 前面版本没有原生的 枚举, 需要自己封装一个。(Python 3.4+ 开始有枚举了)
 
 
-新版本的枚举写法(python 3.4)
+# 新版本的枚举写法(python 3.4+)
+
+    from enum import Enum
 
     # 写法1
-    from enum import Enum
-    Animal = Enum('Animal', 'ant bee cat dog')
-
-
+    Animal1 = Enum('Animal', 'ant bee cat dog')
     # 写法2
+    Animal2 = Enum('Animal', ('ant', 'bee', 'cat', 'dog'))
+
+    # 写法3
     class Animals(Enum):
         ant = 1
         bee = 2
         cat = 3
         dog = 4
 
+    # 调用枚举成员的 3 种方式
+    print(Animals.ant)     # 打印: Animals.ant
+    print(Animals['ant'])  # 打印: Animals.ant
+    print(Animals(1))      # 打印: Animals.ant
+    # 调取枚举成员中的 value 和 name
+    print(Animals.ant.value)  # 打印: 1
+    print(Animals.ant.name)   # 打印: ant
 
-旧版Python用户可以充分发挥动态语言的优越性来构造枚举：
+    # 遍历枚举类中所有成员的 2 种方式
+    for animal in Animals:
+        print(animal, animal.name, animal.value)
+    '''打印：
+    Animals.ant ant 1
+    Animals.bee bee 2
+    Animals.cat cat 3
+    Animals.dog dog 4
+    '''
+
+    # 该枚举类还提供了一个 __members__ 属性，该属性是一个包含枚举类中所有成员的字典，通过遍历该属性，也可以访问枚举类中的各个成员。
+    for name, member in Animals.__members__.items():
+        print(name, "->", member)
+    '''打印：
+    ant -> Animals.ant
+    bee -> Animals.bee
+    cat -> Animals.cat
+    dog -> Animals.dog
+    '''
+
+    # 枚举类成员之间不能比较大小，但可以用 == 或者 is 进行比较是否相等
+    print(Animals.ant == Animals.ant)
+    print(Animals.ant.name is Animals.ant.name)
+
+    Animals.ant = 2  # 枚举不允许外部赋值，这样会报错：AttributeError: Cannot reassign members.
+    # 枚举之间不支持大小比较，即不支持 '>' 或 '<' 比较
+
+
+# 借助 @unique 装饰器，这样当枚举类中出现相同值的成员时，程序会报 ValueError 错误。
+    from enum import Enum, unique  # 引入 unique
+
+    @unique  # 添加 unique 装饰器
+    class Color(Enum):
+        # 为序列值指定value值
+        red = 1
+        green = 1
+        blue = 3
+    # 类定义时报错：ValueError: duplicate values found in <enum 'Color'>: green -> red
+
+
+# 枚举对比技巧
+    from enum import Enum
+    class Animals(Enum):
+        ant = 1
+        bee = 2
+        cat = 3
+
+    print(Animals.ant == Animals.ant)  # 打印: True
+    print(Animals.ant == 1)  # 打印: False
+    print(Animals.ant is Animals.ant)  # 打印: True
+    print(Animals.ant is 1)  # 打印: False
+
+    # 而实际上希望直接比较值，而不是比较枚举值。则使用下面技巧，让 "==" 能直接比较
+    from enum import Enum, IntEnum
+    class Animals(int, Enum):  # 也可以直接继承 IntEnum。 如果值的类型是字符串，则是 class Animals(str, Enum)
+        ant = 1
+        bee = 2
+        cat = 3
+
+    print(Animals.ant == Animals.ant)  # 打印: True
+    print(Animals.ant == 1)  # 打印: True
+    print(Animals.ant is Animals.ant)  # 打印: True
+    print(Animals.ant is 1)  # 打印: False
+
+
+# 旧版Python用户可以充分发挥动态语言的优越性来构造枚举：
 
 # 示例1 (用 type 函数实现， 兼容py2及3写法)
     # 写法1
