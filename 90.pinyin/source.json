@@ -121,6 +121,7 @@
 "冉": {"right": 0, "wrong": 0, "rǎn": {"words": "柳枝冉冉、冉冉升起", "mean": "龟甲的边。毛、枝条等柔软下垂；慢慢地。", "letter": "ran3"}}, 
 "缮": {"right": 2, "wrong": 0, "shàn": {"words": "修缮、缮写", "mean": "修补，整治。抄写", "letter": "shan4"}}, 
 "讪": {"right": 2, "wrong": 2, "shàn": {"words": "讪笑、讪骂、讪讪、搭讪", "mean": "讥笑。不好意思，难为情的样子", "letter": "shan4"}}, 
+"韶": {"right": 0, "wrong": 0, "sháo": {"words": "韶华、韶光、韶景", "mean": "美。 韶华、韶光：ａ．美丽的春光；ｂ．喻美好的青年时代。 韶景：美丽的春光", "letter": "shao2"}}, 
 "噬": {"right": 1, "wrong": 1, "shì": {"words": "反噬、吞噬", "mean": "咬，吞", "letter": "shi4"}}, 
 "铩": {"right": 1, "wrong": 2, "shā": {"words": "铩羽而归", "mean": "摧残，伤残。古代一种长矛", "letter": "sha1"}}, 
 "殇": {"right": 0, "wrong": 1, "shāng": {"words": "幼子早殇、国殇", "mean": "未成年而死，为国战死者", "letter": "shang1"}}, 

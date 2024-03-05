@@ -104,7 +104,7 @@ Pandas 中的数据结构
 
     # 对某个列的各值操作
     df['字段名1'] = df.字段名1.apply(lambda x: x if x else 0) # 参数 x 是指各行的对应“字段名1”的值
-    df['字段名1'] = df.['字段名1'].apply(lambda x: x if x else 0)
+    df['字段名1'] = df['字段名1'].apply(lambda x: x if x else 0)
 
     # 参数 axis=1 将按每行处理数据，默认参数 axis=0 时按每列处理数据
     df['字段名2'] = df.apply(lambda x: handle(x), axis=1, reduce=True) # 参数 x 是指各行的整行的值(dict形式读取出来)
