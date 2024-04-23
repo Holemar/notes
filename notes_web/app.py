@@ -91,7 +91,7 @@ def read_file(file_path):
             pass
 
 
-@route('/notes_web/<filename:re:.+>.js')
+@route('/notes_web/<filename:re:.+?\\.js>')
 def markdeep(filename):
     """markdeep.js加载"""
     return static_file('/notes_web/' + filename, root=BASE_PATH)
@@ -129,4 +129,5 @@ def page(file_path):
 
 
 if __name__ == '__main__':  # pragma: no coverage
-    run(host='localhost', port=8080)
+    port = os.getenv('PORT', '8080')
+    run(host='0.0.0.0', port=int(port))
