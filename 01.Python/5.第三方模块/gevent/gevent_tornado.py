@@ -51,3 +51,6 @@ else:
 # gunicorn 的启动方式:
 #nohup -w 8 gunicorn -b 0.0.0.0:13152  -k gevent test_tornado:application &
 
+# nohup（no hang up）是一个在Unix和类Unix系统上常用的命令行实用程序，用于在系统中断或终端关闭后使进程继续运行
+# 要将输出重定向到名为output.log的文件并使进程在终端关闭后继续运行，请使用以下命令：
+#nohup your_command > output.log 2>&1 &
