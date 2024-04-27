@@ -182,6 +182,9 @@ max(iterable[, args...][key])
     一个Iterable参数，返回其中一个最大的非空可迭代项，(如一个字符串，元组或列表)。如有多个参数，返回最大的参数。
     可选的key参数指定带一个参数的排序函数，用于list.sort()。key参数，如果有，必须在以keyword的形式(例如，"max(a,b,c,key=func)")。
 
+    # 一行代码求多个列表中的最大值
+    max(max([ [1,2,3], [5,1], [4] ], key=lambda v: max(v))) # 5
+
 min(iterable[, args...][key])
     一个Iterable参数，返回其中一个最小的非空可迭代项，(如一个字符串，元组或列表)。如有多个参数，返回最小的参数。
     可选的key参数指定带一个参数的排序函数，用于list.sort()。key参数，如果有，必须在以keyword的形式(例如，"max(a,b,c,key=func)")。

@@ -198,6 +198,7 @@
     {{ 列表变量|dictsortreversed:"数字" }} 排序从大到小
     {% if 92|pisibleby:"2" %} 判断是否整除指定数字
     {{ string|escape }} 转换为html实体
+    {{ string|safe }} 原样输出字符串(默认单双引号等特殊符号会转码)
     {{ 21984124|filesizeformat }} 以1024为基数，计算最大值，保留1位小数，增加可读性(显示 1K, 12M, 2.3G 等文件大小)
     {{ list|first }} 返回列表第一个元素
     {{ "ik23hr&jqwh"|fix_ampersands }} &转为&amp;

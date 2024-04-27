@@ -1,0 +1,308 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0035)http://l21.yunpan.cn/lk/QvevyNkkunxSP -->
+<html>
+<head>
+    <title>顏色表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
+    <style type="text/css">
+        input{
+			font-family:tahoma,arial;
+			font-size:10px
+		}
+        .spanc{
+            height:10px;
+            width:28px;
+            display:inline-block;
+            border:1px solid #000000;
+            margin:1px;
+            cursor:hand;
+            font-family:tahoma,verdana,arial;
+            font-size:8px;
+            letter-spacing:1px;
+        }
+        .spanc1{
+			height:11px;
+			border:1px solid #000000;
+			margin:2px;
+			padding:2px 4px;
+			cursor:hand;
+			font-family:tahoma,verdana,arial;
+			font-size:9px;
+			letter-spacing:1px;
+		}
+    </style>
+    <script type="text/javascript" language="JavaScript">
+        function shit(i, event) {
+			event = window.event || event;
+			// 获取当前事件的源
+            var op = event.target || event.srcElement;
+            // 忽略错误的点击
+            if ('spanc'!==op.className.toLowerCase() && 'spanc1'!==op.className.toLowerCase()) return;
+            var bgColor = op.style.background; bgColor = bgColor.replace('none repeat scroll 0% 0% ', ''); // 火狐时需要替换
+            var colorName = op.getAttribute('alt');
+            if (i==1) {document.getElementById('copy02').value=bgColor;document.getElementById('copy01').value=colorName;}
+            if (i==2) {document.getElementById('copy11').value=bgColor;}
+            if (i==3) {document.getElementById('copy21').value=bgColor;document.getElementById('copy22').value=colorName;}
+            if (i==4) {document.getElementById('copy31').value=bgColor;document.getElementById('copy32').value=colorName;}
+        }
+    </script>
+</head>
+
+<body>
+
+<div style="padding:12px">
+    <div id="div2" nowrap>
+        &nbsp;查看颜色：<input size="15" type="text" id="testName" onchange="document.getElementById('testColor').style.background=this.value;"/>
+        <span class="spanc" style="color:#FFFFFF;" id="testColor">&nbsp;</span>
+    </div>
+</div>
+
+<div style="padding:12px">
+    <div id="div2" nowrap>
+        <span style="font-size:15px;width:150px;">W3C- 十六色色盘</span>
+        &nbsp;颜色名称：<input style='width:70px;' type=text id="copy01"/>
+        &nbsp;色值：<input style='width:100px;' type=text id="copy02"/>
+    </div>
+    <div onclick="shit(1,event)">
+        <span class="spanc" style="background:#000000;color:#FFFFFF;" alt="Black">&nbsp;</span>
+        <span class="spanc" style="background:#FFFFFF;color:#000000;" alt="White">&nbsp;</span>
+        <span class="spanc" style="background:#FF0000;color:#000000;" alt="Red">&nbsp;</span>
+        <span class="spanc" style="background:#FFFF00;color:#000000;" alt="Yellow">&nbsp;</span>
+        <span class="spanc" style="background:#00FF00;color:#000000;" alt="Lime">&nbsp;</span>
+        <span class="spanc" style="background:#00FFFF;color:#000000;" alt="Aqua">&nbsp;</span>
+        <span class="spanc" style="background:#0000FF;color:#000000;" alt="Blue">&nbsp;</span>
+        <span class="spanc" style="background:#FF00FF;color:#000000;" alt="Fuchsia">&nbsp;</span>
+        <span class="spanc" style="background:#808080;color:#FFFFFF;" alt="Gray">&nbsp;</span>
+        <span class="spanc" style="background:#C0C0C0;color:#000000;" alt="Silver">&nbsp;</span>
+        <span class="spanc" style="background:#800000;color:#FFFFFF;" alt="Maroon">&nbsp;</span>
+        <span class="spanc" style="background:#808000;color:#FFFFFF;" alt="Olive">&nbsp;</span>
+        <span class="spanc" style="background:#008000;color:#FFFFFF;" alt="Green">&nbsp;</span>
+        <span class="spanc" style="background:#008080;color:#FFFFFF;" alt="Teal">&nbsp;</span>
+        <span class="spanc" style="background:#000080;color:#FFFFFF;" alt="Navy">&nbsp;</span>
+        <span class="spanc" style="background:#800080;color:#FFFFFF;" alt="Purple">&nbsp;</span>
+        <span class="spanc" style="background:Transparent;color:#000000;" alt="Transparent">&nbsp;</span>
+    </div>
+</div>
+
+
+<div style="padding:12px">
+    <div id="div2" nowrap>
+        <span style="font-size:15px;width:150px;">安全色色盘</span>
+        &nbsp;颜色名称：<input style='width:100px;' type="text" id='copy31'/>
+        &nbsp;色值：<input style='width:70px;' type="text" id='copy32'/>
+    </div>
+    <div onclick="shit(4,event)">
+    <script type="text/javascript" language="JavaScript">
+        function makeArray(q){
+            for(i=1 ; i <= q ; i++){this[i]=0;}
+        }
+        var Colors = new makeArray(7);
+        Colors[1] = "00";Colors[2] = "33";Colors[3] = "66";
+        Colors[4] = "99";Colors[5] = "CC";Colors[6] = "FF";
+
+        for (var i=1 ; i <= 6; i++)
+        {
+            for(var j=1 ; j <= 6; j++)
+            {
+                for(var k=1 ; k <= 6; k++)
+                {
+                    var thiscolor = Colors[i] + Colors[j] + Colors[k];
+                    document.write("<span class='spanc' style='BACKGROUND: #"+thiscolor+";'  alt='#"+thiscolor+"'>&nbsp;</span>");
+                }
+            }
+        }
+    </script>
+</div>
+</div>
+
+
+<div style="padding:12px">
+    <div id="div2" nowrap>
+        <span style="font-size:15px;width:150px;">IE4+预命名颜色</span>
+        &nbsp;颜色名称：<input style='width:100px;' type="text" id="copy21"/>
+        &nbsp;色值：<input style='width:70px;' type="text" id="copy22"/>
+    </div>
+    <div onclick="shit(3,event)">
+        <span class="spanc" style="BACKGROUND: aliceblue" alt="#F0F8FF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: antiquewhite" alt="#FAEBD7">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: aqua" alt="#00FFFF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: aquamarine" alt="#7FFFD4">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: azure" alt="#F0FFFF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: beige" alt="#F5F5DC">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: bisque" alt="#FFE4C4">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: black" alt="#000000">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: blanchedalmond" alt="#FFEBCD">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: blue" alt="#0000FF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: blueviolet" alt="#8A2BE2">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: brown" alt="#A52A2A">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: burlywood" alt="#DEB887">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: cadetblue" alt="#5F9EA0">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: chartreuse" alt="#7FFF00">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: chocolate" alt="#D2691E">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: coral" alt="#FF7F50">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: cornflowerblue" alt="#6495ED">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: cornsilk" alt="#FFF8DC">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: crimson" alt="#DC143C">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: cyan" alt="#00FFFF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkblue" alt="#00008B">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkcyan" alt="#008B8B">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkgoldenrod" alt="#B8860B">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkgray" alt="#A9A9A9">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkgreen" alt="#006400">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkkhaki" alt="#BDB76B">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkmagenta" alt="#8B008B">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkolivegreen" alt="#556B2F">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkorange" alt="#FF8C00">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkorchid" alt="#9932CC">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkred" alt="#8B0000">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darksalmon" alt="#E9967A">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkseagreen" alt="#8FBC8B">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkslateblue" alt="#483D8B">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkslategray" alt="#2F4F4F">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkturquoise" alt="#00CED1">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: darkviolet" alt="#9400D3">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: deeppink" alt="#FF1493">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: deepskyblue" alt="#00BFFF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: dimgray" alt="#696969">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: dodgerblue" alt="#1E90FF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: firebrick" alt="#B22222">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: floralwhite" alt="#FFFAF0">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: forestgreen" alt="#228B22">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: Fuchsia" alt="#FF00FF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: gainsboro" alt="#DCDCDC">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: ghostwhite" alt="#F8F8FF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: gold" alt="#FFD700">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: goldenrod" alt="#DAA520">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: gray" alt="#808080">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: green" alt="#008000">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: greenyellow" alt="#ADFF2F">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: honeydew" alt="#F0FFF0">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: hotpink" alt="#FF69B4">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: indianred" alt="#CD5C5C">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: indigo" alt="#4B0082">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: ivory" alt="#FFFFF0">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: khaki" alt="#F0E68C">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lavender" alt="#E6E6FA">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lavenderblush" alt="#FFF0F5">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lawngreen" alt="#7CFC00">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lemonchiffon" alt="#FFFACD">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightblue" alt="#ADD8E6">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightcoral" alt="#F08080">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightcyan" alt="#E0FFFF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightgoldenrodyellow" alt="#FAFAD2">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightgreen" alt="#90EE90">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightgrey" alt="#D3D3D3">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightpink" alt="#FFB6C1">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightsalmon" alt="#FFA07A">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightseagreen" alt="#20B2AA">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightskyblue" alt="#87CEFA">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightslategray" alt="#778899">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightsteelblue" alt="#B0C4DE">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lightyellow" alt="#FFFFE0">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: lime" alt="#00FF00">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: limegreen" alt="#32CD32">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: linen" alt="#FAF0E6">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: magenta" alt="#FF00FF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: maroon" alt="#800000">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumaquamarine" alt="#66CDAA">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumblue" alt="#0000CD">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumorchid" alt="#BA55D3">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumpurple" alt="#9370DB">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumseagreen" alt="#3CB371">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumslateblue" alt="#7B68EE">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumspringgreen" alt="#00FA9A">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumturquoise" alt="#48D1CC">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mediumvioletred" alt="#C71585">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: midnightblue" alt="#191970">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mintcream" alt="#F5FFFA">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: mistyrose" alt="#FFE4E1">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: moccasin" alt="#FFE4B5">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: navajowhite" alt="#FFDEAD">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: navy" alt="#000080">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: oldlace" alt="#FDF5E6">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: olive" alt="#808000">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: olivedrab" alt="#6B8E23">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: orange" alt="#FFA500">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: orangered" alt="#FF4500">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: orchid" alt="#DA70D6">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: palegoldenrod" alt="#EEE8AA">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: palegreen" alt="#98FB98">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: paleturquoise" alt="#AFEEEE">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: palevioletred" alt="#DB7093">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: papayawhip" alt="#FFEFD5">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: peachpuff" alt="#FFDAB9">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: peru" alt="#CD853F">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: pink" alt="#FFC0CB">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: plum" alt="#DDA0DD">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: powderblue" alt="#B0E0E6">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: purple" alt="#800080">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: red" alt="#FF0000">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: rosybrown" alt="#BC8F8F">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: royalblue" alt="#4169E1">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: saddlebrown" alt="#8B4513">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: salmon" alt="#FA8072">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: sandybrown" alt="#F4A460">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: seagreen" alt="#2E8B57">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: seashell" alt="#FFF5EE">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: sienna" alt="#A0522D">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: silver" alt="#C0C0C0">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: skyblue" alt="#87CEEB">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: slateblue" alt="#6A5ACD">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: slategray" alt="#708090">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: snow" alt="#FFFAFA">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: springgreen" alt="#00FF7F">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: steelblue" alt="#4682B4">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: tan" alt="#D2B48C">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: teal" alt="#008080">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: thistle" alt="#D8BFD8">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: tomato" alt="#FF6347">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: turquoise" alt="#40E0D0">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: violet" alt="#EE82EE">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: wheat" alt="#F5DEB3">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: white" alt="#FFFFFF">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: whitesmoke" alt="#F5F5F5">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: yellow" alt="#FFFF00">&nbsp;</span>
+        <span class="spanc" style="BACKGROUND: yellowgreen" alt="#9ACD32">&nbsp;</span>
+    </div>
+</div>
+
+
+<div style="padding:12px">
+    <div id="div2" nowrap>
+        <span style="font-size:15px;width:150px;">WIN- 用户系统色盘</span>
+        &nbsp;颜色名称：<input style='width:180px;' type="text" id="copy11"/>
+    </div>
+    <div onclick="shit(2,event)">
+        <span class="spanc1" style="background:windowtext;color:#FFFFFF;">windowtext</span>
+        <span class="spanc1" style="background:windowframe;color:#FFFFFF;">windowframe</span>
+        <span class="spanc1" style="background:window;color:#000000;">window</span>
+        <span class="spanc1" style="background:threedshadow;color:#FFFFFF;">threedshadow</span>
+        <span class="spanc1" style="background:buttonshadow;color:#FFFFFF;">buttonshadow</span>
+        <span class="spanc1" style="background:threedlightshadow;color:#000000;">threedlightshadow</span>
+        <span class="spanc1" style="background:threedhighlightcolor:#000000;">threedhighlight</span>
+        <span class="spanc1" style="background:threedface;color:#000000;">threedface</span>
+        <span class="spanc1" style="background:threeddarkshadow;color:#FFFFFF;">threeddarkshadow</span>
+        <span class="spanc1" style="background:scrollbar;color:#000000;">scrollbar</span>
+        <span class="spanc1" style="background:menutext;color:#FFFFFF;">menutext</span>
+        <span class="spanc1" style="background:menu;color:#000000;">menu</span>
+        <span class="spanc1" style="background:infotext;color:#FFFFFF;">infotext</span>
+        <span class="spanc1" style="background:infobackground;color:#000000;">infobackground</span>
+        <span class="spanc1" style="background:inactivecaptiontext;color:#000000;">inactivecaptiontext</span>
+        <span class="spanc1" style="background:inactivecaption;color:#FFFFFF;">inactivecaption</span>
+        <span class="spanc1" style="background:inactiveborder;color:#000000;">inactiveborder</span>
+        <span class="spanc1" style="background:highlighttext;color:#000000;">highlighttext</span>
+        <span class="spanc1" style="background:highlight;color:#FFFFFF;">highlight</span>
+        <span class="spanc1" style="background:graytext;color:#FFFFFF;">graytext</span>
+        <span class="spanc1" style="background:captiontext;color:#000000;">captiontext</span>
+        <span class="spanc1" style="background:buttontext;color:#FFFFFF;">buttontext</span>
+        <span class="spanc1" style="background:buttonhighlight;color:#000000;">buttonhighlight</span>
+        <span class="spanc1" style="background:buttonface;color:#000000;">buttonface</span>
+        <span class="spanc1" style="background:background;color:#FFFFFF;" >background</span>
+        <span class="spanc1" style="background:appworkspace;color:#FFFFFF;">appworkspace</span>
+        <span class="spanc1" style="background:activecaption;color:#FFFFFF;">activecaption</span>
+        <span class="spanc1" style="background:activeborder;color:#000000;">activeborder</span>
+    </div>
+</div>
+
+</body>
+</html>
