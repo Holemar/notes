@@ -1,12 +1,14 @@
 本目录是 Python 相关笔记
 
+# 入门学习
+>> [small-examples](./入门小范例/README.md)
+
 # 原生内容
 >> [安装](./0.安装/)  
 >> [基础语法](./1.基础语法/)  
 >> [进阶语法](./2.进阶语法/)  
 >> [内置变量函数](./3.内置变量函数/)  
 >> [内置模块](./4.内置模块/)  
->> [第三方模块](./5.第三方模块/)  
 >> [杂](./6.杂/)  
 
 # web开发
@@ -24,9 +26,17 @@
 # 数据库
 >> [redis](./5.第三方模块/redis.py)  
 >> [PyMongo](./5.第三方模块/MongoDB-pymongo.py)  
->> [MongoEngine](./5.第三方模块/MongoDB-mongoengine.py)  
->> [pandas](./5.第三方模块/pandas.py)  
+>> [MongoEngine](./5.第三方模块/MongoDB-mongoengine.py)
 
+# 其他第三方模块
+>> [pandas](./5.第三方模块/pandas.py)  
+>> [requests](./5.第三方模块/5.5.requests.py)  
+>> [selenium](./5.第三方模块/selenium.md)  
+>> [jieba](./5.第三方模块/jieba.md)  
+>> [celery](./5.第三方模块/celery.py)  
+>> [lxml](./5.第三方模块/lxml-xpath.md)  
+>> [Mock](./5.第三方模块/5.6.mock.py)  
+>> [Scheduler定时器](./5.第三方模块/5.4.Scheduler定时器.py)  
 
 
 Python之禅  

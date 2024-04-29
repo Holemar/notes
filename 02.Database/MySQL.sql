@@ -159,6 +159,11 @@ MySql用户创建、授权以及删除
     mysql> CREATE USER 用户名@localhost IDENTIFIED BY '密码';
     -- localhost 可换上任意ip地址，“%”表示任意地址
 
+    若已经有root账户，修改密码则是：
+    如: mysql> mysql> update mysql.user set authentication_string=PASSWORD('密码'), plugin='mysql_native_password' where user='root';
+    如果上面一句失败，则执行下面这句
+    如: mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY '密码';
+
     若需要授权，用 grant:
     格式: grant select on 数据库.* to 用户名@登录主机 identified by "密码";
     如: mysql> GRANT ALL PRIVILEGES ON *.* TO 用户名@登录主机;
@@ -168,7 +173,7 @@ MySql用户创建、授权以及删除
     mysql> grant all privileges on 数据库.* to utest1@localhost identified by 'mimi';
 
     root账号权限修改：
-    mysql> grant all privileges on *.* to root@'localhost' identified by "123456";
+    mysql> grant all privileges on *.* to root@'localhost' identified by "12345678";
 
     flush:
     mysql> flush privileges;
@@ -179,6 +184,24 @@ MySql用户创建、授权以及删除
     注: 创建用户时，如果提示“table 'user' is read only”，则需要在控制台运行:
     "安装目录下\bin\mysqladmin" -u<用户名> -p<密码> flush-tables
 
+    # mysql 5.7.9以后废弃了 password 字段和 password() 函数； authentication_string:字段表示用户密码，而 authentication_string 字段下只能是mysql加密后的41位字符串密码。
+    # 而我们一般现在使用指令安装mysql会默认安装最新版mysql8.0，修改mysql8.0 root用户密码正确方式：
+    1. 进入root状态
+        $ sudo su
+    2. 进入mysql (进入root状态后，可以不需要密码直接进入 mysql)
+        # mysql
+    3. MySql 从8.0开始修改密码有了变化，在 user 表加了字段 authentication_string ,修改密码前先检查 authentication_string 是否为空
+       # 如果 authentication_string 不为空，先置空字段在修改密码
+       mysql> use mysql;
+       mysql> update user set authentication_string='' where user='root';  -- 将字段置为空
+       mysql> alter user 'root'@'localhost' identified with mysql_native_password by '12345678';  -- 修改密码
+    4. 设置生效和退出mysql、root模式
+        mysql> flush privileges;
+        mysql> exit;
+    5. 重启MySQL服务
+        $ sudo /etc/init.d/mysql restart
+    6. 重新进入MySQL
+        $ mysql -u root -p
 
 
 查看 MySQL 表结构:
