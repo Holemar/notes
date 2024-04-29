@@ -139,24 +139,93 @@ print(", ".join(seg_list))
 * jieba.analyse.TFIDF(idf_path=None) 新建 TFIDF 实例，idf_path 为 IDF 频率文件
 
 代码示例 （关键词提取）
-
-https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
+```python
+import jieba
+import jieba.analyse
+content = open('../extra_dict/test.txt', 'rb').read()
+tags = jieba.analyse.extract_tags(content, topK=10)
+print(",".join(tags))
+```
 
 关键词提取所使用逆向文件频率（IDF）文本语料库可以切换成自定义语料库的路径
 
-* 用法： jieba.analyse.set_idf_path(file_name) # file_name为自定义语料库的路径
-* 自定义语料库示例：https://github.com/fxsjy/jieba/blob/master/extra_dict/idf.txt.big
-* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_idfpath.py
+* 用法： `jieba.analyse.set_idf_path(file_name)` # file_name为自定义语料库的路径
+* 自定义语料库示例
+```text
+劳动防护 13.900677652
+勞動防護 13.900677652
+生化学 13.900677652
+生化學 13.900677652
+奥萨贝尔 13.900677652
+奧薩貝爾 13.900677652
+考察队员 13.900677652
+考察隊員 13.900677652
+岗上 11.5027823792
+崗上 11.5027823792
+倒车档 12.2912397395
+倒車檔 12.2912397395
+```
+* 用法示例
+```python
+import jieba
+import jieba.analyse
+content = open('../extra_dict/test.txt', 'rb').read()
+jieba.analyse.set_idf_path("../extra_dict/idf.txt.big")
+tags = jieba.analyse.extract_tags(content, topK=10)
+print(",".join(tags))
+```
+
 
 关键词提取所使用停止词（Stop Words）文本语料库可以切换成自定义语料库的路径
 
 * 用法： jieba.analyse.set_stop_words(file_name) # file_name为自定义语料库的路径
 * 自定义语料库示例：https://github.com/fxsjy/jieba/blob/master/extra_dict/stop_words.txt
-* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_stop_words.py
+```text
+the
+of
+is
+for
+an
+are
+by
+be
+的
+了
+和
+是
+或
+一個
+沒有
+是否
+```
+* 用法示例：
+```python
+import jieba
+import jieba.analyse
+content = open('../extra_dict/test.txt', 'rb').read()
+jieba.analyse.set_stop_words("../extra_dict/stop_words.txt")
+jieba.analyse.set_idf_path("../extra_dict/idf.txt.big")
+tags = jieba.analyse.extract_tags(content, topK=10)
+print(",".join(tags))
+```
+
 
 关键词一并返回关键词权重值示例
 
-* 用法示例：https://github.com/fxsjy/jieba/blob/master/test/extract_tags_with_weight.py
+* 用法示例：
+```python
+import jieba
+import jieba.analyse
+topK = 10  # 值由外部输入
+withWeight = True  # 值由外部输入
+content = open('../extra_dict/test.txt', 'rb').read()
+tags = jieba.analyse.extract_tags(content, topK=topK, withWeight=withWeight)
+if withWeight is True:
+    for tag in tags:
+        print("tag: %s\t\t weight: %f" % (tag[0],tag[1]))
+else:
+    print(",".join(tags))
+```
 
 ### 基于 TextRank 算法的关键词抽取
 
@@ -172,8 +241,88 @@ https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py
 3. 计算图中节点的PageRank，注意是无向带权图
 
 #### 使用示例:
+```python
+#encoding=utf-8
+import jieba
+import jieba.posseg
+import jieba.analyse
 
-见 [test/demo.py](https://github.com/fxsjy/jieba/blob/master/test/demo.py)
+print('='*40)
+print('1. 分词')
+print('-'*40)
+
+seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+print("Full Mode: " + "/ ".join(seg_list))  # 全模式
+
+seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+print("Default Mode: " + "/ ".join(seg_list))  # 默认模式
+
+seg_list = jieba.cut("他来到了网易杭研大厦")
+print(", ".join(seg_list))
+
+seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
+print(", ".join(seg_list))
+
+print('='*40)
+print('2. 添加自定义词典/调整词典')
+print('-'*40)
+
+print('/'.join(jieba.cut('如果放到post中将出错。', HMM=False)))
+#如果/放到/post/中将/出错/。
+print(jieba.suggest_freq(('中', '将'), True))
+#494
+print('/'.join(jieba.cut('如果放到post中将出错。', HMM=False)))
+#如果/放到/post/中/将/出错/。
+print('/'.join(jieba.cut('「台中」正确应该不会被切开', HMM=False)))
+#「/台/中/」/正确/应该/不会/被/切开
+print(jieba.suggest_freq('台中', True))
+#69
+print('/'.join(jieba.cut('「台中」正确应该不会被切开', HMM=False)))
+#「/台中/」/正确/应该/不会/被/切开
+
+print('='*40)
+print('3. 关键词提取')
+print('-'*40)
+print(' TF-IDF')
+print('-'*40)
+
+s = "此外，公司拟对全资子公司吉林欧亚置业有限公司增资4.3亿元，增资后，吉林欧亚置业注册资本由7000万元增加到5亿元。吉林欧亚置业主要经营范围为房地产开发及百货零售等业务。目前在建吉林欧亚城市商业综合体项目。2013年，实现营业收入0万元，实现净利润-139.13万元。"
+for x, w in jieba.analyse.extract_tags(s, withWeight=True):
+    print('%s %s' % (x, w))
+
+print('-'*40)
+print(' TextRank')
+print('-'*40)
+
+for x, w in jieba.analyse.textrank(s, withWeight=True):
+    print('%s %s' % (x, w))
+
+print('='*40)
+print('4. 词性标注')
+print('-'*40)
+
+words = jieba.posseg.cut("我爱北京天安门")
+for word, flag in words:
+    print('%s %s' % (word, flag))
+
+print('='*40)
+print('6. Tokenize: 返回词语在原文的起止位置')
+print('-'*40)
+print(' 默认模式')
+print('-'*40)
+
+result = jieba.tokenize('永和服装饰品有限公司')
+for tk in result:
+    print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
+
+print('-'*40)
+print(' 搜索模式')
+print('-'*40)
+
+result = jieba.tokenize('永和服装饰品有限公司', mode='search')
+for tk in result:
+    print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
+```
 
 4. 词性标注
 -----------
