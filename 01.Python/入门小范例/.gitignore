@@ -1,0 +1,6 @@
+﻿.idea
+.vscode
+.github
+img/*.html
+notebook
+venv
