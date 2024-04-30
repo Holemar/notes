@@ -38,34 +38,35 @@
 # encoding=utf-8
 import jieba
 
-jieba.enable_paddle()# 启动paddle模式。 0.40版之后开始支持，早期版本不支持
-strs=["我来到北京清华大学","乒乓球拍卖完了","中国科学技术大学"]
-for str in strs:
-    seg_list = jieba.cut(str,use_paddle=True) # 使用paddle模式
-    print("Paddle Mode: " + '/'.join(list(seg_list)))
-
 seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
-print("Full Mode: " + "/ ".join(seg_list))  # 全模式
+print("【全模式】: " + "/ ".join(seg_list))  # 全模式
 
 seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
-print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
+print("【精确模式】: " + "/ ".join(seg_list))  # 精确模式
 
 seg_list = jieba.cut("他来到了网易杭研大厦")  # 默认是精确模式
-print(", ".join(seg_list))
+print('【新词识别】：', ", ".join(seg_list))
 
 seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
-print(", ".join(seg_list))
+print('【搜索引擎模式】：', ", ".join(seg_list))
+
+# 首次使用 enable_paddle 会自动安装
+jieba.enable_paddle()  # 启动paddle模式。 0.40版之后开始支持，早期版本不支持
+strs = ["我来到北京清华大学", "乒乓球拍卖完了", "中国科学技术大学"]
+for s in strs:
+  seg_list = jieba.cut(s)  # 使用paddle模式
+  print("Paddle Mode: " + '/'.join(list(seg_list)))
 ```
 
 输出:
 
     【全模式】: 我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
-
     【精确模式】: 我/ 来到/ 北京/ 清华大学
-
     【新词识别】：他, 来到, 了, 网易, 杭研, 大厦    (此处，“杭研”并没有在词典中，但是也被Viterbi算法识别出来了)
-
-    【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
+    【搜索引擎模式】： 小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, ，, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
+    Paddle Mode: 我/来到/北京/清华大学
+    Paddle Mode: 乒乓球/拍卖/完/了
+    Paddle Mode: 中国/科学技术/大学
 
 2. 添加自定义词典
 ----------------
@@ -138,7 +139,7 @@ print(", ".join(seg_list))
   * allowPOS 仅包括指定词性的词，默认值为空，即不筛选
 * jieba.analyse.TFIDF(idf_path=None) 新建 TFIDF 实例，idf_path 为 IDF 频率文件
 
-代码示例 （关键词提取）
+代码示例 （关键词提取，提取最高频的词）
 ```python
 import jieba
 import jieba.analyse
@@ -381,6 +382,7 @@ paddle模式词性和专名类别标签集合如下表，其中词性标签 24 �
 * 默认模式
 
 ```python
+import jieba
 result = jieba.tokenize(u'永和服装饰品有限公司')
 for tk in result:
     print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
@@ -397,6 +399,7 @@ word 有限公司            start: 6                end:10
 * 搜索模式
 
 ```python
+import jieba
 result = jieba.tokenize(u'永和服装饰品有限公司', mode='search')
 for tk in result:
     print("word %s\t\t start: %d \t\t end:%d" % (tk[0],tk[1],tk[2]))
@@ -422,57 +425,55 @@ word 有限公司            start: 6                end:10
 
 ```python
 
+# 停用词列表，你可以根据需要自定义
+stop_words = set(["的", "了", "是", "我", '她', '他', '它', "你", '妳', '着', '在', '啊', "，", "…", "。", "！", "「", "」", "“ ", "”", '～', '？'])
+
 # 读取文件内容
 def get_content(path):
-    with open(path, 'r', encoding='gbk', errors='ignore') as f:
-        content = ''
-        for l in f:
-            l = l.strip()
-            content += l
-        return content
+  with open(path, 'r', encoding='utf8', errors='ignore') as f:
+    content = ''
+    for l in f:
+      l = l.strip()
+      content += l
+    return content
 
 # 获取高频词
 def get_TF(words, topK=10):
   tf_dic = {}
-  for w in words:
-    tf_dic[w] = tf_dic.get(w, 0) + 1
-  return sorted(tf_dic.items(), key = lambda x: x[1], reverse=True)[:topK]
+  for word in words:
+    # 去除停用词和长度为1的词
+    if word and word not in stop_words and len(word) > 1:
+      tf_dic[word] = tf_dic.get(word, 0) + 1
+  return sorted(tf_dic.items(), key=lambda x: x[1], reverse=True)[:topK]
 
 # 获取高频词(写法二)
 def get_TF2(words, topK=10):
   from collections import Counter
   import string
-
-  # 停用词列表，你可以根据需要自定义
-  stop_words = set(["的", "了", "是", "我", "你", "喜欢", "非常", "不错","手机"])
-
   # 去除标点和停用词，并统计词频
   word_count = Counter()
   for word in words:
-    # 去除标点
-    word = word.strip(string.punctuation)
+    word = word.strip(string.punctuation)  # 去除标点
     # 去除停用词和长度为1的词
     if word and word not in stop_words and len(word) > 1:
       word_count[word] += 1
-
   # 取词频最高的前 topK 个词
   top_words = word_count.most_common(topK)
-  # tokenized_comments = [{"name": word, "value": count} for word, count in top_words]
-  return sorted(top_words, key = lambda x: x[1], reverse=True)[:topK]
+  return top_words
 
 # 主函数
 def main():
-  import glob
-  import random
   import jieba
+  import jieba.analyse
 
-  files = glob.glob('./data/news/C000013/*.txt')  # 文件源
-  corpus = [get_content(x) for x in files]
-
-  sample_inx = random.randint(0, len(corpus))
-  split_words = list(jieba.cut(corpus[sample_inx]))
-  print('样本之一：'+corpus[sample_inx])
-  print('样本分词效果：'+'/ '.join(split_words))
-  print('样本的topK(10)词：'+str(get_TF(split_words)))
+  corpus = get_content('../extra_dict/test.txt')
+  split_words = list(jieba.cut(corpus))
+  # print('样本之一：', corpus)
+  print('样本分词效果：', '/ '.join(split_words))
+  print('样本的topK(20)词：', get_TF(split_words, topK=20))
+  # 上下两行都打印： 样本的topK(10)词： [('歹徒', 49), ('自己', 46), ('一个', 40), ('没有', 40), ('觉得', 39), ...]
+  print('样本的topK(20)词：', get_TF2(split_words, topK=20))
+  print('TF-IDF 算法', jieba.analyse.extract_tags(corpus, topK=20, withWeight=True))
+  # 上行打印: TF-IDF 算法 [('歹徒', 0.06933350221485693), ('分局长', 0.04533949715997035), ('觉得', 0.027921050743445516), ...]
 ```
 
