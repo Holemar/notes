@@ -30,6 +30,7 @@
 
 # 数据处理
 > [jieba](数据处理/jieba.md)  
+> [numpy](数据处理/numpy/)  
 > [pandas](数据处理/pandas.md)  
 
 # 其他第三方模块
