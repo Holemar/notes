@@ -39,7 +39,11 @@
   5.查看正在执行的SQL：
     show processlist;
 
-  6.limit
+  6.查看SQL的执行时间：
+    set profiling=1;  -- 先打开日志记录
+    show profile;  -- 然后查看语句执行的时间(精确到毫秒)
+
+  7.limit
     SELECT * FROM table LIMIT [offset,] rows;
     LIMIT 接受一个或两个数字参数。参数必须是一个整数常量。
     如果给定两个参数，第一个参数指定第一个返回记录行的偏移量，第二个参数指定返回记录行的最大数目。
