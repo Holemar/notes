@@ -309,6 +309,7 @@ print(d)  # 打印: OrderedDict([('b', None), ('c', None), ('d', None)])
 - `ChainMap`最基本的使用，可以用来合并两个或者更多个字典，当查询的时候，从前往后依次查询。
 - `ChainMap`允许你将多个字典视为一个。换句话说:`ChainMap`是一个基于多`dict`的可更新的视图，它的行为就像一个普通的`dict`。
 - `ChainMap`类用于快速链接多个映射，以便将它们视为一个单元。它通常比创建新字典和多次调用`update()`快得多。
+- 使用案例如：配置读取
 
 #### 特性
 1. 找到一个就不找了：这个列表是按照第一次搜索到最后一次搜索的顺序组织的，搜索查询底层映射，直到一个键被找到。
@@ -325,6 +326,8 @@ print(d)  # 打印: OrderedDict([('b', None), ('c', None), ('d', None)])
 属性返回一个新的`ChainMap`包含所有的当前实例的映射，除了第一个。这样可以在搜索的时候跳过第一个映射。  
 一个`d.parents`的引用等价于`ChainMap(*d.maps[1:])`。
 
+##### `maps`属性
+一个可以更新的映射列表。这个列表是按照第一次搜索到最后一次搜索的顺序组织的。它是仅有的存储状态，可以被修改。列表最少包含一个映射。
 
 ```python
 from collections import ChainMap
@@ -341,6 +344,9 @@ print(d)  # 打印: ChainMap({'key_new': 888}, {'art': 'van gogh', 'opera': 'car
 
 print(c.parents)  # 打印: ChainMap({'music': 'bach', 'art': 'rembrandt'})
 print(d.parents)  # 打印: ChainMap({'art': 'van gogh', 'opera': 'carmen'}, {'music': 'bach', 'art': 'rembrandt'})
+
+print(c.maps)  # 打印: [{'art': 'van gogh', 'opera': 'carmen'}, {'music': 'bach', 'art': 'rembrandt'}]
+print(d.maps)  # 打印: [{'key_new': 888}, {'art': 'van gogh', 'opera': 'carmen'}, {'music': 'bach', 'art': 'rembrandt'}]
 ```
 
 
