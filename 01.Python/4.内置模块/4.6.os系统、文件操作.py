@@ -30,6 +30,8 @@ os 模块
       +: 打开一个磁盘文件供更新,一般是组合使用,如:
          rb+: 以二进制读方式打开，可以读、写文件，如果文件不存在，会发生异常
          wb+: 以二进制写方式打开，可以读、写文件，如果文件不存在，创建该文件；如果文件已存在，先清空，再打开文件
+         r+: 读写文件
+         w+：读写文件【不存在，则创建；存在，则清空重写】
       u: 通用换行模式
       默认的模式是 rt，即打开供读取的文本模式。
     2.buffering 关键字参数的期望值是以下三个整数中的一个以决定缓冲策略:
@@ -272,11 +274,23 @@ os 模块
 
     # py3 中，可以在打开文件时指定编码，但 py2 的 open 不能。兼容方式是 py2 使用 codecs.open
     import sys
+    from datetime import date
     if sys.version_info[0] == 2:
         from codecs import open  # 打开文件时，可以指定编码
-    with open(filePath, encoding='utf-8') as f:
-        ...
+    # mode='r+' 允许同时读写文件
+    with open(filePath, mode='r+', encoding='utf-8') as f:
+        lines = f.readlines()  # 注意：读取出来的每一行都是 `\n` 结尾的，只有最后一行没有这个结尾
+        today = date.today().strftime('%Y/%m/%d')
+        # 替换文件内容
+        for index, line in enumerate(lines):
+            if line.startswith('@date '):
+                lines[index] = f'@date {today}\n'
 
+        # 下面两行代码需要说明一下：如果不先清空而只依赖指针移动到0的话，当新内容比之前少，会遗留部分旧内容在后面。
+        # 如果只清空不移动指针到0，文件开头会出现一堆乱码字符。
+        f.truncate(0)  # 清空文件内容，否则会追加。
+        f.seek(0)  # 指针移到0，从开始位置写入内容。
+        f.writelines(lines)  # 写入多行内容
 
 ########### 示例5 文件操作(获取文件修改时间) #################################
     import os,os.path,time

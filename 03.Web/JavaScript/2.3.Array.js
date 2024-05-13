@@ -1,4 +1,7 @@
 ﻿
+JavaScript Array 对象 参考手册
+https://www.runoob.com/jsref/jsref-obj-array.html
+
 Array 数组对象：
     1) 创建数组：
         var a = new Array();  a[0] = "元素1"; a[1] = "元素2";

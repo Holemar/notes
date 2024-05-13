@@ -1,4 +1,7 @@
 ﻿
+JavaScript String 对象 参考手册
+https://www.runoob.com/jsref/jsref-obj-string.html
+
 String 字符串对象：
     格式编排:anchor()锚、blink()闪烁、fixed()固定、bold()粗体、italics()斜体、strike()删除线
            big()字变大、small()字变小、sub()下标、sup()上标；

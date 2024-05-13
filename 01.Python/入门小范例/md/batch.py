@@ -1,47 +1,55 @@
 """
-@author jackzhenguo
 @desc 批量生成模板文件
 @tag datetime file
 @version v1.2
-@date 2020/8/23
+@date 2024/5/13
 """
 
 import os
-import calendar
-from datetime import date,datetime
-
-def getEverydaySince(year,month,day,n=10):
-    i = 0
-    _, days = calendar.monthrange(year, month)
-    while i < n: 
-        d = date(year,month,day)    
-        if day == days:
-            month,day = month+1,0
-            _, days = calendar.monthrange(year, month)
-            if month == 13:
-                year,month = year+1,1
-                _, days = calendar.monthrange(year, month)
-        yield d
-        day += 1
-        i += 1
+import logging
+from datetime import date
 
 
-def batchCreate(ps='.md',start=100,n=100,path='.',year=2020,month=2,day=1):
-  
-    for i,day in zip(range(start,start+n),\
-                     getEverydaySince(year,month,day,n) \
-                    ):
-        with open(path+'/'+str(i)+ps,'w') as fw:
-            
-            fw.write("""
-```markdown
-@author jackzhenguo
-@desc
-@tag
-@version 
-@date {}
-```
-		     """.format(datetime.strftime(day,'%Y/%m/%d'))\
-		     )
-            print(day)
-    print('done')
+def add_last_next():
+    """批量给文件加上 上一个例子、下一个例子 """
+    today = date.today().strftime('%Y/%m/%d')
+    for file in os.listdir('.'):
+        file_name, ext = os.path.splitext(file)
+        if ext != '.md' or not file_name.isdigit():
+            continue
+        with open(file, mode='r+', encoding='utf-8') as f:
+            file_number = int(file_name)
+            try:
+                lines = f.readlines()
+                # 替换日期
+                for index, line in enumerate(lines):
+                    if index > 10:
+                        break
+                    if line.startswith('@date '):
+                        lines[index] = f'@date {today}\n'
+                c = f'[上一个例子]({file_number-1}.md)    [下一个例子]({file_number+1}.md)'
+                # 已经执行过一遍
+                if lines[-1] == c:
+                    continue
+                old = f'<center>[上一个例子]({file_number-1}.md)    [下一个例子]({file_number+1}.md)</center>'
+                # 旧版本的错误写法
+                if lines[-1] == old:
+                    lines[-1] = c
+                else:
+                    lines.append('\n')
+                    lines.append('\n')
+                    lines.append(c)
+
+                # 下面两行代码需要说明一下：如果不先清空而只依赖指针移动到0的话，当新内容比之前少，会遗留部分旧内容在后面。
+                # 如果只清空不移动指针到0，文件开头会出现一堆乱码字符。
+                f.truncate(0)  # 清空文件内容，否则会追加。
+                f.seek(0)  # 指针移到0，从开始位置写入内容。
+                f.writelines(lines)
+                print('文件%s写入成功' % (file,))
+            except Exception as ex:
+                logging.exception('批量添加 上一个例子、下一个例子 异常')
+
+
+if __name__ == '__main__':
+    add_last_next()
+

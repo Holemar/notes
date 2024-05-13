@@ -1,220 +1,5 @@
 ### Python 实战
 
-
-#### 221 自动群发邮件
-
-Python自动群发邮件
-
-```python
-import smtplib
-from email import (header)
-from email.mime import (text, application, multipart)
-import time
-
-def sender_mail():
-    smt_p = smtplib.SMTP()
-    smt_p.connect(host='smtp.qq.com', port=25)
-    sender, password = '113097485@qq.com', "**************"
-    smt_p.login(sender, password)
-    receiver_addresses, count_num = [
-        'guozhennianhua@163.com', 'xiaoxiazi99@163.com'], 1
-    for email_address in receiver_addresses:
-        try:
-            msg = multipart.MIMEMultipart()
-            msg['From'] = "zhenguo"
-            msg['To'] = email_address
-            msg['subject'] = header.Header('这是邮件主题通知', 'utf-8')
-            msg.attach(text.MIMEText(
-                '这是一封测试邮件，请勿回复本邮件~', 'plain', 'utf-8'))
-            smt_p.sendmail(sender, email_address, msg.as_string())
-            time.sleep(10)
-            print('第%d次发送给%s' % (count_num, email_address))
-            count_num = count_num + 1
-        except Exception as e:
-            print('第%d次给%s发送邮件异常' % (count_num, email_address))
-            continue
-    smt_p.quit()
-
-sender_mail()
-```
-
-
-
-注意：
-发送邮箱是qq邮箱，所以要在qq邮箱中设置开启SMTP服务，设置完成时会生成一个授权码，将这个授权码赋值给文中的`password`变量
-
-#### 222 二分搜索
-
-二分搜索是程序员必备的算法，无论什么场合，都要非常熟练地写出来。
-
-小例子描述：
-在**有序数组**`arr`中，指定区间`[left,right]`范围内，查找元素`x`
-如果不存在，返回`-1`
-
-二分搜索`binarySearch`实现的主逻辑
-
-```python
-def binarySearch(arr, left, right, x):
-    while left <= right:
-
-        mid = int(left + (right - left) / 2); # 找到中间位置。求中点写成(left+right)/2更容易溢出，所以不建议这样写
-
-        # 检查x是否出现在位置mid
-        if arr[mid] == x:
-            print('found %d 在索引位置%d 处' %(x,mid))
-            return mid
-
-            # 假如x更大，则不可能出现在左半部分
-        elif arr[mid] < x:
-            left = mid + 1 #搜索区间变为[mid+1,right]
-            print('区间缩小为[%d,%d]' %(mid+1,right))
-
-        # 同理，假如x更小，则不可能出现在右半部分
-        elif x<arr[mid]:
-            right = mid - 1 #搜索区间变为[left,mid-1]
-            print('区间缩小为[%d,%d]' %(left,mid-1))
-
-    # 假如搜索到这里，表明x未出现在[left,right]中
-    return -1
-```
-
-在`Ipython`交互界面中，调用`binarySearch`的小Demo:
-
-```python
-In [8]: binarySearch([4,5,6,7,10,20,100],0,6,5)
-区间缩小为[0,2]
-found 5 at 1
-Out[8]: 1
-
-In [9]: binarySearch([4,5,6,7,10,20,100],0,6,4)
-区间缩小为[0,2]
-区间缩小为[0,0]
-found 4 at 0
-Out[9]: 0
-
-In [10]: binarySearch([4,5,6,7,10,20,100],0,6,20)
-区间缩小为[4,6]
-found 20 at 5
-Out[10]: 5
-
-In [11]: binarySearch([4,5,6,7,10,20,100],0,6,100)
-区间缩小为[4,6]
-区间缩小为[6,6]
-found 100 at 6
-Out[11]: 6
-```
-
-#### 223 爬取天气数据并解析温度值
-
-爬取天气数据并解析温度值
-
-素材来自朋友袁绍，感谢！
-
-爬取的html 结构
-
-<img src="./img/1.png" width="50%"/>
-
-```python
-import requests
-from lxml import etree
-import pandas as pd
-import re
-
-url = 'http://www.weather.com.cn/weather1d/101010100.shtml#input'
-with requests.get(url) as res:
-    content = res.content
-    html = etree.HTML(content)
-```
-
-
-
-通过lxml模块提取值
-
-lxml比beautifulsoup解析在某些场合更高效
-
-```python
-location = html.xpath('//*[@id="around"]//a[@target="_blank"]/span/text()')
-temperature = html.xpath('//*[@id="around"]/div/ul/li/a/i/text()')
-```
-
-结果：
-
-```python
-['香河', '涿州', '唐山', '沧州', '天津', '廊坊', '太原', '石家庄', '涿鹿', '张家口', '保定', '三河', '北京孔庙', '北京国子监', '中国地质博物馆', '月坛公
-园', '明城墙遗址公园', '北京市规划展览馆', '什刹海', '南锣鼓巷', '天坛公园', '北海公园', '景山公园', '北京海洋馆']
-
-['11/-5°C', '14/-5°C', '12/-6°C', '12/-5°C', '11/-1°C', '11/-5°C', '8/-7°C', '13/-2°C', '8/-6°C', '5/-9°C', '14/-6°C', '11/-4°C', '13/-3°C'
-, '13/-3°C', '12/-3°C', '12/-3°C', '13/-3°C', '12/-2°C', '12/-3°C', '13/-3°C', '12/-2°C', '12/-2°C', '12/-2°C', '12/-3°C']
-```
-
-
-构造DataFrame对象
-
-```python
-df = pd.DataFrame({'location':location, 'temperature':temperature})
-print('温度列')
-print(df['temperature'])
-```
-
-正则解析温度值
-
-```python
-df['high'] = df['temperature'].apply(lambda x: int(re.match('(-?[0-9]*?)/-?[0-9]*?°C', x).group(1) ) )
-df['low'] = df['temperature'].apply(lambda x: int(re.match('-?[0-9]*?/(-?[0-9]*?)°C', x).group(1) ) )
-print(df)
-```
-
-详细说明子字符创捕获
-
-除了简单地判断是否匹配之外，正则表达式还有提取子串的强大功能。用`()`表示的就是要提取的分组（group）。比如：`^(\d{3})-(\d{3,8})$`分别定义了两个组，可以直接从匹配的字符串中提取出区号和本地号码
-
-```python
-m = re.match(r'^(\d{3})-(\d{3,8})$', '010-12345')
-print(m.group(0))
-print(m.group(1))
-print(m.group(2))
-
-# 010-12345
-# 010
-# 12345
-```
-
-如果正则表达式中定义了组，就可以在`Match`对象上用`group()`方法提取出子串来。
-
-注意到`group(0)`永远是原始字符串，`group(1)`、`group(2)`……表示第1、2、……个子串。
-
-
-最终结果
-
-```kepython
-Name: temperature, dtype: object
-    location temperature  high  low
-0         香河     11/-5°C    11   -5
-1         涿州     14/-5°C    14   -5
-2         唐山     12/-6°C    12   -6
-3         沧州     12/-5°C    12   -5
-4         天津     11/-1°C    11   -1
-5         廊坊     11/-5°C    11   -5
-6         太原      8/-7°C     8   -7
-7        石家庄     13/-2°C    13   -2
-8         涿鹿      8/-6°C     8   -6
-9        张家口      5/-9°C     5   -9
-10        保定     14/-6°C    14   -6
-11        三河     11/-4°C    11   -4
-12      北京孔庙     13/-3°C    13   -3
-13     北京国子监     13/-3°C    13   -3
-14   中国地质博物馆     12/-3°C    12   -3
-15      月坛公园     12/-3°C    12   -3
-16   明城墙遗址公园     13/-3°C    13   -3
-17  北京市规划展览馆     12/-2°C    12   -2
-18       什刹海     12/-3°C    12   -3
-19      南锣鼓巷     13/-3°C    13   -3
-20      天坛公园     12/-2°C    12   -2
-21      北海公园     12/-2°C    12   -2
-22      景山公园     12/-2°C    12   -2
-23     北京海洋馆     12/-3°C    12   -3
-```
-
 ### 十、数据分析
 
 本项目基于Kaggle电影影评数据集，通过这个系列，你将学到如何进行数据探索性分析(EDA)，学会使用数据分析利器`pandas`，会用绘图包`pyecharts`，以及EDA时可能遇到的各种实际问题及一些处理技巧。
@@ -506,8 +291,6 @@ pandas 中使用`join`关联两张表，连接字段是`Movie ID`，如果顺其
 combine = ratings.join(comedy, on='Movie ID', rsuffix='2')
 
 ```
-
-左右滑动，查看完整代码
 
 大家可验证这种写法，仔细一看，会发现结果非常诡异。
 
@@ -884,7 +667,7 @@ The Terminal (2004)
 
 前10名评论数图：
 
-![](./img/2020013109495711.jpg)
+![](../img/2020013109495711.jpg)
 
 代码：
 ```python
@@ -907,7 +690,7 @@ grid.render_notebook()
 
 前10名得分图：
 
-![](./img/2020013109500812.jpg)
+![](../img/2020013109500812.jpg)
 
 代码：
 ```python
@@ -1335,7 +1118,7 @@ print('Done')
 10)查看结果
 例子君使用`vs code`，在扩展库中选择：`SQLite`安装。
 
-![image-20200208211721377](./img/image-20200208211721377.png)
+![image-20200208211721377](../img/image-20200208211721377.png)
 
 新建一个`sq`文件：`a.sql`，内容如下：
 
@@ -1344,7 +1127,7 @@ SELECT * from books
 ```
 右键`run query`，得到表`books`插入的4行记录可视化图：
 
-![image-20200208211806853](./img/image-20200208211806853.png)
+![image-20200208211806853](../img/image-20200208211806853.png)
 
 以上十步就是sqlite3写入数据库的主要步骤，作为Flask系列的第二篇，为后面的前端讲解打下基础。
 
@@ -1377,7 +1160,7 @@ def index():
 
 完整过程图如下所示：
 
-![image-20200211152007983](./img/web1.png)
+![image-20200211152007983](../img/web1.png)
 
 读者朋友们，如果你和例子君一样都是初学Flask编程，需要好好理解上面的过程。理解这些对于接下来的编程会有一定的理论指导，方向性指导价值。
 
