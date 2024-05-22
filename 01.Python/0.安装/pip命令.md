@@ -45,7 +45,8 @@ pip install pkg==2.1.2  | 所安装的包的版本为 2.1.2
 pip install pkg>=2.1.2  | 所安装的包必须大于等于 2.1.2
 pip install pkg<=2.1.2  | 所安装的包必须小于等于 2.1.2
 pip install pkg>=6.0.0,<7.0.0  | 指定包的版本范围, 大于等于6.0.0 且小于7.0.0
-
+pip install package_name==desired_version --force-reinstall | 强行安装指定版本(版本冲突时用)
+pip install package_name==desired_version --no-dependencies | 不安装其他依赖
 
 ## 卸载软件包
 

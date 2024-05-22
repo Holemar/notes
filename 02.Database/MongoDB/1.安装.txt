@@ -164,8 +164,10 @@ mac 可以使用 Homebrew 安装 MongoDB
 
     这时我们创建好了超级管理员，现在退出shell,重新进入mongo shell，输入命令:
     use admin
-    db.auth("admin","belloai")
+    db.auth("myAdmin","myAdminPassword")
     若返回为1，则认证成功！现在，我们超级管理员也创建好了，可以为其他数据库创建用户了。(建议在 admin 库里面建其他库的用户)
+    上述命令如果创建失败，改下面的：
+    db.createUser({user: "myAdmin", pwd: "myAdminPassword", roles: [{role: "root", db: "admin"}]})
 
     use bello_nlp  # 切换至 bello_nlp 数据库(库名自定义)
     # 创建用户,用户对数据库 bello_nlp 的权限为读写
