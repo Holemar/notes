@@ -1,4 +1,9 @@
 ﻿# 用python操作浏览器
+
+- 竞争产品 DrissionPage: https://github.com/g1879/DrissionPage  
+  结合了 selenium 和 requests 的特性。集操作浏览器及发请求于一身。  
+  介绍：  https://drissionpage.cn/
+
 - selenium 导入浏览器驱动，用get方法打开浏览器
 
     ```python

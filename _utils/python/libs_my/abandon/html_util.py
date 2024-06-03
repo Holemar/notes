@@ -44,7 +44,7 @@ def remove_html(text):
     """
     清除HTML标签
     :return {string}:清除标签后的内容
-    @example remove_htmlTag("<div>haha</div>") 返回: "haha"
+    @example remove_html("<div>haha</div>") 返回: "haha"
     """
     # 清除注释
     text = text.strip().replace("<!--.*?-->", "")
