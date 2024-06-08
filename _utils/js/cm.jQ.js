@@ -33,8 +33,9 @@ c$ = window.c$ = function() {
 window.onerror = function(msg, url, sLine) {
     var hostUrl = window.location.href;
     // 判断网址,测试时可以提示出错信息;正式发布时不提示
-    if (hostUrl.indexOf("http://localhost") === 0 || hostUrl.indexOf("http://127.0.0.1") === 0 ||
-        hostUrl.indexOf("http://192.168.") === 0 || hostUrl.indexOf("file://") === 0) {
+    if (hostUrl.indexOf("http://localhost") === 0 || hostUrl.indexOf("http://127.0.0.") === 0 ||
+        hostUrl.indexOf("http://192.168.") === 0 || hostUrl.indexOf("file://") === 0 ||
+        hostUrl.indexOf("http://0.0.0.0") === 0) {
         var errorMsg = "当前页面的javascript发生错误.\n\n";
         errorMsg += "错误: " + msg + "\n";   // 出错信息
         errorMsg += "URL: " + url + "\n";    // 出错文件的地址

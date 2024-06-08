@@ -148,7 +148,9 @@ def send_mail(host, user, password, to_list, **kwargs):
                 # 文件路径
                 file_path = to_unicode(file_path)
                 # 文件内容
-                file_content = open(file_path, 'rb').read()
+                fb = open(file_path, 'rb')
+                file_content = fb.read()
+                fb.close()
                 # 文件名(不包含路径)
                 file_name = os.path.basename(file_path)
             # 传过来文件二进制流
