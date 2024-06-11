@@ -60,18 +60,6 @@
       //你甚至可以使用Math.max来检测浏览器支持哪个属性：
       var scrollTop = Math.max( document.documentElement.scrollTop, document.body.scrollTop );
 
-    5.如果你想给一个元素增加class样式，可能原始的写法是这样的：
-      function addclass(elm,newclass) {
-          var c = elm.className;
-          elm.className = (c === '') ? newclass : c+' '+newclass;
-      }
-      //而更优雅的写法是：
-      function addclass(elm,newclass){
-          var classes = elm.className.split(' ');
-          classes.push(newclass);
-          elm.className = classes.join(' ');
-      }
-
     6.对象的继承
       一般的做法是复制所有属性，但还有种方法，就是: Function.apply
       函数的 apply 方法能劫持另外一个对象的方法，继承另外一个对象的属性

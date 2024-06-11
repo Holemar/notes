@@ -115,17 +115,6 @@ window主要功能：
    //采用screen对象的分辨率属性和resizeTo函数来动态确定窗口最大长度和宽度
 
 
-选取页面的对象:
-    var obj = document.forms["FormName"].elements["elementName"];
-    var obj = document.forms[x].elements[y]; //x和y 是int类型，表示第几个表单，第几个元素
-    var obj = document.FormName.elementName;
-    var obj = document.all["elementName"];
-    var obj = document.all["elementID"];
-    var obj = document.getElementById("elementID");
-    var obj = document.getElementsByName("elementName"); //返回数组
-    var obj = document.getElementsByTagName("TagName");  //返回数组
-
-
 IE上的关闭窗口时不提示
   window.opener = null; // 关闭IE6不提示
   window.open("","_self"); // 关闭IE7不提示

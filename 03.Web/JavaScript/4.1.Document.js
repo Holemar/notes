@@ -1,14 +1,18 @@
 ﻿
 选取页面的对象:
+    var obj = document.getElementById("elementID");
+    var objs = document.getElementsByName("elementName"); //返回数组
+    var objs = document.getElementsByTagName("TagName");  //返回数组
+    var objs = document.getElementsByClassName("elementClass");  //返回数组
+
     var obj = document.forms["FormName"].elements["elementName"];
     var obj = document.forms[x].elements[y]; //x和y 是int类型，表示第几个表单，第几个元素
     var obj = document.FormName.elementName;
     var obj = document.all["elementName"];
     var obj = document.all["elementID"];
-    var obj = document.getElementById("elementID");
-    var obj = document.getElementsByName("elementName"); //返回数组
-    var obj = document.getElementsByTagName("TagName");  //返回数组
 
+    var obj = document.querySelector("#elementID");  // 返回第一个符合条件的元素(里面的选择字符串参考CSS选择器)
+    var objs = document.querySelectorAll(".elementClass");  // 返回所有符合条件的元素
 
 
 Document对象
@@ -43,4 +47,45 @@ Document对象
     for (let elem of document.getElementsByTagName('audio')) {
       elem.play();
     }
+
+
+元素增减 class 样式
+    现代浏览器
+    // 现代浏览器 classList 优化过，它提供了一些方法，并且不依赖任何框架和插件。
+    // 在IE10之前的版本不支持该 classList 属性，IE8和IE9可以通过第三方库来支持该方法。
+    document.getElementById("MyElement").classList.add('MyClass');   // 添加 class
+    document.getElementById("MyElement").classList.remove('MyClass');  // 移除 class
+    if ( document.getElementById("MyElement").classList.contains('MyClass') )  // 判断是否存在 class
+    document.getElementById("MyElement").classList.toggle('MyClass'); // 切换 class
+
+    通用跨浏览器解决方案
+    // 通过设置元素的 className 属性来实现的。 该属性是一个字符串，包含了所有 class 名的列表，用空格分隔。
+    document.getElementById("MyElement").className = "MyClass";  //单个class
+    document.getElementById("MyElement").className = "MyClass1 MyClass2";  //多个class
+    // 下面是一些通用方法，可以用来添加、移除、判断和切换 class。
+    function addClass(elem, className) {
+      if (!elem.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'))) {
+        elem.className += ' ' + className;
+      }
+    }
+    function removeClass(elem, className) {
+      elem.className = elem.className.replace(new RegExp('(\\s|^)' + className + '(\\s|$)'), '$2');
+      // 或者写: elem.className = elem.className.replace(new RegExp('(\\s|^)' + className + '(\\s|$)'), ' ');
+    }
+    // 我们可以用以下代码来判断元素是否有某个 class
+    function hasClass(elem, className) {
+      return elem.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+    }
+    // 切换 class
+    function toggleClass(elem, className) {
+      var classes = elem.className.split(' ');
+      var existingIndex = classes.indexOf(className);
+      if (existingIndex >= 0) {
+        classes.splice(existingIndex, 1);
+      } else {
+        classes.push(className);
+      }
+      elem.className = classes.join(' ');
+    }
+
 

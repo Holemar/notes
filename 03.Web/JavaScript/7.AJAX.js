@@ -1,11 +1,9 @@
 ﻿
-
 与服务器沟通：发送请求和处理回应
       XMLHttpRequest 提供两个存取 服务器回应的属性：
       1. responseText  将回应产生为字符串
       2. responseXML   将回应产生为一个 XML 对象
       如果后台返回的XML里包含有标签，可以先在后台把标签的"<"换成"&lt;"；而">"换成"&gt;"。这样就可以当成子元素接收。
-
 
 Ajax概述：
     Ajax是由Jesse James Garrett创造的，是"Asynchronous JavaScript and XML"的缩写
@@ -28,15 +26,14 @@ Ajax的优势：
     基于标准化的并被广泛支持的技术，不需要下载插件或者小程序。
     进一步促进页面呈现和数据的分离。
 
-
 XMLHttpRequest对象(AJAX引擎的核心)
-1)作用：实现AJAX的体验
+1. 作用：实现AJAX的体验
        象桌面应用与server进行数据交换
        异步
        局部刷新
-2)目的：减轻server的压力，提高交互的速度
+2. 目的：减轻server的压力，提高交互的速度
        局部刷新页面某个部份，不影响整个页面
-3)对象创建(XMLHttpRequest)：
+3. 对象创建(XMLHttpRequest)：
   根据不同的浏览器，对XMLHttpRequest对象的初始化有所不同：
   <script language="javascript">
      var xmlreq = false;
@@ -49,7 +46,7 @@ XMLHttpRequest对象(AJAX引擎的核心)
      xmlreq = new XMLHttpRequest(); }   //Mozilla浏览器
   </script>
 
-4)XMLHttpRequest对象是运行在browser的(Ajax引擎的核心)
+4. XMLHttpRequest对象是运行在browser的(Ajax引擎的核心)
 状态：
     0=未初始化
     1=读取中
@@ -57,11 +54,6 @@ XMLHttpRequest对象(AJAX引擎的核心)
     3=交互中
     4=完成
 
-
-Ajax工具：
-   1.Html Validator: 火狐插件，代码验证用。本地验证
-   2.Checky: 火狐插件，代码验证用。第三方验证
-   3.JsLint: 代码验证用。网站 www.jslint.com 上验证。非常严格
 
 用 iframe 实现 Ajex ( 在 XMLHttpRequest 问世前 )
 
@@ -100,88 +92,7 @@ Ajax工具：
 </html>
 
 
-使用 responseText 和 innerHTML ：
-
-// ******* innerHTML.html 的内容 *******
-<! DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Using responseText with innerHTML</title>
-<script type="text/javascript">
-<!--
-   var xmlHttp;
-   function createXMLHttpRequest () {
-       //Mozilla
-       if ( window.XMLHttpRequest ) {
-           xmlHttp = new XMLHttpRequest ();
-           if ( xmlHttp.overrideMimeType ) {
-               xmlHttp.overrideMimeType("text/xml");
-           }
-       }  //以下是 IE
-       else if ( window.ActiveXObject ) {
-           try {
-                 xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-           } catch (e) {
-                try {
-                     xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-                } catch (e) { }
-   }}}
-   function startRequest () {
-       createXMLHttpRequest ();
-	   //触发 onreadystatechange 时调用“handleStateChange();”
-       xmlHttp.onreadystatechange = handleStateChange;
-       xmlHttp.open ( "GET", "innerHTML.xml", true );
-       xmlHttp.send ( null );
-   }
-   function handleStateChange() {
-       if ( xmlHttp.readyState == 4 ) {
-        // alert("xmlHttp.status="+xmlHttp.status);
-           if ( xmlHttp.status == 200 ) {
-               document.getElementById ( "results" ).innerHTML = xmlHttp.responseText;
-               alert ( "The server replied with: \r\n" + xmlHttp.responseText );
-               var element1 = xmlHttp.responseXML.getElementsByTagName("td")[3].firstChild;
-               alert ("第二个人名字是：" + element1.data); //也可用 element1.nodeValue
-           } else {
-               alert("获取资料出错!");
-           }
-    }}
-//-->
-</script>
-</head>
-<body>
-    <form action="#" >
-     <input type="button" value="Activities" onclick="startRequest();" />
-    </form>
-    <div id="results" ></div>
-</body>
-</html>
-
-// ******* innerHTML.xml 的内容 ********
-<table border="1">
-<tbody>
-<tr>
-    <th>Activity Name</th>
-    <th>Location</th>
-    <th>Time</th>
-</tr>
-<tr>
-    <td>Hiking</td>
-    <td>Trail 3</td>
-    <td>3:30 PM</td>
-</tr>
-<tr>
-    <td>Idede</td>
-    <td>Trail 5</td>
-    <td>5:00 PM</td>
-</tr>
-</tbody>
-</table>
-
-
-
-
-
-  发送请求参数：(比较 GET 和 POST )
+发送请求参数：(比较 GET 和 POST )
      //此方法仅为举例而写，下面的 GET 和 POST 都用到。
      function createQueryString() {
          var firstName = document.getElementById("firstName").value;
@@ -192,9 +103,30 @@ Ajax工具：
          return queryString;
      }
 
+     function createXMLHttpRequest () {
+        var xmlHttp = null;
+        //Mozilla
+        if ( window.XMLHttpRequest ) {
+           xmlHttp = new XMLHttpRequest ();
+           if ( xmlHttp.overrideMimeType ) {
+               xmlHttp.overrideMimeType("text/xml");
+           }
+        }  //以下是 IE
+        else if ( window.ActiveXObject ) {
+           try {
+                 xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+           } catch (e) {
+                try {
+                     xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (e) { }
+           }
+        }
+        return xmlHttp;
+     }
+
      // GET 形式
      function doRequestUsingGET() {
-         createXMLHttpRequest();  //此通用方法，省略。具体写法见前面的例子。
+         var xmlHttp = createXMLHttpRequest();  //此通用方法，省略。具体写法见前面的例子。
          // 注：GET传参时，URL里面不能有中文(中文须转码)，也不能传太长的参数字符串
          var queryString = "GetAndPostExample?";
              queryString += createQueryString() + "&timeStamp=" + new Date().getTime();
@@ -206,7 +138,7 @@ Ajax工具：
 
      // POST 形式
      function doRequestUsingPOST() {
-         createXMLHttpRequest();  //此通用方法，省略。具体写法见前面的例子。
+         var xmlHttp = createXMLHttpRequest();  //此通用方法，省略。具体写法见前面的例子。
          var url = "GetAndPostExample?&timeStamp=" + new Date().getTime(); //此句不同。
          var queryString = createQueryString();
          xmlHttp.open("POST", url, true);
@@ -319,285 +251,6 @@ Ajax工具：
 /*********** xmlHttp.status 状态解析 end ****************************/
 
 
-
-事例1：表单验证(验证日期格式)
-
- (1)validation.html 的内容：
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title>Test</title>
-    <script type="text/javascript">
-    <!--
-           var xmlHttp;
-           function createXMLHttpRequest() {
-               if ( window.XMLHttpRequest ) {
-                   xmlHttp = new XMLHttpRequest ();
-               }  //以下是 IE
-               else if ( window.ActiveXObject ) {
-                  xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-               }
-           }
-           function validate() {
-               createXMLHttpRequest();
-               var date = document.getElementById("birthDate");
-               var url = "ValidationServlet?birthDate=" + escape(date.value);
-               xmlHttp.open ( "GET", url, true );
-               xmlHttp.onreadystatechange = callback ; //调用callback();
-               xmlHttp.send ( null );
-           }
-           function callback () {
-               if ( xmlHttp.readyState == 4 ) {
-                   if ( xmlHttp.status == 200 ) {
-                       //alert ( "The server replied with: \r\n" + xmlHttp.responseText );
-                       var mes = xmlHttp.responseXML.getElementsByTagName("message")[0].firstChild.data;
-                       var isValid = xmlHttp.responseXML.getElementsByTagName("passed")[0].firstChild.data;
-                       setMessage(mes, isValid);
-                   }
-               }
-           }
-           function setMessage(message, isValid){
-               var messageArea = document.getElementById("dateMessage");
-               var fontColor = "red";
-               if (isValid == "true"){ fontColor = "green";}
-               messageArea.innerHTML = "<font color=" + fontColor + ">" + message + " </font>";
-           }
-        -->
-        </script>
-  </head>
-
-  <body>
-    Birth Date:<input type="text" size="10" id="birthDate" onchange="validate();" />
-    <div id="dateMessage"></div>
-  </body>
-</html>
-
-  (2)ValidationServlet.java 的内容(在servlet目录下)：
-package servlet;
-import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-public class ValidationServlet extends HttpServlet{
-    public void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException,
-            IOException {
-        PrintWriter out = response.getWriter();
-        boolean passed = validateDate(request.getParameter("birthDate"));
-        response.setContentType("text/xml");
-        response.setHeader("Cache-Control", "no-cache");
-        String message = "You have entered an invalid date.";
-        if (passed){ message = "You have entered a valid date."; }
-        out.println("<response>");
-        out.println("<passed>" + Boolean.toString(passed) + "</passed>");
-        out.println("<message>" + message + "</message>");
-        out.println("</response>");
-       // out.flush();
-        out.close();
-    }
-    private boolean validateDate(String date) {
-        boolean isValid = true;
-        if ( date != null ){
-            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-            try {
-                formatter.parse(date);
-                System.out.println("验证成功！");
-            }catch(ParseException pe){
-                System.out.println("输入不合法!");
-                isValid = false;
-            }
-        } else {
-            isValid = false;
-        }
-        return isValid;
-    }
-}
-
-  (3)web.xml 里添加的内容：
-  <servlet>
-    <servlet-name>ValidationServlet</servlet-name>
-    <servlet-class>servlet.ValidationServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ValidationServlet</servlet-name>
-    <url-pattern>/ValidationServlet</url-pattern>
-  </servlet-mapping>
-
-效果：在页面输入日期后，后台自动验证输入。
-如果是符合“月份/日期/四位数年份”格式的，则输入框下面绿色提示。不符合则红色提示。
-
-
-
-
-
-事例2：建立提示框
-       效果：鼠标移动到某栏目上，提示框提示相关信息。鼠标离开，提示框消失。
-
-ToolTip.html 的内容：
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title>Ajax ToolTip.html</title>
-    <script type="text/javascript"><!--
-           var xmlHttp;
-           var dataDiv, dataTable, dataTableBody, offsetEl;
-           function createXMLHttpRequest () {
-               if ( window.XMLHttpRequest ) {
-                      xmlHttp = new XMLHttpRequest ();
-                     if ( xmlHttp.overrideMimeType ) {
-                         xmlHttp.overrideMimeType("text/xml");
-               }}  //以下是 IE
-               else if ( window.ActiveXObject ) {
-                   try { xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-                   } catch (e) {
-                   try { xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-                   } catch (e) {}
-           }}}
-           function initVars() {
-               dataTableBody = document.getElementById("courseDataBody");
-               dataTable = document.getElementById("courseData");
-               dataDiv = document.getElementById("popup");
-           }
-           function getCourseData(element) {
-               initVars();
-               createXMLHttpRequest();
-               offsetEl = element;
-               var url = "ToolTipServlet?key=" + escape(element.id);
-               xmlHttp.open ( "GET", url, true );
-               xmlHttp.onreadystatechange = callback ; //调用callback();
-               xmlHttp.send ( null );
-           }
-           function callback () {
-               if ( xmlHttp.readyState == 4 ) {
-                   if ( xmlHttp.status == 200 ) {
-                       setData(xmlHttp.responseXML);
-           }}}
-           function setData(courseData){
-               clearData();
-               setOffsets();
-               var length = courseData.getElementsByTagName("length")[0].firstChild.data;
-               var par = courseData.getElementsByTagName("par")[0].firstChild.data;
-               var row, row2;
-               var parData = "Par:" + par;
-               var lengthData = "Length:" + length;
-               row = createRow(parData);
-               row2 = createRow(lengthData);
-               dataTableBody.appendChild(row);
-               dataTableBody.appendChild(row2);
-           }
-           function createRow(data){
-               var row, cell, txtNode;
-               row = document.createElement("tr");
-               cell = document.createElement("td");
-               cell.setAttribute("bgcolor","#FFFAFA");
-               cell.setAttribute("border","0");
-               txtNode = document.createTextNode(data);
-               cell.appendChild(txtNode);
-               row.appendChild(cell);
-               return row;
-           }
-           function setOffsets(){
-               var end = offsetEl.offsetWidth;
-               var top = calculateOffsetTop(offsetEl);
-               dataDiv.style.border = "black 1px solid";
-               dataDiv.style.left = end + 15 + "px";
-           }
-           function calculateOffsetTop(field) {
-               return calculateOffset(field, "offsetTop");
-           }
-           function calculateOffset(field, attr) {
-               var offset = 0;
-               while(field){
-                   offset += field[attr];
-                   field = field.offsetParent;
-               }
-               return offset;
-           }
-           function clearData() {
-               var ind = dataTableBody.childNodes.length;
-               for (var i = ind - 1; i >= 0; i-- ) {
-                   dataTableBody.removeChild(dataTableBody.childNodes[i]);
-               }
-               dataDiv.style.border = "none";
-           }
-        --></script>
-  </head>
-  <body>
-    <h3>Golf Courses</h3>
-    <table id="courses" bgcolor="#FFFAFA" border="1" cellspacing="0" cellpadding="2">
-    <tbody>
-        <tr><td id="1" onmouseover="getCourseData(this);"
-             onmouseout="clearData();">Augusta National</td></tr>
-        <tr><td id="2" onmouseover="getCourseData(this);"
-             onmouseout="clearData();">Pinehurst No.2</td></tr>
-        <tr><td id="3" onmouseover="getCourseData(this);"
-             onmouseout="clearData();">St. Andrews Links</td></tr>
-        <tr><td id="4" onmouseover="getCourseData(this);"
-             onmouseout="clearData();">Baltusrol Golf Club</td></tr>
-    </tbody>
-    </table>
-    <div style="position:absolute;" id="popup">
-        <table id="courseData" bgcolor="#FFFAFA" border="0" cellspacing="2" cellpadding="2" >
-            <tbody id="courseDataBody"></tbody>
-        </table>
-    </div>
-  </body>
-</html>
-
-
-ToolTipServlet.java (这是一个Servlet，web.xml配置不再写了)的内容：
-
-package servlet;
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-public class ToolTipServlet extends HttpServlet {
-    private Map courses = new HashMap();
-    public void init(ServletConfig config) throws ServletException {
-        //这里作简化处理，以内部类保存数据。实际中会去数据库查询资料
-        CourseData augusta = new CourseData(72, 7290);
-        CourseData pinehurst = new CourseData(70, 7214);
-        CourseData standrews = new CourseData(73, 6566);
-        CourseData baltusrol = new CourseData(69, 7392);
-        courses.put(new Integer(1), augusta);
-        courses.put(new Integer(2), pinehurst);
-        courses.put(new Integer(3), standrews);
-        courses.put(new Integer(4), baltusrol);
-    }
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Integer key = Integer.valueOf(request.getParameter("key"));
-        CourseData data = (CourseData) courses.get(key);
-        PrintWriter out = response.getWriter();
-        response.setContentType("text/xml");
-        response.setHeader("Cache-Control", "no-cache");
-        out.println("<response>");
-        out.println("<par>" + data.getPar() + "</par>");
-        out.println("<length>" + data.getLength() + "</length>");
-        out.println("</response>");
-        out.flush();
-        out.close();
-    }
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException { doGet(request,response); }
-    //内部类保存数据。
-    private class CourseData {
-        private int par;
-        private int length;
-        public CourseData(int par, int length){
-            this.par = par; this.length = length;
-        }
-        public int getPar(){ return par; }
-        public void setPar(int par) { this.par = par; }
-        public int getLength() { return length; }
-        public void setLength(int length){ this.length = length; }
-    }
-}
-
-
-
 给XMLHttpRequests设置timeouts
 　　如果一个XHR需要花费太长时间，你可以终止链接（例如网络问题），通过给XHR使用setTimeout()解决。
 
@@ -608,7 +261,7 @@ public class ToolTipServlet extends HttpServlet {
             // do something with response data
         }
     }
-    var timeout = setTimeout( function () {
+    var timeout = setTimeout(function () {
         xhr.abort(); // call error callback
     }, 60*1000 /* timeout after a minute */ );
     xhr.open('GET', url, true);
@@ -617,62 +270,7 @@ public class ToolTipServlet extends HttpServlet {
 　　此外，通常你应该完全避免同步Ajax调用。
 
 
-
-
 // *************** 常用Ajax工具 开始 ***************
-
-/**
- * 这是出错调试代码
- * 当页面发生错误时，提示错误信息
- * @param msg   出错信息
- * @param url   出错文件的地址
- * @param sLine 发生错误的行
- * @return true 让出错时不显示出错图标
- */
-window.onerror = function ( msg, url, sLine ) {
-    var hostUrl = window.location.href;
-    // 判断网址,测试时可以提示出错信息;正式发布时不提示
-    if ( hostUrl.indexOf("http://localhost") === 0 || hostUrl.indexOf("http://127.0.0.1") === 0 ||
-        hostUrl.indexOf("http://192.168.") === 0 || hostUrl.indexOf("file://") === 0 ) {
-        var errorMsg = "当前页面的脚本发生错误.\n\n";
-        errorMsg += "错误: " + msg + "\n";
-        errorMsg += "URL: " + url + "\n";
-        errorMsg += "行: " + sLine + "\n\n";
-        errorMsg += "点击“确定”以继续。\n\n";
-        window.alert( errorMsg );
-    }
-    // 返回true,会消去 IE下那个恼人的“网页上有错误”的提示
-    return true;
-};
-
-/**
- * 给页面上的 Enter 键赋以事件。
- * @param event 使用firefox時，必須用参数接收 window.event。
- *  而IE则需直接使用 window.event，参数接收不到任何內容
- * @return false
- */
-window.document.onkeydown = function ( event ) {
-    // 为兼容 IE 和 FireFox
-    event = event || window.event;
-    // 如果取不到页面事件
-    if ( !event ) return;
-    // 取得页面上的按键码
-    var currentKey = event.charCode || event.keyCode;
-    // 取得事件源
-    var eventSource = event.target || event.srcElement;
-    // 多行输入框,允許输入换行符
-    if ( "TEXTAREA" === eventSource.tagName ) return true;
-    // 如果是 Enter 键, 执行指定程式
-    if ( 13 === currentKey ) {
-        try {
-            // 执行指定程式
-            alert("Enter 事件");
-        }
-        catch (e) {}
-        return (event.returnValue = false);
-    }
-};
-
 
 /**
  * Ajax类
