@@ -8,27 +8,35 @@ Dom 元素
     <element>.lastChild        返回目前元素的最后一个子元素
     <element>.nodeValue        指定表示元素值的读/写属性
     <element>.parentNode       返回元素的父节点
+    <element>.tagName          返回目前元素的标签名(大写)
+    <element>.innerHTML        返回或设置目前元素的innerHTML内容
     <element>.previousSibling  返回紧邻目前元素之前的元素
     <element>.nextSibling      返回目前元素的后面的元素
-    <element>.tagName          返回目前元素的标签名(大写)
+    <element>.previousElementSibling          返回目前元素的前一个元素
+    <element>.nextElementSibling              返回目前元素的后一个元素
 
 沿 XML 文件来回移动的 DOM 元素方法：
     document.getElementById(id)             取得有指定唯一ID属性值文件中的元素
     document.getElementsByTagName(name)     返回目前元素中有指定标签名的子元素的数组
     <element>.hasChildNodes()               返回布尔值，表示元素是否有子元素
-    <element>.getAttribute(name)            返回元素的属性值，属性由name指定
+
+元素的属性和方法：
+    <element>.attributes                    返回目前元素所有属性的 NamedNodeMap 对象
+    <element>.getAttribute(name)            取得元素中的name属性的值
+    <element>.setAttribute(name,value)      设定元素中的name属性的值
+    <element>.hasAttribute(name)            返回布尔值，表示元素是否有指定属性
+    <element>.removeAttribute(name)         从元素中删除属性name
 
 动态建立内容时所用的 W3C DOM 属性和方法：
     document.createElement(tagName)         建立由tagName指定的元素。比如以"div"作为参数，则生成一个div元素。
     document.createTextNode(text)           建立一个包含静态文字的节点。
     <element>.appendChild(childNode)        将指定节点增加到目前元素的子节点中。例如：select中增加option子节点
-    <element>.getAttribute(name)            取得元素中的name属性的值
-    <element>.setAttribute(name,value)      设定元素中的name属性的值
     <element>.insertBefore(Node1,Node2)     将节点Node1作为目前元素的子节点插到Node2元素前面。
-    <element>.removeAttribute(name)         从元素中删除属性name
     <element>.removeChild(childNode)        从元素中删除子元素childNode
     <element>.replaceChild(newN,oldN)       将节点oldN替换为节点newN
     <element>.hasChildnodes()               返回布尔值，表示元素是否有子元素
+    <element>.cloneNode(deep)                复制当前元素，如果 deep 为 true，则复制所有子元素
+    <element>.normalize()                    合并元素中相邻的文本节点
 
     注意：文字实际上是父元素的一个子节点，所以可以使用firstChild属性来存取元素的文字节点。
         有了文字节点后，可以参考文字节点的nodeValue属性来得到文字。
@@ -67,3 +75,14 @@ Dom 元素
     只是, attr.nodeValue 会返回真实类型,如 bool,number,string,object 等； 而 attr.value 全是 string 类型(null 则返回"null")
 
     判断是否 dom 元素，一些特殊节点只有nodeName，没有tagName，比如document的nodeName为“#document”，tagName为空值。
+
+
+// 把节点插在另一个节点之后(原生`js`只有`insertBefore`方法，没有`insertAfter`方法)
+function insertAfter(newElement, targetElement) {
+    var parent = targetElement.parentNode;
+    if (parent.lastChild == targetElement) {
+        parent.appendChild(newElement);
+    } else {
+        parent.insertBefore(newElement, targetElement.nextSibling);
+    }
+}
