@@ -13,6 +13,8 @@
 
     python manage.py flush        # 清空数据库
     python manage.py createsuperuser # 创建超级管理员
+    python manage.py makemigrations
+    python manage.py migrate
 
     # 导出数据 导入数据
     python manage.py dumpdata appname > appname.json

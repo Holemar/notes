@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!-- saved from url=(0035)http://db.tt/ORtPX1Y3 -->
 <!-- 交流QQ群:26651479 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -54,15 +53,21 @@
     <div>
         升降幅度对比:
         <input class="text2" id='hight_txt' type="text"/><span id='add_hight_txt'></span>&nbsp;&nbsp;&nbsp;
-        <input class="text2" id='now_txt' type="text"/>
+        <input class="text2" id='now_txt' type="text"/>&nbsp;&nbsp;&nbsp;
         <input class="text2" id='low_txt' type="text"/><span id='add_low_txt'></span>&nbsp;&nbsp;&nbsp;
+    </div><br/>
+
+    <div>
+        时薪转换:
+        $ <input class="text2" id='dollar_hour' type="text"/>/时&nbsp;&nbsp;==>&nbsp;&nbsp;
+        ¥ <input class="text2" id='yuan_month' type="text" style="width: 150px"/>/月&nbsp;&nbsp;&nbsp;&nbsp;
+        ¥/$ 汇率: <input class="text2" id='exchange_rate' type="text" value="7.27"/>
     </div>
 </body>
 </html>
 
 
 <script language="javascript" type="text/javascript">
-
 /**
  * 这是错误调试程序
  * 当页面发生错误时，提示错误讯息；仅测试环境里会提示，正式环境下不提示错误。
@@ -71,8 +76,11 @@
 window.onerror = function(msg, url, sLine) {
     var hostUrl = window.location.href;
     // 判断网址,测试时可以提示出错信息;正式发布时不提示
-    if (hostUrl.indexOf("http://localhost") === 0 || hostUrl.indexOf("http://127.0.0.1") === 0 ||
-        hostUrl.indexOf("http://192.168.") === 0 || hostUrl.indexOf("file://") === 0) {
+    // 127 开头,本机或者同一IP段；局域网ip: 10.0.0.0-10.255.255.255 / 192.168.0.0-192.168.255.255 / 172.16.0.0-172.31.255.255
+    if (hostUrl.indexOf("http://localhost") === 0 || hostUrl.indexOf("http://127.") === 0 ||
+        hostUrl.indexOf("http://192.168.") === 0 || hostUrl.indexOf("http://10.") === 0 ||
+        hostUrl.indexOf("http://172.") === 0 || hostUrl.indexOf("file://") === 0
+    ) {
         var errorMsg = "当前页面的javascript发生错误.\n\n";
         errorMsg += "错误: " + msg + "\n";   // 出错信息
         errorMsg += "URL: " + url + "\n";    // 出错文件的地址
@@ -206,6 +214,37 @@ function compare() {
 /***** 升降幅度对比 end *********/
 
 
+/***** 时薪转换 start *********/
+//  输入框
+var dollar_hour_input = document.getElementById('dollar_hour');
+var yuan_month_input = document.getElementById('yuan_month');
+var exchange_rate_input = document.getElementById('exchange_rate');
+
+// 时薪转换
+function exchange_money(event) {
+    event = event || window.event;
+    var element = event.target || event.srcElement;  // 获取事件源
+
+    var dollar_value = dollar_hour_input.value;
+    var yuan_value = yuan_month_input.value;
+    var rate_value = exchange_rate_input.value;
+
+    // 没有汇率，没法计算
+    if (!rate_value) {
+        return;
+    }
+    rate_value = parseFloat(rate_value);
+    dollar_value = parseFloat(dollar_value);
+    yuan_value = parseFloat(yuan_value);
+    if (element == dollar_hour_input) {
+        yuan_month_input.value = (dollar_value * 8 * 22.75 * rate_value).toFixed(2);
+    } else {
+        dollar_hour_input.value = (yuan_value / 8 / 22.75 / rate_value).toFixed(2);
+    }
+}
+/***** 时薪转换 end *********/
+
+
 // 添加事件
 (function() {
     var elements = document.getElementsByTagName('input');
@@ -228,7 +267,7 @@ function compare() {
                 return true;
             };
         }
-        // 输入框, 输入“=”号或者按回车, 则计算结果
+        // 升降幅度对比 输入框, 输入完成时计算结果
         else if (element === hight_input || element === now_input || element === low_input) {
             element.onkeydown = function(event) {
                 event = event || window.event;
@@ -248,6 +287,28 @@ function compare() {
             };
             // 值修改时触发计算
             element.onchange = compare;
+        }
+        // 时薪转换 输入框, 输入完成时计算结果
+        else if (element === dollar_hour_input || element === yuan_month_input) {
+            element.onkeydown = function(event) {
+                event = event || window.event;
+                var source = event.target || event.srcElement;  // 获取事件源
+                var currentKey = event.keyCode || event.charCode;
+                // 输入数字时、小数点、删除时，不管
+                if (currentKey>=48 && currentKey<=57 || currentKey>=96 && currentKey<=105 || // 数字0-9
+                    currentKey==8 || currentKey==46 || // 删除
+                    currentKey==190 || currentKey==110) { // 小数点
+                    return true;
+                }
+                // 输入回车时计算
+                if (currentKey==13) {
+                    exchange_money(event);
+                    return true;
+                }
+                return false;
+            };
+            // 值修改时触发计算
+            element.onchange = exchange_money;
         }
     }
     // 设置焦点

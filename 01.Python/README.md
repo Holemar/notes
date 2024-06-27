@@ -10,6 +10,7 @@
 > [内置变量函数](./3.内置变量函数/)  
 > [内置模块](./4.内置模块/)  
 > [杂](./6.杂/)  
+> [Python 标准库](https://docs.python.org/zh-cn/3.7/library/index.html)  
 
 # web开发
 > [fast api](./Web/fast_api/)  

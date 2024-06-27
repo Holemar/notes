@@ -15,6 +15,12 @@
     driver.get("http://huazhu.gag.com/mis/main.do")
     ```
 
+- Zalenium  
+  是一个`Selenium Grid`的扩展，它使用`docker-selenium`在本地运行基于`Firefox`和`Chrome`的测试，同样带有视频录制，实时预览，基本认证和仪表盘等功能；  
+  如果需要其他的浏览器，则需要用到云测试提供商（Sauce Labs，BrowserStack，TestingBot），当然这些是收费的。。。  
+  不过好在Firefox和Chrome是开源的，基本已经够用了。   
+  Zalenium也可以在Kubernetes中使用。  
+
 
 - 通过导入 python 的标准库 webbrowser 打开浏览器
 
