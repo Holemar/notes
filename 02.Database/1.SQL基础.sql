@@ -127,11 +127,6 @@ select: 从一个或多个表中检索一个或多个数据列。包含信息: �
     4、字段的拼接,可用双竖线(双竖线只能用于select语句里)。不同的DBMS可能使用不同的操作符;拼接的字段同样可以起别名。
         如: Select  first_name ||' '|| last_name || ', '|| title "Employees" From s_emp;
 
-排他锁: Select id,salary  From s_emp where id=1  For Update;
-   可以阻止他人并发的修改，直到你解锁。
-   如果已有锁则自动退出: Select id,salary From s_emp where id=1 For Update NoWait;
-   FOR UPDATE : 可以再加 OF 精确到某格。如:    ... For Update  OF salary ...
-   注意要解锁。
 
 五、ORDER BY 子句，排序
 Order by: 按某排序列表(默认升序 asc, 由低到高; 可加 desc,改成降序由高到低)
@@ -613,6 +608,13 @@ Rename 原表名 To 新表名;
     Delete 删除后可以roll back。清空后不释放内存。
 
 
+排他锁: Select id,salary  From s_emp where id=1  For Update;
+   可以阻止他人并发的修改，直到你解锁。
+   如果已有锁则自动退出: Select id,salary From s_emp where id=1 For Update NoWait;
+   FOR UPDATE : 可以再加 OF 精确到某格。如:    ... For Update  OF salary ...
+   注意要解锁。
+
+
 事务(交易) Transaction
     [begin transaction statement]
        SQL statement
@@ -621,6 +623,36 @@ Rename 原表名 To 新表名;
        SQL statement
     commit transaction statement
 
+
+数据库提供了四种事物隔离级别：
+    - 读未提交（Read Uncommitted）：允许读取尚未提交的数据变更，可能造成脏读、不可重复读、幻读(那些未提交的变化被它们的父事务撤销)。
+        未提交读的数据库锁情况（实现原理）
+            事务在读数据的时候并未对数据加锁。
+            事务在修改数据的时候只对数据增加行级共享锁。
+
+    - 读已提交（Read Committed）：一个事务只能看到其他已提交事务的变更。
+        在事务处理期间，如果其他事务修改了相应的表，那么同一个事务的多个 SELECT 语句可能返回不同的结果。
+        提交读的数据库锁情况(实现原理)
+            事务对当前被读取的数据加 行级共享锁（当读到时才加锁），一旦读完该行，立即释放该行级共享锁；
+            事务在更新某数据的瞬间（就是发生更新的瞬间），必须先对其加 行级排他锁，直到事务结束才释放。
+
+    - 可重复读（Repeatable Read）：(默认) 一个事务在整个事务范围内只能看到一个事务提交的结果，中间没有其他事务提交的结果。
+        当前正在执行事务的变化不能被外部看到，也就是说，如果用户在一个事务中执行同条 SELECT 语句数次，结果总是相同的。
+        可重复读的数据库锁情况
+            事务在读取某数据的瞬间（就是开始读取的瞬间），必须先对其加 行级共享锁，直到事务结束才释放；
+            事务在更新某数据的瞬间（就是发生更新的瞬间），必须先对其加 行级排他锁，直到事务结束才释放。
+
+    - 串行化（Serializable）：所有事务都串行执行，互相不干扰，一个事务不可能看到其他事务的任何中间结果。
+        是最高的事务隔离级别，在该级别下，事务串行化顺序执行，可以避免脏读、不可重复读与幻读。
+        但是这种事务隔离级别效率低下，比较耗数据库性能，一般不使用。
+        可序列化的数据库锁情况
+            事务在读取数据时，必须先对其加 表级共享锁 ，直到事务结束才释放；
+            事务在更新数据时，必须先对其加 表级排他锁 ，直到事务结束才释放。
+
+    值得一提的是：
+        大多数数据库默认的事务隔离级别是 Read committed，比如Sql Server , Oracle。
+        MySQL的默认隔离级别是 Repeatable read。
+        随着数据库隔离级别的提高，数据的并发能力也会有所下降。所以，如何在并发性和隔离性之间做一个很好的权衡就成了一个至关重要的问题。
 
 
 SQL server创建临时表:

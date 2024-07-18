@@ -227,3 +227,24 @@ match() vs search()
 # 去除HTML中的空标签对
     html = re.sub(r'<([a-z]+\d?)\b[^>]*>( |[\s　])*</\1>', '', html)
 
+# 记忆组(匹配重复字符串) 判断密码强弱
+    def check_password(password):
+        """判断密码是否弱密码
+        强密码要求：长度有8位或者更多，至少包含大小写字母和数字，不能包含连续3个相同字符
+        """
+        length = len(password)
+        if length < 8:
+            return 'weak'
+        if not re.search('\d', password) or not re.search('[a-z]', password) or not re.search('[A-Z]', password):
+            return 'weak'
+        if re.search(r'([a-zA-Z0-9])\1{2,}', password):  # 连续3个相同字符
+            # if re.search('([a-zA-Z0-9])\\1{2,}', password):  # 如果不是 r 开头的字符串，则 \1 必须写成 \\1
+            return 'weak'
+        return "strong"
+
+    print(check_password('123456789') == 'weak')
+    print(check_password('123456789asfsafa') == 'weak')
+    print(check_password('123456789Aaaa') == 'weak')
+    print(check_password('123456789Aaa123') == 'strong')
+    print(check_password('123456789Afsd') == 'strong')
+

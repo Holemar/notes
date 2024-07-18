@@ -17,7 +17,7 @@ Ubuntu 上安装 RabbitMQ
 8. 列出用户：`rabbitmqctl list_users`
 9. 创建用户：`rabbitmqctl add_user username password`
 10. 设置管理员权限：`rabbitmqctl set_user_tags username administrator`
-11. 设置mq用户的权限，指定允许访问的host以及write/read权限：`rabbitmqctl set_permissions -p "/" username ".*" ".*" ".*"`
+11. 设置mq用户的权限，指定允许访问的vhost以及write/read权限：`rabbitmqctl set_permissions -p "/vhost" username ".*" ".*" ".*"`
 12. 查看vhost（/）允许哪些用户访问：`rabbitmqctl list_permissions -p /`
 
 
