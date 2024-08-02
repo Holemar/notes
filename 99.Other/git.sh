@@ -375,6 +375,11 @@
           显示出下列信息表示连接成功
              Hi username! You've successfully authenticated, but GitHub does not provide shell access.
 
+      6) window的github 每次需要输入passphrase for key id_rsa 的解决办法
+          命令行输入 
+             $ ssh-keygen -p
+          如果原来有密码，需要先输入原来的密码，后面输入新密码时，Enter 空 表示不使用密码，再次 Enter 空 就完成了。
+
 
 四、Git Server
     建立一个 Git 代码共享仓库服务器。
