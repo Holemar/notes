@@ -27,7 +27,6 @@ import xlrd
 import xlsxwriter
 import openpyxl
 
-from .str_util import to_str, to_unicode, CODING_LIST
 from .file_util import download_file, remove
 
 PY2 = sys.version_info[0] == 2
@@ -38,8 +37,10 @@ if PY2:
     except:
         from StringIO import StringIO
     from codecs import open  # 打开文件时，可以指定编码
+    from .abandon.py2_str_util import to_unicode, to_str, CODING_LIST
 elif PY3:
     from io import StringIO
+    from .str_util import decode2str as to_unicode, decode2str as to_str, DECODE_CODING_LIST as CODING_LIST
     basestring = unicode = str
     long = int
 

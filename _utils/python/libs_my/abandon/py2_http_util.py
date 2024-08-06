@@ -15,7 +15,7 @@ import logging
 import threading
 from uuid import uuid4
 
-from . import str_util
+from . import py2_str_util as str_util
 
 __all__ = ('init', 'get', 'post', 'put', 'delete', 'patch', 'options', 'send', 'multiple_send',
            'url_encode', 'multiple_url_encode', 'choose_boundary', 'getRequestParams', 'get_content_type')

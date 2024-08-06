@@ -13,26 +13,22 @@ Updated on 2019/1/18
 本模块专门供 django 框架的 API接口 函数修饰用
 统一处理 django 请求的请求地址、压缩返回值、异常处理、接口耗时、访问ip验证等
 """
-import os
 import time
-import json
-import random
 import logging
 from functools import wraps
 
-from django.db.models import Q
 from django.utils.decorators import available_attrs
 from django.http import JsonResponse # json形式返回结果
 from django.http.response import HttpResponse
 
-from . import str_util
+from .json_util import json_serializable
 
 logger = logging.getLogger('libs_my.django.api')
 
 
 # 请求默认值
 CONFIG = {
-    'warn_time' : 5, # {int}:接口运行过久，该警告的时间(单位:秒)
+    'warn_time': 5,  # {int}:接口运行过久，该警告的时间(单位:秒)
 }
 
 def init(**kwargs):
@@ -62,11 +58,11 @@ def route(view_func):
             param.update(kwargs)
             res = view_func(request, *args, **param)
         # 请求被调函数时,参数不对应
-        except TypeError, e:
+        except TypeError as e:
             logger.error(u"[red]请求参数错误:%s[/red] URL:%s, 参数: %s", e, url, (args, param), exc_info=True, extra={'color':True})
             res = {"success": False, 'message': u'请求参数错误'}
         # 请求被调函数时,抛出其它异常
-        except Exception, e:
+        except Exception as e:
             logger.error(u'[red]接口异常:%s[/red] URL:%s, 参数: %s', e, url, (args, param), exc_info=True, extra={'color':True})
             res = {"success": False, 'message': u'请求失败'}
         finally:
@@ -81,10 +77,10 @@ def route(view_func):
         result = JsonResponse({"success": False, 'message': u'请求失败'})
         if isinstance(res, HttpResponse):
             result = res
-        elif isinstance(res, basestring):
+        elif isinstance(res, str):
             result = HttpResponse(res)
         else:
-            result = HttpResponse(str_util.json2str(res, raise_error=False))
+            result = HttpResponse(json_serializable(res))
         return result
     # 将函数变成可访问的接口地址
     wrapped_view.csrf_exempt = True

@@ -42,6 +42,7 @@ Updated on 2019/1/18
     fn 函数,目前针对被装饰器(Decorator)装饰过的函数,建议设置 name 参数来区分, 因为key会是装饰器的名称,容易导致缓存结果出错
 
 """
+import sys
 import uuid
 import types
 import logging
@@ -57,6 +58,12 @@ except ImportError:
     import pickle
 
 logger = logging.getLogger('libs_my.django.cache')
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+if PY3:
+    basestring = unicode = str
+    long = int
 
 
 def pop(*args):
@@ -202,7 +209,7 @@ def get_cache_model(model_class, key, get_fun, timeout=300, cache=cache):
         # 有可能model属性已增减，导致反序列化失败
         except:
             obj = get_fun()
-            logging.warn(u'缓存model反序列化失败', exc_info=True)
+            logging.warning(u'缓存model反序列化失败', exc_info=True)
     return obj
 
 

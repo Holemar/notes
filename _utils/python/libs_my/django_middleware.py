@@ -68,7 +68,7 @@ class RunTimeMiddleware(object):
             response = view_func(request, *view_args, **view_kwargs)
             return response
         # 错误处理，用于记录错误日志
-        except Exception, e:
+        except Exception as e:
             logger.error(u'%s 请求 %s 异常: %s，参数:%s', request.method, url, e, post_param, exc_info=True, extra={'Exception': e, 'url': url, 'params': post_param})
             # 不处理错误，继续抛给其它中间件处理
             raise
@@ -76,4 +76,4 @@ class RunTimeMiddleware(object):
         finally:
             duration = time() - start_time
             if VIEW_WARN_TIME and duration >= VIEW_WARN_TIME:
-                logger.warn(u'%s 请求超时，耗时:%.4f秒，地址:%s，参数:%s', request.method, duration, url, post_param, extra={'duration': duration, 'url': url, 'params': post_param})
+                logger.warning(u'%s 请求超时，耗时:%.4f秒，地址:%s，参数:%s', request.method, duration, url, post_param, extra={'duration': duration, 'url': url, 'params': post_param})

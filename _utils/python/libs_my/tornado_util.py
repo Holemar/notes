@@ -20,26 +20,38 @@ import threading
 
 from tornado.web import RequestHandler
 
-from . import str_util, ip_util
+from . import ip_util
 
-__all__=('init', 'fn', 'run', 'get_apps', 'add_apps', 'add_not_found', 'get_port')
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+if PY2:
+    from .abandon.py2_str_util import to_str, gzip_encode, zlib_encode, json2str
+elif PY3:
+    from .str_util import decode2str as to_str, gzip_encode, zlib_encode
+    from .json_util import json_serializable as json2str
+    basestring = unicode = str
+    long = int
+
+
+__all__ = ('init', 'fn', 'run', 'get_apps', 'add_apps', 'add_not_found', 'get_port')
 logger = logging.getLogger('libs_my.tornado_util')
 
 # 请求默认值
 CONFIG = {
-    'method' : ['get', 'post'], # {string|list<string>}:接口允许的访问方式,如: GET, POST, PUT, DELETE, PATCH, OPTIONS
-    'paramter_exclude' : [], # {tuple|list}: 请求参数不能包含的字符
-    'paramter_error' : {'result':-1, 'reason':u'请求参数错误'}, # {任意}: 请求参数错误时的返回值
-    'ip_limited' : {'result':-2, 'reason':u'IP地址被限制'}, # {任意}: ip地址受到限制时的返回值
-    'unknow_error' : {'result':-3, 'reason':u"未知错误!"}, # {任意}: 发生未知错误时的返回值
-    'not_found' :  {'result':-4, 'reason':u"请求地址不存在,请检查!"}, # {任意}: 页面找不到时的返回值
-    'gzip_length' : 4000, # {int}:返回内容的长度大于多少，才会启用压缩模式返回(设为None值则永不压缩,默认4000字符以上才会压缩)
-    'warn_time' : 5, # {int}:接口运行过久，该警告的时间(单位:秒)
+    'method': ['get', 'post'],  # {string|list<string>}:接口允许的访问方式,如: GET, POST, PUT, DELETE, PATCH, OPTIONS
+    'paramter_exclude': [],  # {tuple|list}: 请求参数不能包含的字符
+    'paramter_error': {'result': -1, 'reason': u'请求参数错误'},  # {任意}: 请求参数错误时的返回值
+    'ip_limited': {'result': -2, 'reason': u'IP地址被限制'},  # {任意}: ip地址受到限制时的返回值
+    'unknow_error': {'result': -3, 'reason': u"未知错误!"},  # {任意}: 发生未知错误时的返回值
+    'not_found':  {'result': -4, 'reason': u"请求地址不存在,请检查!"},  # {任意}: 页面找不到时的返回值
+    'gzip_length': 4000,  # {int}:返回内容的长度大于多少，才会启用压缩模式返回(设为None值则永不压缩,默认4000字符以上才会压缩)
+    'warn_time': 5,  # {int}:接口运行过久，该警告的时间(单位:秒)
 }
 
 # 请求地址列表
 Web_Applications = []
 Wsgi_Application = None
+
 
 def init(**kwargs):
     """
@@ -56,6 +68,7 @@ def init(**kwargs):
     global CONFIG
     CONFIG.update(kwargs)
 
+
 def get_apps(*args, **kwargs):
     """
     获取请求地址列表
@@ -63,6 +76,7 @@ def get_apps(*args, **kwargs):
     """
     global Web_Applications
     return Web_Applications
+
 
 def add_apps(url, handler, **kwargs):
     """
@@ -82,6 +96,7 @@ def add_apps(url, handler, **kwargs):
         for item in url:
             add_apps(item, handler)
     return Web_Applications
+
 
 def add_not_found(**kwargs):
     """
@@ -110,6 +125,7 @@ def add_not_found(**kwargs):
     # 添加到请求地址列表
     add_apps(r"/.*", NotFoundHandler)
 
+
 def get_port(port=None):
     """
     探测本机的此端口是否可用，不可用则返回另一个可用的端口
@@ -126,6 +142,7 @@ def get_port(port=None):
             port = random.randint(5000, 65535)
         finally:
             sock.close()
+
 
 def run(port, worker='gevent', threads=False, **kwargs):
     """
@@ -174,10 +191,11 @@ def zip_response(self, result):
     if encoding in ('gzip', 'deflate'):
         self.set_header('Content-Encoding', encoding)
         if encoding == 'gzip':
-            result = str_util.gzip_encode(result)
+            result = gzip_encode(result)
         elif encoding == 'deflate':
-            result = str_util.zlib_encode(result)
+            result = zlib_encode(result)
     return result
+
 
 def fn(*out_args, **out_kwargs):
     """
@@ -242,13 +260,13 @@ def fn(*out_args, **out_kwargs):
                                     if exclude in v: raise TypeError(u"参数中包含非法字符:%s" % exclude)
                     kwargs[k] = value
                 func = out_kwargs['function']
-                args = str_util.to_str(args)
-                kwargs = str_util.to_str(kwargs) # 避免参数中文的乱码问题
+                args = to_str(args)
+                kwargs = to_str(kwargs) # 避免参数中文的乱码问题
                 res = func(self, *args, **kwargs)
 
             # 处理返回值: 如果返回值不是字符串,需要转成字符串输出
             if not isinstance(res, basestring):
-                res = str_util.json2str(res)
+                res = json2str(res)
                 # 设置返回类型
                 self.set_header("Content-Type", "application/json; charset=UTF-8")
             else:
@@ -289,7 +307,7 @@ def fn(*out_args, **out_kwargs):
     _method = out_kwargs.get('method', CONFIG.get('method'))
     if _method:
         if isinstance(_method, basestring): _method = [_method]
-        if isinstance(_method, (list,tuple,set)):
+        if isinstance(_method, (list, tuple, set)):
             for _item in _method:
                 _item = str(_item).strip().lower()
                 method_dict[_item] = _deal_func

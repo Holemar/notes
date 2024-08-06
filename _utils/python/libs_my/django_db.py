@@ -22,7 +22,7 @@ from django.core.management.color import no_style # Style是用来输出语句�
 from django.db.backends.base.creation import BaseDatabaseCreation # 这个类就是用来生成SQL语句的。
 
 
-__all__=('execute_sql', 'executemany', 'select_sql', 'create_table', 'get_table_name')
+__all__ = ('execute_sql', 'executemany', 'select_sql', 'create_table', 'get_table_name')
 
 # SQL 超时警告时间(单位：秒， 执行时间大于这个数值则发启警告， 配置成 0 或者 None 则关闭此警告)
 SQL_WARN_TIME = getattr(settings, 'SQL_WARN_TIME', 1)
@@ -163,7 +163,7 @@ def bulk_create(object_list):
         for obj in object_list:
             try:
                 obj.save(force_insert=True)
-            except Exception, e:
+            except Exception as e:
                 logger.error(u"批量新增异常:%s", e, exc_info=True)
 
 
@@ -277,7 +277,7 @@ def run_log(run_time, sql, parm=None, result=None):
         try:
             content = u'SQL执行超时，耗时:%.4f秒，SQL:%s; 参数:%s， 返回:%s' % (run_time, sql, parm, result)
             logger.warn(content, extra={'duration': run_time, 'sql': sql, 'params': parm})
-        except Exception, e:
+        except Exception as e:
             logger.error(u"记录SQL超时日志错误:%s", e, exc_info=True)
     else:
         logger.info(u'执行SQL，耗时:%.4f秒，SQL:%s， 参数:%s, 返回:%s', run_time, sql, parm, result, extra={'duration': run_time, 'sql': sql, 'params': parm, 'result':result})
@@ -289,7 +289,7 @@ def _execute(self, sql, params=None):
     try:
         result = self._orig_execute(sql, params)
         return result
-    except Exception, e:
+    except Exception as e:
         run_sql = self.db.ops.last_executed_query(self.cursor, sql, params)
         logger.error(u"SQL执行失败:%s, SQL:%s; 参数:%s, 返回:%s", e, run_sql, params, result, exc_info=True)
         raise
@@ -304,12 +304,13 @@ def _executemany(self, sql, param_list):
     try:
         result = self._orig_executemany(sql, param_list)
         return result
-    except Exception, e:
+    except Exception as e:
         logger.error(u"SQL执行失败:%s, SQL:%s, 参数:%s, 返回:%s", e, sql, param_list, result, exc_info=True)
         raise
     finally:
         duration = time() - start
         run_log(duration, sql, param_list, result)
+
 
 # 修改 django 的 ORM SQL 日志输出, 以便监控性能
 _orig_execute = getattr(CursorWrapper, 'execute')

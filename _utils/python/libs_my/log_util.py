@@ -32,39 +32,49 @@ Updated on 2019/1/18
 
 注：使用多个 logger_name 时，请先 init 父级 logger_name 再 init 子级的，以免重复写日志文件或者发 socket
 """
-import sys, os, string
+import os
+import sys
+import string
 import logging
-from logging import _levelNames
 from logging.handlers import SocketHandler, SysLogHandler
 from logging.handlers import TimedRotatingFileHandler as fileHandler
 
 # 方便外部把此文件当成 logging 调用
-from logging import CRITICAL, FATAL, ERROR, WARNING, WARN, INFO, DEBUG, NOTSET
-from logging import log, debug, info, warn, warning, error, exception, critical, fatal
+from logging import log, debug, info, warn, warning, error, exception, critical
 
-from . import str_util
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+if PY2:
+    from logging import _levelNames
+    from codecs import open  # 打开文件时，可以指定编码
+    from .abandon.py2_str_util import to_unicode, to_str, deep_str
+elif PY3:
+    from logging import _nameToLevel as _levelNames
+    from .str_util import decode2str as to_unicode, decode2str as to_str
+    from .json_util import json_serializable as deep_str
+    basestring = unicode = str
+    long = int
 
 
-__all__=('init', 'log', 'debug', 'info', 'warn', 'warning', 'error', 'exception', 'critical')
-
+__all__ = ('init', 'log', 'debug', 'info', 'warn', 'warning', 'error', 'exception', 'critical')
 
 # 预设 log 输出格式
 format_str = "[%(asctime)s] [%(module)s.%(funcName)s:%(lineno)s] %(levelname)s: %(message)s"
 logging.basicConfig(level=logging.INFO, format=format_str)
 
 CONFIG = {
-    #'log_file' : './logs/run.log', # {string} 日志文件的名称(为空则屏幕输出日志)
-    'append' :True, # {bool} 是否追加日志，默认为 True (追加到旧日志文件后面)， 设置为 False 时会先删除旧日志文件
-    'level' : 'INFO', # {bool | string} 日志级别,默认级别:INFO
+    #'log_file': './logs/run.log', # {string} 日志文件的名称(为空则屏幕输出日志)
+    'append': True,  # {bool} 是否追加日志，默认为 True (追加到旧日志文件后面)， 设置为 False 时会先删除旧日志文件
+    'level': 'INFO',  # {bool | string} 日志级别,默认级别:INFO
                              # (为布尔值时True:DEBUG, False:INFO,为字符串时可选值为:"NOTSET"/"DEBUG"/"INFO"/"WARNING"/"ERROR"/"CRITICAL")
-    'backupCount' : 30, # {int} 日志文件保留天数
-    #'socket' : (host, port), # {tuple<string,int | list<int>>} 把日志发往远程机器上(ip/host,端口号)(为空则不发)
-    #'syslog' : None, # {dict} 把日志发往远程SysLog上的init配置(为空则不发)
-    'log_max' : 3996, # {int} 日志长度限制,此值为当条输出日志的最大长度(超出部分会被截取), 设为0则不限制大小，因为日志超过 4000 容易出问题
-    'to_read': False, # {bool} 是否要将字符串转码成便于人阅读的编码(将 “\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字), 默认不转换
-    'color': False, # {bool} 是否输出有颜色的日志(颜色得按这里的规则指定), 默认不使用
-    'format': format_str, # {string} 日志输出格式
-    'remove_screen': False, # {bool} 是否去掉屏幕输出的日志, 默认不去除
+    'backupCount': 30,  # {int} 日志文件保留天数
+    #'socket': (host, port),  # {tuple<string,int | list<int>>} 把日志发往远程机器上(ip/host,端口号)(为空则不发)
+    #'syslog': None,  # {dict} 把日志发往远程SysLog上的init配置(为空则不发)
+    'log_max': 3996,  # {int} 日志长度限制,此值为当条输出日志的最大长度(超出部分会被截取), 设为0则不限制大小，因为日志超过 4000 容易出问题
+    'to_read': False,  # {bool} 是否要将字符串转码成便于人阅读的编码(将 “\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字), 默认不转换
+    'color': False,  # {bool} 是否输出有颜色的日志(颜色得按这里的规则指定), 默认不使用
+    'format': format_str,  # {string} 日志输出格式
+    'remove_screen': False,  # {bool} 是否去掉屏幕输出的日志, 默认不去除
 }
 
 
@@ -82,19 +92,19 @@ class StringFilter(logging.Filter):
         msg = record.msg
         if not isinstance(msg, basestring):
             try:
-                msg = unicode(str_util.deep_str(msg))
+                msg = unicode(deep_str(msg))
             except UnicodeError:
                 msg = msg      #Defer encoding till later
         if isinstance(msg, basestring):
             try:
                 # 转码后，再拼接参数，保证拼接不会因为编码问题报错
-                msg = str_util.to_unicode(msg)
+                msg = to_unicode(msg)
                 to_read = getattr(record, 'to_read', self.to_read)
                 log_max = getattr(record, 'log_max', self.log_max)
                 if record.args:
                     max_args = (log_max / 2) if isinstance(log_max, (int,long,float)) else 0
                     try:
-                        msg = msg % str_util.deep_str(record.args, max=max_args, str_unicode=str_util.to_str)
+                        msg = msg % deep_str(record.args, max=max_args, str_unicode=to_str)
                         record.args = ()
                     except TypeError as e:
                         error_msg = change_color(u'[red]日志参数传递错误[/red], %s, 参数:%s')
@@ -102,7 +112,7 @@ class StringFilter(logging.Filter):
                         return False # 报异常就别再打印此日志了
                 # 是否将日志展现为便于阅读的模式 / 日志长度限制
                 if to_read or log_max:
-                    msg = str_util.to_unicode(msg, to_read=to_read, max=log_max)
+                    msg = to_unicode(msg, to_read=to_read, max=log_max)
                 #是否输出有颜色的日志
                 if getattr(record, 'color', self.color):
                     msg = change_color(msg)
@@ -283,7 +293,7 @@ def add_file_handler(log_file, logger_level, append, backupCount, formatter, log
     if not os.path.isdir(log_path):
         os.makedirs(log_path)
     # 不追加日志，则先清空旧日志文件
-    if append == False and os.path.isfile(log_file):
+    if append is False and os.path.isfile(log_file):
         try:
             open(log_file, mode="w").close()
         except:
@@ -349,6 +359,7 @@ else:
     _srcfile = __file__
 _srcfile = os.path.normcase(_srcfile)
 
+
 def _findCaller(self):
     u"""
     Find the stack frame of the caller so that we can note the source
@@ -367,9 +378,10 @@ def _findCaller(self):
                 continue
             rv = (filename, f.f_lineno, co.co_name)
             break
-    except: # 多线程高并发时，会报错，这里捕获一下以免抛出去
+    except:  # 多线程高并发时，会报错，这里捕获一下以免抛出去
         pass
     return rv
+
 
 def getLogger(name=None, add_parent_filter=True):
     """
@@ -395,6 +407,7 @@ def getLogger(name=None, add_parent_filter=True):
         return logger
     else:
         return logging.root
+
 
 # 修改 logging.Logger 的 findCaller 函数, 以便直接调用这文件的 info, error 等函数也可以获取到正确的模块名、函数名和行号
 setattr(logging.Logger, 'findCaller', _findCaller)

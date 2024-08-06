@@ -13,7 +13,8 @@ import glob
 import logging
 
 
-__all__=('get_path', 'load_modules')
+__all__ = ('get_path', 'load_modules')
+
 
 def get_path(lib_path=None, current_path=None, **kwargs):
     """

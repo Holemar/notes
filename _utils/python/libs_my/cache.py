@@ -26,7 +26,7 @@ from hashlib import md5
 
 
 # 设置外部允许访问的函数
-__all__=('init','fn','clear', 'get', 'put', 'expire', 'exists', 'pop', 'keys')
+__all__ = ('init', 'fn', 'clear', 'get', 'put', 'expire', 'exists', 'pop', 'keys')
 logger = logging.getLogger('libs_my.cache')
 
 PY2 = sys.version_info[0] == 2
@@ -41,10 +41,10 @@ _value_cache = {}
 _expire_cache = {}
 # 缓存默认设置值
 CONFIG = {
-    'fn_timeout' : 30*60, # {int|long|float} fn装饰器的缓存时间(单位:秒,默认30分钟)
-    'clear_expire' : 300, # 自动删除过期缓存的时间间隔(单位:秒。 设为0则不会自动删除,这容易导致内存占用过大以及内存溢出)
-    'cron_clear' : False, # 是否开启每天定时清空缓存,设为 True 则会每天定时清空所有缓存, 否则不清空(这容易导致内存占用过大以及内存溢出)
-    'clear_hour' : 2, # 指定每天清空缓存的时间(这设的 2 表示每天凌晨 2 点清空缓存,需要 cron_clear 参数设为 True 才生效)
+    'fn_timeout': 30*60,  # {int|long|float} fn装饰器的缓存时间(单位:秒,默认30分钟)
+    'clear_expire': 300,  # 自动删除过期缓存的时间间隔(单位:秒。 设为0则不会自动删除,这容易导致内存占用过大以及内存溢出)
+    'cron_clear': False,  # 是否开启每天定时清空缓存,设为 True 则会每天定时清空所有缓存, 否则不清空(这容易导致内存占用过大以及内存溢出)
+    'clear_hour': 2,  # 指定每天清空缓存的时间(这设的 2 表示每天凌晨 2 点清空缓存,需要 cron_clear 参数设为 True 才生效)
 }
 
 
@@ -69,6 +69,7 @@ def init(**kwargs):
     CONFIG.update(kwargs)
     __set_clear_ts()
 
+
 def clear():
     """
     清除所有的缓存
@@ -82,6 +83,7 @@ def clear():
     _expire_cache = {}
     logger.info(u"清理缓存OK")
 
+
 def encode(value, to_md5=False):
     """
     转化参数成redis可保存的字符串(类似序列化)
@@ -94,6 +96,7 @@ def encode(value, to_md5=False):
     if to_md5:
         return md5(pickled).hexdigest()
     return base64.b64encode(pickled)
+
 
 def get(key, default=None):
     """
@@ -114,6 +117,7 @@ def get(key, default=None):
     # 没有此缓存则返回默认值或者 None
     return default
 
+
 def put(key, value, timeout=None):
     """
     设置缓存的值
@@ -130,6 +134,7 @@ def put(key, value, timeout=None):
     expire(key, timeout=timeout) # 设置超时
     return True
 
+
 def incr(key, add_num=None):
     """
     设置一个递增的整数
@@ -141,6 +146,7 @@ def incr(key, add_num=None):
     put(key, res)
     return res
 
+
 def decr(key, reduce_num=None):
     """
     设置一个递减的整数
@@ -151,6 +157,7 @@ def decr(key, reduce_num=None):
     res = int(get(key) or 0) - (reduce_num or 1)
     put(key, res)
     return res
+
 
 def expire(key, timeout=None):
     """
@@ -164,6 +171,7 @@ def expire(key, timeout=None):
         if isinstance(timeout, (int,long,float)):
             _expire_cache[key] = time.time() + timeout
     return True
+
 
 def exists(key):
     """
@@ -186,6 +194,7 @@ def exists(key):
     # 有此缓存,且并没有超时
     return True
 
+
 def pop(*args):
     """
     删除指定的key,并且返回它的值
@@ -200,7 +209,7 @@ def pop(*args):
         if not exists(key): continue
         _value = _value_cache.pop(key, None) # 清掉这缓存
         # 复杂类型,得深拷贝一份,避免外部修改了获取的值
-        if _value != None and not isinstance(_value, (bool,int,long,float,complex, basestring, time.struct_time, datetime.datetime, datetime.date)):
+        if _value is not None and not isinstance(_value, (bool,int,long,float,complex, basestring, time.struct_time, datetime.datetime, datetime.date)):
             _value = copy.deepcopy(_value)
         value_list.append(_value)
     # 处理返回值
@@ -212,6 +221,7 @@ def pop(*args):
     else:
         return value_list
 
+
 def keys(re_key):
     """
     根据正则返回匹配的key值列表
@@ -220,6 +230,7 @@ def keys(re_key):
     """
     global _value_cache
     return [key for key in _value_cache.keys() if re.match(re_key, key) and exists(key)]
+
 
 def fn(*out_args, **out_kwargs):
     """
@@ -275,6 +286,7 @@ def fn(*out_args, **out_kwargs):
 # 指定下次清空缓存的时间戳(清空之后会更新此值)
 _CLEAT_TS = None
 
+
 def __set_clear_ts():
     """
     获取下次清空缓存的时间戳
@@ -284,6 +296,7 @@ def __set_clear_ts():
     clear_hour = CONFIG.get('clear_hour', 2) # 几点钟
     next_datetime = datetime.datetime(*time.localtime()[:3]) + datetime.timedelta(days=1) + datetime.timedelta(hours=clear_hour) # 指定明天的几点钟
     _CLEAT_TS = time.mktime(next_datetime.timetuple()) # 指定明天几点钟的时间戳
+
 
 def _clear_expire(loop=False):
     """
@@ -318,5 +331,5 @@ def _clear_expire(loop=False):
             else:
                 break
         except Exception as e:
-            logger.error(u"[red]自动删除过期的缓存出错: %s[/red]", e, exc_info=True, extra={'color':True, 'Exception':e})
+            logger.error(u"[red]自动删除过期的缓存出错: %s[/red]", e, exc_info=True, extra={'color': True, 'Exception': e})
 

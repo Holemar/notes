@@ -11,7 +11,7 @@ import logging
 import unittest
 
 from __init__ import *
-from libs_my.enum_util import Const, get_enum_value
+from libs_my.abandon.enum_util import Const, get_enum_value
 
 class Platform(Const):
     ios = (1, 'IOS')

@@ -1,284 +1,127 @@
-#!python
 # -*- coding:utf-8 -*-
 """
-公用函数(字符串处理)
-Created on 2014/7/16
-Updated on 2019/7/19
-@author: Holemar
+string Utility
 """
+import re
 import sys
+import gzip
+import zlib
 import json
-import uuid
-import types
-import random
-import string
-import decimal
-import logging
-import time, datetime
-import gzip, zlib
-from hashlib import md5
-
-try:
-    from StringIO import StringIO
-except:
-    from io import StringIO
-
-PY2 = sys.version_info[0] == 2
-PY3 = sys.version_info[0] == 3
-if PY3:
-    basestring = unicode = str
-    long = int
-
-__all__ = ('to_unicode', 'to_str', 'deep_str', 'to_human', 'to_json', 'json2str', 'mod',
-           'gzip_encode', 'gzip_decode', 'zlib_encode', 'zlib_decode',
-           "MD5", 'is_MD5', 'is_mobile', "is_email", 'is_credentials_no', 'create_random', 'number_format')
-
-CODING_LIST = ["utf-8", 'gb18030', "big5", "gbk", sys.getdefaultencoding(), 'unicode-escape', "ascii"]
+import base64
 
 
-def to_unicode(value, **kwargs):
-    """
-    将字符转为 unicode 编码
-    :param {basestring} value 将要被转码的值,类型可以是:str,unicode 类型
-    :param {bool} to_read: 是否要将字符串转码成便于人阅读的编码(将 “\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字), 默认不转换
-    :param {string} from_code: 传入字符串的可能编码类型,如果有则优先按它解码
-    :param {int} max: 字符串的最大长度,超出部分将会截取。注:仅截取原本是 str,unicode 类型的,其它类型的不会截取。
-    :return {unicode}: 返回转成 unicode 类型的字符串
-    """
-    if isinstance(value, basestring):
-        # str类型,需要按它原本的编码来解码出 unicode,编码不对会报异常
-        if isinstance(value, str):
-            from_code = kwargs.get('from_code')
-            code_list = [from_code] + CODING_LIST if from_code else CODING_LIST
-            for encoding in code_list:
-                if not encoding or not isinstance(encoding, basestring): continue
-                try:
-                    value = value.decode(encoding)
-                    break  # 如果上面这句执行没报异常，说明是这种编码
-                except:
-                    pass
-        # 上面已经转码成 Unicode 的
-        if kwargs.get('to_read', False) and value:
-            try:
-                # eval 处理是为了让“\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字
-                if "'''" not in value:
-                    value = eval(u"u'''%s'''" % value)
-                elif '"""' not in value:
-                    value = eval(u'u"""%s"""' % value)
-                else:
-                    value = json.dumps(value, ensure_ascii=False)
-                    value = value.replace(r"\\u", r"\u")  # json.dumps 会转换“\”,使得“\u65f6”变成“\\u65f6”
-                    value = eval(u'u%s' % value)
-            except Exception as e:
-                logging.error(u'将字符串转成可阅读编码出错:%s, 字符串:%s', e, value)
-        # 长度处理
-        max_str = kwargs.get('max')
-        max_str = int(max_str) if max_str and isinstance(max_str, basestring) and max_str.isdigit() else max_str
-        if max_str and isinstance(max_str, (int, long, float)):
-            if max_str > 0 and len(value) > max_str:
-                value = u"%s..." % value[:max_str]
-        return value
-    # 其它类型
-    else:
-        return value
+# string encoding, try to encode str or decode bytes by this list
+DECODE_CODING_LIST = ['utf-8', 'gbk', 'big5', 'gb18030']
+ENCODE_CODING_LIST = ['big5', 'gb18030', 'utf-8']
+default_code = sys.getdefaultencoding()
+if default_code not in DECODE_CODING_LIST:
+    DECODE_CODING_LIST.append(default_code)
+if default_code not in ENCODE_CODING_LIST:
+    ENCODE_CODING_LIST[-1:-1] = [default_code]
 
 
-def to_str(value, encode="utf-8", **kwargs):
-    """
-    将字符转为utf8编码
-    :param {string} value: 将要被转码的值,类型可以是:str,unicode 类型
-    :param {string} encode: 编码类型,默认是 utf-8 编码
-    :param {bool} to_read: 是否要将字符串转码成便于人阅读的编码(将 “\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字), 默认不转换
-    :param {string} from_code: 传入字符串的可能编码类型,如果有则优先按它解码
-    :param {int} max: 字符串的最大长度,超出部分将会截取。注:仅截取原本是 str,unicode 类型的,其它类型的不会截取。
-    :return {str}: 返回转成 str 的字符串
-    """
-    # 字符串类型的,先转成 unicode,再转成 utf8 编码的 str,这样就可以避免编码错误了
-    if isinstance(value, basestring):
-        return to_unicode(value, **kwargs).encode(encode)
-    # 其它类型
-    return value
-
-
-if PY3:
-    def to_str(value, encode="utf-8", **kwargs):
-        """
-        将字符转为utf8编码
-        :param {string} value: 将要被转码的值,类型可以是:str,unicode 类型
-        :param {string} encode: 编码类型,默认是 utf-8 编码
-        :return {str}: 返回转成 str 的字符串
-        """
-        if isinstance(value, basestring):
-            return value
-        if isinstance(value, (bytes, bytearray)):
-            from .json_util import decode2str
-            return decode2str(value)
-        # 其它类型
-        return value
-
-    def to_unicode(value, **kwargs):
-        return to_str(value, **kwargs)
-
-
-def deep_str(value, all2str='time', **kwargs):
-    """
-    将 list,tuple,set,dict 等类型里面的字符转为 unicode 编码
-    :param {任意} value 将要被转码的值,类型可以是:dict,list,tuple,set 等类型
-    :param {bool} all2str: 是否要将数值、日期、布尔等类型也转成字符串,默认只转换时间类型。
-                              值为 True 时,使用 unicode(value) 来转,值为 "time" 时会附加转换时间类型
-    :param {bool} to_read: 是否要将字符串转码成便于人阅读的编码(将 “\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字), 默认不转换
-    :param {string} from_code: 传入字符串的可能编码类型,如果有则优先按它解码
-    :param {int} max: list,tuple,set,dict 等类型里面的字符串的最大长度,超出部分将会截取。
-    :param {function} str_unicode: 将 list,tuple,set,dict 等类型里面的字符串用什么函数转码,可选值: to_unicode, to_str 。 默认是: to_unicode
-    :return {type(value)}: 返回原本的参数类型(list,tuple,set,dict等类型会保持不变)
-    """
-    str_deal = kwargs.get('str_unicode', to_unicode)
-    if value == None:
-        return '' if all2str == True else value
-    # str/unicode 类型的
-    elif isinstance(value, basestring):
-        return str_deal(value, **kwargs)
-    # 考虑是否需要转成字符串的类型
-    elif isinstance(value, (bool, int, long, float, complex)):
-        return str(value) if all2str == True else value
-    # time, datetime 类型转成字符串,需要写格式(不能使用 json.dumps,会报错)
-    elif isinstance(value, time.struct_time):
-        return time.strftime('%Y-%m-%d %H:%M:%S', value) if all2str in (True, 'time') else value
-    elif isinstance(value, datetime.datetime):
-        return value.strftime('%Y-%m-%d %H:%M:%S') if all2str in (True, 'time') else value
-    elif isinstance(value, datetime.date):
-        return value.strftime('%Y-%m-%d') if all2str in (True, 'time') else value
-    elif isinstance(value, decimal.Decimal):
-        return str(value) if all2str == True else float(value)
-    elif isinstance(value, uuid.UUID):
-        return value.hex if all2str in (True, 'time') else value
-    # list,tuple,set 类型,递归转换
-    elif isinstance(value, (list, tuple, set)):
-        arr = [deep_str(item, all2str=all2str, **kwargs) for item in value]
-        # 尽量不改变原类型
-        if isinstance(value, list):  return arr
-        if isinstance(value, tuple): return tuple(arr)
-        if isinstance(value, set):   return set(arr)
-    # dict 类型,递归转换(字典里面的 key 也会转成 unicode 编码)
-    elif isinstance(value, dict):
-        this_value = {}  # 不能改变原参数
-        for key1, value1 in value.items():
-            # 字典里面的 key 也转成 unicode 编码
-            key1 = deep_str(key1, all2str=all2str, **kwargs)
-            this_value[key1] = deep_str(value1, all2str=all2str, **kwargs)
-        return this_value
-    # 其它类型
-    else:
-        str_deal = unicode if str_deal == to_unicode else str
-        return str_deal(value) if all2str == True else value
-
-
-def to_human(value, isJson=False, **kwargs):
-    """
-    将 字符串/其他值 按便于人阅读的形式展示
-        类似于 repr 函数,但同时会将 “\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字
-    :param {任意} value: 将要被转码的值,类型可以是:str,unicode,int,long,float,double,dict,list,tuple,set,其它类型
-    :param {bool} isJson: 返回结果是否需要反 json 化
-    :return {unicode}: 返回转成 unicode 的字符串,且呈现便于人阅读的模式
-        本函数与 to_unicode(value, to_human=True) 函数的区别是: to_unicode 只转换字符串。
-        而本函数会将所有类型转成字符串,包括 (list,tuple,set, dict) 类型,且这些类型会尽量美化输出。
-    """
-    # 先将可以转成字符串的都先转成字符串
-    if isinstance(value, basestring):
-        value = to_unicode(value.strip(), to_read=True)
-        # json 格式的,尽量按 json 格式美化一下输出
-        if isJson or (value.startswith('{') and value.endswith('}')) or (value.startswith('[') and value.endswith(']')):
-            value = to_json(value)
-    # list,tuple,set,dict 类型,按 json 格式美化一下输出
-    if isinstance(value, (list, tuple, set, dict)):
-        value = deep_str(value, to_read=True, **kwargs)
-        return json.dumps(value, indent=2, ensure_ascii=False)
-    # 其它类型,可以部分地交给 to_unicode 处理
-    return value
-
-
-def to_json(value, **kwargs):
-    """
-    将字符串转成json
-    :param {string} value: 要转成json的字符串
-    :param {bool} raise_error: 遇到解析异常时,是否抛出异常信息。为 True则会抛出异常信息,否则不抛出(默认抛出)
-    :return {dict}: 返回转换后的类型
-    """
-    if isinstance(value, basestring):
+def decode2str(content, **kwargs):
+    """change str, bytes or bytearray to str"""
+    if content is None:
+        return None
+    if isinstance(content, (bytes, bytearray)):
         try:
-            value = json.loads(value)
-        except Exception as e:
-            # logging.warn(u'将字符串json反序列化出错,下面将转eval处理:%s, 参数:%s', e, value, exc_info=True)
+            return content.decode()
+        # 特殊类型编码，尝试解码
+        except UnicodeDecodeError as e:
+            return to_utf8_str(content)
+    return content
+
+
+def encode2bytes(content):
+    """change str to bytes"""
+    if content is None:
+        return None
+    if isinstance(content, str):
+        try:
+            return content.encode()
+        # 特殊类型编码，尝试解码
+        except UnicodeEncodeError as e:
+            return to_utf8_bytes(content)
+    return content
+
+
+def to_utf8_str(content):
+    """change str, bytes or bytearray to utf-8 str"""
+    if content is None:
+        return None
+    if isinstance(content, (bytes, bytearray)):
+        # unicode-escape
+        if '\\u' in str(content):
             try:
-                # 兼容 json 格式的 true 和 false
-                true = True
-                false = False
-                null = None
-
-                value = eval(value)
-            except Exception as e:
-                raise_error = kwargs.get('raise_error', True)
-                if raise_error:
-                    logging.error(u'将字符串json反序列化出错,无法处理:%s, 参数:%s', e, value, exc_info=True)
-                    raise
-    return value
-
-
-def json2str(value, **kwargs):
-    """
-    将 dict 类型的内容转成json格式的字符串
-    :param {dict} value: 要转成json字符串的内容
-    :param {bool} raise_error: 遇到解析异常时,是否抛出异常信息。为 True则会抛出异常信息,否则不抛出(默认抛出)
-    :return {string}: 返回转换后的字符串
-    """
-    try:
-        value = deep_str(value, **kwargs)  # 兼容 GBK、big5 编码的中文字符
-        value = json.dumps(value)
-    except Exception as e:
-        raise_error = kwargs.get('raise_error', True)
-        if raise_error:
-            logging.warn(u'将对象进行json序列化出错:%s, 参数:%s', e, value, exc_info=True)
-            raise
-        else:
-            try:
-                value = str(value)
-            except Exception as e:
+                return content.decode('unicode-escape').encode().decode()
+            except (UnicodeEncodeError, UnicodeDecodeError) as e:
                 pass
-    return value
+        # try code list
+        for encoding in DECODE_CODING_LIST:
+            try:
+                value = content.decode(encoding)
+                if encoding == 'utf-8':
+                    return value
+                else:
+                    return value.encode().decode()  # change to utf-8 string
+            except (UnicodeEncodeError, UnicodeDecodeError) as e:
+                pass
+        # If that fails, ignore error messages
+        return content.decode("utf-8", "ignore")
+    elif isinstance(content, str):
+        # unicode-escape
+        try_s = [ord(a) for a in content if ord(a) <= 256]
+        if len(try_s) == len(content):
+            return bytes(try_s).decode("utf-8")
+        # try code list
+        for encoding in ENCODE_CODING_LIST:
+            try:
+                value = content.encode(encoding)
+                return value.decode()
+            except (UnicodeEncodeError, UnicodeDecodeError) as e:
+                pass
+        # If that fails, ignore error messages
+        return content.encode('utf-8', 'ignore').decode()
+    return content
 
 
-def mod(sour, *args, **kwargs):
-    """
-    相当于使用“%”格式化字符串
-    :param {string} sour: 要格式化的字符串
-    :param {任意} param: 要放入字符串的参数,多个则用 tuple 括起来
-    :param {bool} to_read: 是否要将字符串转码成便于人阅读的编码(将 “\u65f6”,“\xE5\x8C\x85”等字符转为人可以阅读的文字), 默认不转换
-    :return {string}: 返回格式化后的字符串,即返回: sour %  param
-    """
-    # 参数 param 允许传 None,0,False 等值
-    has_param = False
-    if len(args) > 0:
-        param = args[0]
-        has_param = True
-    elif 'param' in kwargs:
-        param = kwargs.pop('param')
-        has_param = True
-    # 按 sour 的类型执行 mod
-    if isinstance(sour, str):
-        sour = to_str(sour, **kwargs)
-        if has_param:
-            kwargs['str_unicode'] = kwargs.get('str_unicode', to_str)
-            return sour % deep_str(param, **kwargs)
-        else:
-            return sour
-    elif isinstance(sour, unicode):
-        if has_param:
-            kwargs['str_unicode'] = kwargs.get('str_unicode', to_unicode)
-            return sour % deep_str(param, **kwargs)
-        else:
-            return sour
-    else:
-        return unicode(sour)
+def to_utf8_bytes(content):
+    """change str to utf-8 bytes"""
+    if content is None:
+        return None
+    if isinstance(content, str):
+        # unicode-escape
+        try_s = [ord(a) for a in content if ord(a) <= 256]
+        if len(try_s) == len(content):
+            return bytes(try_s)
+        # try code list
+        for encoding in ENCODE_CODING_LIST:
+            try:
+                value = content.encode(encoding)
+                if encoding == 'utf-8':
+                    return value
+                else:
+                    return value.decode().encode()  # change to utf-8 bytes
+            except (UnicodeEncodeError, UnicodeDecodeError) as e:
+                pass
+        # If that fails, ignore error messages
+        content = content.encode('utf-8', 'ignore')
+    return content
+
+
+def base64_encode(s):
+    """使用base64加密"""
+    s = encode2bytes(s)
+    res = base64.b64encode(s)
+    return decode2str(res)
+
+
+def base64_decode(s):
+    """使用base64解码"""
+    s = encode2bytes(s)
+    res = base64.b64decode(s)
+    return decode2str(res)
 
 
 def gzip_encode(content):
@@ -287,13 +130,12 @@ def gzip_encode(content):
     :param {string} content: 明文字符串
     :return {string}: 压缩后的字符串
     """
-    if not isinstance(content, basestring):
-        content = json2str(content)
-    zbuf = StringIO()
-    zfile = gzip.GzipFile(mode='wb', compresslevel=9, fileobj=zbuf)
-    zfile.write(content)
-    zfile.close()
-    return zbuf.getvalue()
+    if not isinstance(content, (str, bytes, bytearray)):
+        from .json_util import json_serializable
+        content = json.dumps(json_serializable(content))
+    if isinstance(content, str):
+        content = encode2bytes(content)
+    return gzip.compress(content)
 
 
 def gzip_decode(content):
@@ -302,10 +144,7 @@ def gzip_decode(content):
     :param {string} content: 压缩后的字符串
     :return {string}: 解压出来的明文字符串
     """
-    zfile = gzip.GzipFile(fileobj=StringIO(content))
-    result = zfile.read()
-    zfile.close()
-    return result
+    return gzip.decompress(content).decode('utf8')
 
 
 def zlib_encode(content):
@@ -314,8 +153,11 @@ def zlib_encode(content):
     :param {string} content: 明文字符串
     :return {string}: 压缩后的字符串
     """
-    if not isinstance(content, basestring):
-        content = json2str(content)
+    if not isinstance(content, (str, bytes, bytearray)):
+        from .json_util import json_serializable
+        content = json.dumps(json_serializable(content))
+    if isinstance(content, str):
+        content = encode2bytes(content)
     return zlib.compress(content, zlib.Z_BEST_COMPRESSION)
 
 
@@ -325,199 +167,18 @@ def zlib_decode(content):
     :param {string} content: 压缩后的字符串
     :return {string}: 解压出来的明文字符串
     """
-    return zlib.decompress(content)
+    return zlib.decompress(content).decode('utf8')
 
 
-def MD5(data, key='', **kwargs):
+def is_phone(value):
     """
-    返回字符串的 MD5 编码
-    :param {string} data: 要 md5 编码的字符串
-    :param {string} key: 要加入 md5 编码里面的混淆值
-    :return {string}: md5 编码后的字符串
+    检查是否是手机号码: 11位数字
     """
-    if not isinstance(data, basestring):
-        data = json2str(data)
-    if not isinstance(data, str):
-        data = to_str(data)
-    if not isinstance(key, basestring):
-        key = json2str(key)
-    if not isinstance(key, str):
-        key = to_str(key)
-    return md5(data + key).hexdigest()
+    return re.match(r'1[3-9]\d{9}', value)
 
 
-def is_MD5(data, **kwargs):
+def is_email(value):
     """
-    判断字符串是否已经是MD5编码之后的
-    :param {string} data: 要判断的字符串
-    :return {bool}: 是MD5编码的字符串则返回 True, 否则返回False
+    检查是否是邮箱地址
     """
-    if not isinstance(data, basestring):
-        return False
-    # if len(data) == 32 and re.match("^[0-9a-f]+$", data): # 为了提高效率，避免使用正则
-    if len(data) == 32 and len([x for x in data if x in '0123456789abcdef']) == 32:
-        return True
-    return False
-
-
-def is_mobile(phone, **kwargs):
-    """
-    检查字符串是否手机号码,是则返回 True,否则返回 False
-    :param {string} phone: 要检查的手机号
-    :return {bool}: 输入的字符串是否手机号格式,是则返回 True,否则返回 False
-    """
-    # 允许 int, long 类型的判断
-    if not isinstance(phone, basestring):
-        if isinstance(phone, (int, long)):
-            phone = str(phone)
-        elif isinstance(phone, float):
-            phone = str(int(phone))
-        else:
-            return False
-    if not phone.isdigit() or len(phone) != 11:
-        return False
-    # if re.match("^1[3-9]\d{9}$", phone): # 为了提高效率，避免使用正则
-    if phone[0] == '1' and int(phone[1]) >= 3:
-        return True
-    return False
-
-
-def is_email(email, **kwargs):
-    """
-    检查字符串是否邮箱地址,是则返回 True,否则返回 False
-    :param {string} email: 要检查的邮箱地址
-    :return {bool}: 输入的字符串是否邮箱地址格式,是则返回 True,否则返回 False
-    """
-    if not isinstance(email, basestring):
-        return False
-    if len(email) <= 7:
-        return False
-    # 为了提高效率，避免使用正则
-    # if re.match("^([a-zA-Z\\d_\\.-]+)@([a-zA-Z\\d\\-]+\\.)+[a-zA-Z\\d]{2,6}$", email):
-    #    return True
-    # 没有@符号,或者@符号在开头、结尾,或者有多个@符号,则返回False
-    es = email.split('@')
-    if len(es) != 2 or es[0] == '' or es[1] == '':
-        return False
-    pots = es[1].split('.')
-    # @符号没有“.”符号,或者“.”符号在开头、结尾,则返回False
-    if len(pots) < 2 or pots[0] == '' or pots[1] == '':
-        return False
-    # 邮箱地址只能包含字母、数字、和下划线、点号、中划线三个符号
-    estr = string.ascii_letters + string.digits + '_-.'
-    if len([x for x in es[0] if x in estr]) != len(es[0]) or len([x for x in es[1] if x in estr]) != len(es[1]):
-        return False
-    # 结尾不能是符号
-    if es[1][-1] in '_-.':
-        return False
-    return True
-
-
-def is_credentials_no(credentials_no):
-    """
-    检查字符串是否身份证号码,是则返回 True,否则返回 False
-    :param {string} credentials_no: 要检查的输入身份证号码
-    :return {bool}: 输入的字符串是否身份证格式,是则返回 True, 否则返回 False
-    """
-    # 允许 int, long 类型的判断
-    if not isinstance(credentials_no, basestring):
-        if isinstance(credentials_no, (int, long)):
-            credentials_no = str(credentials_no)
-        else:
-            return False
-    length = len(credentials_no)
-    if length not in (15, 18):
-        return False
-
-    # 15位旧版身份证号码
-    if length == 15:
-        if not credentials_no.isdigit():
-            return False
-        # 第7位起的6个数字是出生年月日，YYMMDD格式
-        try:
-            birthday = credentials_no[6:12]
-            datetime.datetime.strptime(birthday, '%y%m%d')
-        except:
-            return False
-        return True
-
-    # 18位新版身份证号码
-    if not credentials_no.isdigit():
-        others = credentials_no[:-1]
-        # 最后一位可能是x，其它都是数字
-        if not others.isdigit() or not credentials_no.endswith(('x', 'X')):
-            return False
-    # 第7位起的8个数字是出生年月日，YYYYMMDD格式
-    try:
-        birthday = credentials_no[6:14]
-        datetime.datetime.strptime(birthday, '%Y%m%d')
-    except:
-        return False
-    # 校验码校验
-    return _validate_credentials_mode(credentials_no)
-
-
-def _validate_credentials_mode(credentials_no):
-    """
-    校验码校验
-    :param {string} credentials_no: 要检查的输入身份证号码
-    :return {bool}: 身份证的校验码是否符合规则,是则返回 True, 否则返回 False
-    """
-    # 加权因子
-    W = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
-    sum = 0
-    i = 0
-    for w in W:
-        sum += int(credentials_no[i]) * w
-        i += 1
-
-    # 校验位是X，则表示10
-    if credentials_no[17] in ('X', 'x'):
-        sum += 10
-    else:
-        sum += int(credentials_no[17])
-
-    # 如果除11模1，则校验通过
-    return sum % 11 == 1
-
-
-def create_random(k=16, repeat_fun=None):
-    """
-    生成随机字符串(包括字母和数字)
-    :param {int} k: 要生成多少位的随机数
-    :param {function} repeat_fun: 判断重复的函数，需接收生成的字符串，需返回是否重复
-    :return {string}: 生成的随机字符串
-    """
-    if k <= 0:
-        raise ValueError(u"生成随机数的位数不正确！")
-    population = string.ascii_letters + string.digits
-    population = population * k
-    result = ''.join(random.sample(population, k))
-    # 判断是否重复
-    if repeat_fun and isinstance(repeat_fun, types.FunctionType):
-        # 重复时，递归重新生成
-        if repeat_fun(result):
-            return create_random(k=k, repeat_fun=repeat_fun)
-    return result
-
-
-def number_format(num):
-    """
-    数字增加千分位逗号分隔，且float类型的小数位显示2位
-    :param {int|long|float|str|unicode} num: 要转换的数字
-    :return {string}: 转换后的数值字符串
-    """
-    if num is None or num == '':
-        return '0'
-    if isinstance(num, decimal.Decimal):
-        num = str(num)
-    if isinstance(num, basestring):
-        try:
-            num = float(num) if '.' in num else int(num)
-        except:
-            return num
-    if isinstance(num, (int, long)):
-        return "{:,}".format(num)
-    if isinstance(num, float):
-        return "{:,.2f}".format(num)
-    return num
+    return re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", value)

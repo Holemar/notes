@@ -22,6 +22,7 @@ Updated on 2019/1/18
  dict,list,tuple,set 类型支持嵌套,但嵌套里面的内容必须是上述支持的类型。
  这之外的类型,有可能支持,也可能不支持,需自行测试。
 """
+import sys
 import types
 import base64
 import pickle
@@ -32,8 +33,14 @@ from hashlib import md5
 import redis
 
 
-__all__=('init', 'get_conn', 'ping', 'clear', 'get', 'put', 'incr', 'decr', 'expire', 'exists', 'pop', 'keys', 'fn')
+__all__ = ('init', 'get_conn', 'ping', 'clear', 'get', 'put', 'incr', 'decr', 'expire', 'exists', 'pop', 'keys', 'fn')
 logger = logging.getLogger('libs_my.cache')
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+if PY3:
+    basestring = unicode = str
+    long = int
 
 
 # redis 连接池
@@ -41,12 +48,12 @@ __connection_pool = None
 
 # 请求默认值
 CONFIG = {
-    'fn_timeout' : 60, # {int} fn装饰器的缓存时间(单位:秒,默认1分钟)
+    'fn_timeout': 60,  # {int} fn装饰器的缓存时间(单位:秒,默认1分钟)
     # redis 数据库连接配置
     'host': '127.0.0.1',
     'port': 6379,
-    'password':'',
-    'db':3,   # 数据库 库名
+    'password': '',
+    'db': 3,   # 数据库 库名
 }
 
 
@@ -73,6 +80,7 @@ def init(**kwargs):
         raise RuntimeError(u'无法连接 redis, 请检查配置信息！')
     return res
 
+
 def get_conn():
     """
     获取 redis 数据库连接
@@ -85,6 +93,7 @@ def get_conn():
             logger.error(u"[red]redis 连接异常, 无法连接上！[/red]", extra={'color':True})
             raise RuntimeError(u'无法连接 redis, 请检查配置信息！')
     return __connection_pool
+
 
 def ping():
     """
@@ -100,7 +109,7 @@ def ping():
             return res
         res = conn.ping()
     # 连不上redis
-    except Exception, e:
+    except Exception as e:
         logger.error(u"[red]redis 连接异常: %s[/red]", e, exc_info=True, extra={'color':True, 'Exception':e})
     return res
 
@@ -118,6 +127,7 @@ def clear():
         logger.warn(u'清理redis缓存失败！')
     return res
 
+
 def encode(value, to_md5=False):
     """
     转化参数成redis可保存的字符串(类似序列化)
@@ -131,6 +141,7 @@ def encode(value, to_md5=False):
         return md5(pickled).hexdigest()
     return base64.b64encode(pickled)
 
+
 def decode(value):
     """
     转化缓存的字符串成原来类型(类似反序列化)
@@ -139,6 +150,7 @@ def decode(value):
     """
     #return eval(value) # 跟 repr 对应，只能支持基本类型，不能支持复杂类型
     return pickle.loads(base64.b64decode(value))
+
 
 def get(key, default=None):
     """
@@ -154,6 +166,7 @@ def get(key, default=None):
         return default
     res = decode(res)
     return res
+
 
 def put(key, value, timeout=None):
     """
@@ -176,6 +189,7 @@ def put(key, value, timeout=None):
         conn.set(key, value)
     return True
 
+
 def incr(key, add_num=None):
     """
     设置一个递增的整数
@@ -190,6 +204,7 @@ def incr(key, add_num=None):
     else:
         res = conn.incr(key)
     return res
+
 
 def decr(key, reduce_num=None):
     """
@@ -206,6 +221,7 @@ def decr(key, reduce_num=None):
         res = conn.decr(key)
     return res
 
+
 def expire(key, timeout=None):
     """
     设置超时时间
@@ -221,6 +237,7 @@ def expire(key, timeout=None):
             conn.expire(key, int(timeout))
     return True
 
+
 def exists(key):
     """
     判断此值是否存在于缓存中
@@ -229,6 +246,7 @@ def exists(key):
     """
     conn = get_conn()
     return conn.exists(key)
+
 
 def pop(*args):
     """
@@ -254,6 +272,7 @@ def pop(*args):
     else:
         return value_list
 
+
 def keys(re_key):
     """
     根据正则返回匹配的key值列表
@@ -264,6 +283,7 @@ def keys(re_key):
     # 使用 redis 缓存
     keys_list = conn.keys(re_key)
     return keys_list
+
 
 def fn(*out_args, **out_kwargs):
     """

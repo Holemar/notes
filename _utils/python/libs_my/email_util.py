@@ -18,7 +18,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-from email.utils import COMMASPACE, formatdate
+from email.utils import formatdate
 from email.header import Header
 
 PY2 = sys.version_info[0] == 2
@@ -26,25 +26,17 @@ PY3 = sys.version_info[0] == 3
 
 if PY2:
     from urllib import quote
-    from str_util import to_unicode, to_str
+    from .abandon.py2_str_util import to_unicode, to_str
 else:
     from urllib.parse import quote
-
-
-    def to_str(s):
-        return str(s)
-
-
-    def to_unicode(s):
-        return str(s)
-
-
+    from .str_util import decode2str as to_unicode, decode2str as to_str
     basestring = str
 
 __all__ = ("send_mail",)
 logger = logging.getLogger('libs_my.email_util')
 # 发邮件的超时时间(秒)
 DEFAULT_TIMEOUT = 180
+COMMASPACE = ', '
 
 # 图片类型
 TYPE_NAME = {

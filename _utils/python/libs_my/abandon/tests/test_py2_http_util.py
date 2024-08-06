@@ -19,8 +19,9 @@ import unittest
 import threading
 
 from __init__ import *
-from libs_my import http_util
-from libs_my import str_util, tornado_util
+from libs_my.abandon import py2_http_util as http_util
+from libs_my.abandon import py2_str_util as str_util
+from libs_my.abandon import tornado_util
 
 # 用 Filter 类获取日志信息
 NOW_LOG_RECORD = []
