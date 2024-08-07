@@ -144,7 +144,9 @@ def gzip_decode(content):
     :param {string} content: 压缩后的字符串
     :return {string}: 解压出来的明文字符串
     """
-    return gzip.decompress(content).decode('utf8')
+    content = encode2bytes(content)
+    res = gzip.decompress(content)
+    return decode2str(res)
 
 
 def zlib_encode(content):
@@ -167,7 +169,9 @@ def zlib_decode(content):
     :param {string} content: 压缩后的字符串
     :return {string}: 解压出来的明文字符串
     """
-    return zlib.decompress(content).decode('utf8')
+    content = encode2bytes(content)
+    res = zlib.decompress(content)
+    return decode2str(res)
 
 
 def is_phone(value):
