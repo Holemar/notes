@@ -136,7 +136,8 @@ pymongo 提供原生的 MongoDB 操作
     for u in db.users.find({"age":{"$nin":(23, 26, 32)}}): print(u)  # select * from users where age not in (23, 26, 32)
 
   5.7 统计总数(COUNT)
-    print(db.users.count())  # select count(*) from users
+    print(db.users.find().count())  # select count(*) from users
+    print(db.users.estimated_document_count())  # 没有条件的 count
     print(db.users.find({"age":{"$gt":30}}).count()) # select count(*) from users where age > 30
     print(db.users.count_documents({"age":{"$gt":30}})) # py3.7之后的写法
     # distinct 去重
