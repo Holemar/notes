@@ -13,7 +13,8 @@ from ftplib import FTP
 import logging
 
 __all__ = ('init', 'ftp_upload', 'ftp_download')
-logger = logging.getLogger('libs_my.ftp_util')
+
+logger = logging.getLogger(__name__)
 
 
 CONFIG = {

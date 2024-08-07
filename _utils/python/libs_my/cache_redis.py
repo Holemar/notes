@@ -34,7 +34,8 @@ import redis
 
 
 __all__ = ('init', 'get_conn', 'ping', 'clear', 'get', 'put', 'incr', 'decr', 'expire', 'exists', 'pop', 'keys', 'fn')
-logger = logging.getLogger('libs_my.cache')
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3

@@ -27,7 +27,7 @@ from hashlib import md5
 
 # 设置外部允许访问的函数
 __all__ = ('init', 'fn', 'clear', 'get', 'put', 'expire', 'exists', 'pop', 'keys')
-logger = logging.getLogger('libs_my.cache')
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3

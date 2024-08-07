@@ -57,7 +57,7 @@ try:
 except ImportError:
     import pickle
 
-logger = logging.getLogger('libs_my.django.cache')
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3

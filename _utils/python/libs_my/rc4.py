@@ -7,7 +7,9 @@ Updated on 2017/11/9
 @author: Holemar
 """
 import sys
+
 __all__ = ("decode", 'encode')
+
 
 def RC4(data, key):
     """rc4加密的核心算法"""
@@ -26,6 +28,7 @@ def RC4(data, key):
         out.append(chr(ord(char) ^ box[(box[x] + box[y]) % 256]))
     return ''.join(out)
 
+
 def hex2str(s):
     """16进制转字符串"""
     if s[:2] in ('0x', '0X'):
@@ -36,6 +39,7 @@ def hex2str(s):
         res.append(chr(int(hex_dig, base=16)))
     return ''.join(res)
 
+
 def str2hex(input_str):
     """字符串转16进制"""
     res = []
@@ -45,6 +49,7 @@ def str2hex(input_str):
             hex_dig = "0" + hex_dig
         res.append(hex_dig)
     return ''.join(res)
+
 
 def decode(rc4_txt, key):
     """
@@ -67,6 +72,7 @@ def decode(rc4_txt, key):
         b = bytes((ord(s) for s in real_text))
         return b.decode()
 
+
 def encode(real_text, key):
     """
     将明文字符串，用RC4加密成密文
@@ -83,8 +89,10 @@ def encode(real_text, key):
     rc4_txt = str2hex(RC4(real_text, key))
     return rc4_txt
 
+
 system_encoding = "utf-8"
 defaultencoding = sys.getdefaultencoding()
+
 
 def to_str(text):
     """
@@ -107,6 +115,7 @@ def to_str(text):
         # py3 的处理
         text = to_unicode(text)
         return text.encode().decode("unicode-escape")
+
 
 def to_unicode(text):
     """
@@ -156,6 +165,7 @@ def encode_symmetrical(data, key):
             value = '/%s/' % value
         result.append(value)
     return ''.join(result)
+
 
 def decode_symmetrical(data, key):
     """

@@ -33,9 +33,11 @@ else:
     basestring = str
 
 __all__ = ("send_mail",)
-logger = logging.getLogger('libs_my.email_util')
+
+logger = logging.getLogger(__name__)
+
 # 发邮件的超时时间(秒)
-DEFAULT_TIMEOUT = 180
+EMAIL_TIMEOUT = int(os.environ.get('EMAIL_TIMEOUT', 180))
 COMMASPACE = ', '
 
 # 图片类型
@@ -177,10 +179,10 @@ def send_mail(host, user, password, to_list, **kwargs):
         port = kwargs.get('port')
         if use_ssl:
             port = port or 465
-            smtp = smtplib.SMTP_SSL(timeout=DEFAULT_TIMEOUT)
+            smtp = smtplib.SMTP_SSL(timeout=EMAIL_TIMEOUT)
         else:
             port = port or 25
-            smtp = smtplib.SMTP(timeout=DEFAULT_TIMEOUT)
+            smtp = smtplib.SMTP(timeout=EMAIL_TIMEOUT)
         smtp.connect(host, port)  # 连接 smtp 服务器
         smtp.login(user, password)  # 登陆服务器
         smtp.sendmail(from_address, to_address, msg.as_string())  # 发送邮件

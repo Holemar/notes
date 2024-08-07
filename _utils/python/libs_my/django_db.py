@@ -26,7 +26,7 @@ __all__ = ('execute_sql', 'executemany', 'select_sql', 'create_table', 'get_tabl
 
 # SQL 超时警告时间(单位：秒， 执行时间大于这个数值则发启警告， 配置成 0 或者 None 则关闭此警告)
 SQL_WARN_TIME = getattr(settings, 'SQL_WARN_TIME', 1)
-logger = logging.getLogger('libs_my.django.db')
+logger = logging.getLogger(__name__)
 
 
 def execute_sql(sql, param=None, rowid=False, connection=connection, transaction=transaction):

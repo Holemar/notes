@@ -23,7 +23,7 @@ from django.http.response import HttpResponse
 
 from .json_util import json_serializable
 
-logger = logging.getLogger('libs_my.django.api')
+logger = logging.getLogger(__name__)
 
 
 # 请求默认值

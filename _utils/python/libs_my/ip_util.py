@@ -7,13 +7,18 @@ Update on 2019/1/18
 @author: Holemar
 """
 import re
+import sys
 import socket
 import urllib2
-import logging
 
-__all__ = (
-'init', 'auth_ip', 'is_server_ip', 'in_list', 'is_ip', 'is_local_ip', 'get_tornado_ip', 'get_django_ip', 'get_host')
+__all__ = ('init', 'auth_ip', 'is_server_ip', 'in_list', 'is_ip', 'is_local_ip', 'get_tornado_ip', 'get_django_ip',
+           'get_host')
 
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    basestring = str
 
 def init(**kwargs):
     """
@@ -213,14 +218,14 @@ def http_get(url, param=None):
 
 _host_ip = None  # 缓存本机ip,没必要每次都去读取
 # 获取本机ip地址的外部网站列表(写这里为了允许其它文件修改)
-_get_host_net_list = set([
+_get_host_net_list = (
     "https://www.ip.cn/",
     "https://ip.911cha.com/",
     "http://api.k780.com/?app=ip.local&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json",
     "http://ip.taobao.com/service/getIpInfo.php?ip=myip",
     # "http://ip.qq.com/cgi-bin/myip", # 腾讯阻止了程序直接访问此页面，故获取不到
     "http://ip138.com/",
-])
+)
 
 
 def get_host():

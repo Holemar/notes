@@ -20,7 +20,7 @@ from django.conf import settings
 
 # VIEW 超时警告时间(单位：秒， 执行时间大于这个数值则发启警告， 配置成 0 或者 None 则关闭此警告)
 VIEW_WARN_TIME = getattr(settings, 'VIEW_WARN_TIME', 1)
-logger = logging.getLogger('libs_my.django.middleware')
+logger = logging.getLogger(__name__)
 
 
 class XForwardedForMiddleware(object):

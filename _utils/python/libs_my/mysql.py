@@ -14,6 +14,7 @@ Updated on 2019/1/18
 允许创建不同连接地址的连接池，只需 new Mysql对象时传入连接地址即可
 """
 
+import os
 import time
 import logging
 
@@ -26,10 +27,10 @@ except:
 from MySQLdb.cursors import DictCursor
 from DBUtils.PooledDB import PooledDB
 
-__all__=('Mysql', 'MyDb')
+__all__ = ('Mysql', 'MyDb')
 
 # 运行时间过长警告(超过这时间的将会警告,单位:秒)
-TIME_OUT = 10
+TIME_OUT = int(os.environ.get('DB_TIMEOUT', 10))
 
 
 class Mysql(object):
@@ -42,7 +43,7 @@ class Mysql(object):
     __pool_dict = {}
     def __init__(self, mincached=2 , maxcached=20, maxshared=0, maxconnections=50,
                               host='127.0.0.1', port=3306, user='root', passwd='password', db='test_db',
-                              use_unicode=False,charset='utf8',cursorclass=DictCursor):
+                              use_unicode=False, charset='utf8', cursorclass=DictCursor):
         """
         数据库构造函数，从连接池中取出连接，并生成操作游标
         """
