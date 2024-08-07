@@ -136,7 +136,7 @@
         WAIT 启动应用程序并等候它结束
         parameters 这些为传送到命令/程序的参数
   Sample：start /MIN test2.bat arg1 arg2    (调用同目录下的 test2.bat，且输入2个参数给他，且本窗口最小化)
-  Sample：e:\"program files"\极品列车时刻表\jpskb.exe  (文件路径名有空格时)
+  Sample：e:\\"program files"\\极品列车时刻表\\jpskb.exe  (文件路径名有空格时)
 
 
 8.If 命令
@@ -382,7 +382,7 @@
        echo !args:~%num%,-5!
     6) 扩充字符串
        “扩充”这个词汇来自于微软自己的翻译，意思就是对表示文件路径的字符串进行特殊的处理
-        %~I - 删除任何引号(")，扩充 %I
+        %~I - 删除任何引号(")，扩充 %I "
         %~fI - 将 %I 扩充到一个完全合格的路径名
         %~dI - 仅将 %I 扩充到一个驱动器号
         %~pI - 仅将 %I 扩充到一个路径
