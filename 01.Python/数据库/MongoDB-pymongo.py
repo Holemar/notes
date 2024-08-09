@@ -24,6 +24,15 @@ pymongo 提供原生的 MongoDB 操作
     users = db['users'] # 获取数据库里的 users 集合,也可以用字典来获取
     # users = db.getCollection('users')  # 这写法会报错，没有 getCollection 函数
 
+    # show databases 显示所有的库
+    dbs = conn.database_names()  # 旧写法，现在已经弃用
+    dbs2 = conn.list_database_names()  # pymongo 3.6 以后改这写法
+
+    # show tables 显示所有的 collection
+    db.collection_names()
+    db.list_collection_names()  # pymongo 3.7 以后建议这写法
+
+
   2. 插入
     u = dict(name = "user1", age = 23)
     # db.users.save(u) # 用 save 也可以插入,返回新增的主键值
