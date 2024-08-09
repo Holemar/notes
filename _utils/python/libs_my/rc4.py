@@ -3,12 +3,12 @@
 """
 公用函数(rc4加密)，兼容py2及py3
 Created on 2014/5/26
-Updated on 2017/11/9
+Updated on 2024/08/03
 @author: Holemar
 """
 import sys
 
-__all__ = ("decode", 'encode')
+__all__ = ("decode", 'encode', 'encode_symmetrical', 'decode_symmetrical')
 
 
 def RC4(data, key):
@@ -131,7 +131,7 @@ def to_unicode(text):
         return text
 
     try:
-        return text.decode(system_encoding) # 如果这句执行没报异常，说明是 utf-8 编码，不用再转换
+        return text.decode(system_encoding)  # 如果这句执行没报异常，说明是 utf-8 编码，不用再转换
     except:
         # py2 的处理
         encoding_tuple = ("gbk", "big5", defaultencoding) if defaultencoding and isinstance(defaultencoding, basestring) else ("gbk", "big5")
