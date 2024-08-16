@@ -1,6 +1,6 @@
 
 # Quasar 介绍
-Quasar（发音为/kweɪ.zɑɹ/)是MIT许可的开源框架（基于Vue），可帮助Web开发人员创建：
+Quasar（发音为/ˈkweɪ.zɑɹ/)是MIT许可的开源框架（基于Vue），可帮助Web开发人员创建：
 
 响应式网站
 PWA（Progressive Web App）
