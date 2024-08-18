@@ -55,6 +55,11 @@
         @app.route('/login', methods=['POST', 'GET'])
         def login():
             error = None
+            # 获取请求参数的方式
+            request.form.get("key", type=str, default=None)
+            request.args.get("key")  # 获取get请求参数
+            request.values.get("key")   # 获取所有参数
+
             if request.method == 'POST':
                 if valid_login(request.form['username'],
                                request.form['password']):
