@@ -32,10 +32,13 @@ mongo 是 MongoDB 自带的交互式 Javascript shell，用来对 Mongod 进行�
     账户管理:
     use admin // 以下操作必须先进入 admin 数据库里面
     db.addUser('admin', 'pwd')  // 增加或修改用户密码
+    db.createUser({user:"admin", pwd:"pwd", roles:["root"]})
+    db.createUser({user:"admin", pwd:"pwd", roles:[{role:"dbOwner",db:"fc_agent"},{role:"dbOwner",db:"fc_agent_jobs"}]})
     db.system.users.find()    // 查看用户列表
     show users    // 查看所有用户(显示跟上面类似)
     db.auth('admin', 'pwd')    // 用户认证(设置数据库连接验证)
     db.removeUser('mongodb')    // 删除用户
+    db.dropUser("yonghu")    // 删除用户
     // 添加权限
     db.system.users.update({"_id" : "admin.admin"}, {"$push":{"roles":{"role" : "dbOwner", "db" : "bello_nlp"}}})
     db.grantRolesToUser("abc", [{role:"readWrite",db:"test"}])
