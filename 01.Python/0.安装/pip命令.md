@@ -2,6 +2,12 @@
 # pip 命令
 在 pyCharm 里面的 Terminal 里面执行命令，这是在虚拟环境下的，已加载虚拟环境下的安装包
 
+- 安装pip命令  
+    ```shell script
+    sudo apt install python-pip  # python2安装
+    sudo apt install python3-pip # python3安装
+    ```
+
 ## 查询软件包
 
 |命令|说明|

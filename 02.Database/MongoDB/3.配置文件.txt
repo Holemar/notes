@@ -1,6 +1,6 @@
 
-dbpath=/data/db  # 数据存储目录
-logpath=/data/db/log/run.log     # 日志文件路径
+dbpath=/data/db # 数据存储目录
+logpath=/data/db/log/run.log # 日志文件路径
 logappend=false # 追加
 journal=true  # 启用日志文件，默认启用
 quiet=true # 这个选项可以过滤掉一些无用的日志信息，若需要调试使用请设置为false
@@ -68,7 +68,7 @@ net:
    #    FIPSMode: <boolean>
 
 security:
-   authorization: enabled # enabled/disabled #开启客户端认证
+   authorization: enabled # enabled/disabled # 开启客户端认证(要求密码登录)
    javascriptEnabled:  true # 启用或禁用服务器端JavaScript执行
    # keyFile: <string> # 密钥路径
    # clusterAuthMode: <string> # 集群认证方式

@@ -7,6 +7,44 @@
 	a.安装 eclipse
 	   sudo apt-get install eclipse
 
+
+systemctl 命令
+    sudo systemctl is-enabled servicename.service # 查询服务是否开机启动
+    sudo systemctl enable *.service # 开机运行服务
+    sudo systemctl disable *.service # 取消开机运行
+    sudo systemctl start *.service # 启动服务
+    sudo systemctl stop *.service # 停止服务
+    sudo systemctl restart *.service # 重启服务
+    sudo systemctl reload *.service # 重新加载服务配置文件
+    sudo systemctl status *.service # 查询服务运行状态
+
+ubuntu电脑重启: reboot
+
+
+在 Ubuntu 22.04 中安装 Python 3.11
+  1. 在安装 Python 3.11 之前，推荐先对 Ubuntu 进行更新，避免安装期间发生冲突。还可以确保所有软件包都是最新的：
+    sudo apt update
+    sudo apt upgrade
+    sudo add-apt-repository ppa:deadsnakes/ppa
+  2. 安装 Python 3.11
+    sudo apt install python3.11
+    sudo python3.11 --version
+    sudo apt install python3.11-full   # 一次性安装所有附加项
+  3. 安装 pip
+    sudo apt install python3-pip
+  4. 在 Ubuntu 中切换默认 Python 版本
+    which python3.11
+    sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.11 9
+    # 上面一句切换 python， 下面一句切换 python3
+    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 9
+  5. 更新系统配置
+    sudo update-alternatives --config python
+  6. 查看版本
+    python --version # 查看版本
+    python3 --version  # 查看版本
+    pip --version # 查看 pip 版本
+    pip3 --version # 查看 pip3 版本
+
 应用软件：
   1.电影播放器不能播放rmvb格式的解决办法
     第一步 首先动手安装totem-xine。可以在新立得里面搜索后安装，安装时新立得会自动删除原来的totem-gsteamer
