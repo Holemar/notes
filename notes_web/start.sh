@@ -16,7 +16,7 @@ ps aux | grep "$server" | grep -v -w grep | awk '{print $2}' | xargs kill -9
 
 
 echo "启动 web 程序"
-nohup python "$filename" > /dev/null 2>&1 &
+nohup python3 "$filename" > /dev/null 2>&1 &
 
 
 echo "查看程序启动情况"
