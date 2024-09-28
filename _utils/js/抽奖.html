@@ -89,6 +89,10 @@ function getRandom() {
         randomNum = Math.floor(Math.random() * maxValue);
     }
     outputText.value = randomNum;
+    // 点击后禁用按钮，1分钟后重新启用按钮
     btn1.disabled = true;
+    setTimeout(function() {
+        btn1.disabled = false;
+    }, 60*1000);
 }
 </script>

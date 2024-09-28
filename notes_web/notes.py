@@ -27,8 +27,8 @@ ZIP_EXT = ('zip', 'rar', 'arj', 'z', 'tar', 'tgz', 'gz', 'bz2')
 LANGUAGE = {
     'txt': 'plaintext', 'css': 'css', 'conf': 'yaml', 'sh': 'bash', 'cpp': 'cpp', 'c': 'c', 'h': 'cpp', 'cs': 'csharp',
     'go': 'golang', 'http': 'http', 'https': 'https', 'java': 'java', 'jsp': 'java', 'js': 'javascript', 'json': 'json',
-    'lua': 'lua', 'makefile': 'makefile', 'mk': 'makefile', 'xml': 'xml', 'plist': 'xml', 'html': 'html',
-    'xhtml': 'html', 'perl': 'perl', 'php': 'php', 'py': 'python', 'scheme': 'scheme', 'sql': 'sql', 'yaml': 'yaml',
+    'lua': 'lua', 'makefile': 'makefile', 'mk': 'makefile', 'xml': 'xml', 'plist': 'xml',
+    'perl': 'perl', 'php': 'php', 'py': 'python', 'scheme': 'scheme', 'sql': 'sql', 'yaml': 'yaml',
 }
 
 
@@ -104,6 +104,9 @@ def page(file_path):
     # 压缩包，不能读
     if ext in ZIP_EXT:
         return '压缩文件，无法打开'
+    # html 页面直接打开
+    if ext in ('html', 'xhtml'):
+        return static_file(file_path, root=BASE_PATH)
     text = read_file(file_path)
     # 对 markdown/编程 文件，自动加载样式。其它文件显示原文。
     if not file_path or file_path.endswith(('/', 'md')) or ext in LANGUAGE:
