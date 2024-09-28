@@ -5,15 +5,16 @@
     <title>随机数</title>
     <META http-equiv='content-type' content="text/html; charset=utf-8"/>
 <style type="text/css">
-.btn {font-size:30px; font-weight:bolder;}
-.text{height:41px; width:10%; font-size:23px; font-weight:bolder;}
+.btn {font-weight:bolder; height:80%; width:80%; }
+.text{font-weight:bolder; height:50%; width:50%; }
+.main{height:15%; width:15%; text-align: center; margin:auto;}
 </style>
 </head>
 <body>
-    <div style="text-align: center;">
+    <div class="main">
         抽奖结果：<input class="text" id='Text2' type="text" readonly="readonly"/>
     </div><br/>
-    <div style="text-align: center;">
+    <div class="main">
         <!-- <input class="text" id='Text1' type="text"/>个奖项 -->
         <input class='btn' id='btn1' type="button" value="开始抽奖" onclick="getRandom()"/>
     </div>
