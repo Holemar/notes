@@ -1,0 +1,94 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- 交流QQ群:26651479 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>随机数</title>
+    <META http-equiv='content-type' content="text/html; charset=utf-8"/>
+<style type="text/css">
+.btn {font-size:30px; font-weight:bolder;}
+.text{height:41px; width:10%; font-size:23px; font-weight:bolder;}
+</style>
+</head>
+<body>
+    <div style="text-align: center;">
+        抽奖结果：<input class="text" id='Text2' type="text" readonly="readonly"/>
+    </div><br/>
+    <div style="text-align: center;">
+        <!-- <input class="text" id='Text1' type="text"/>个奖项 -->
+        <input class='btn' id='btn1' type="button" value="开始抽奖" onclick="getRandom()"/>
+    </div>
+    <br/><br/><br/>
+<textarea style="width:98%" rows="32" id="logText">
+1.全家陪你爬深圳最高的山
+2.妈妈牌奶茶一杯
+3.提高卷一张
+4.半个小时背下一首还没背过的古诗
+5.妈妈牌鸡蛋肉丝面一碗
+6.十元红包🧧
+7.陪学英语新概念一课时
+8.桂林米粉一碗
+9.黑芝麻汤圆糯米酒一碗
+10.周末骑行一次
+11.妈妈削好皮的苹果一个
+12.麦当当薯片中份
+13.妈妈帮收拾书桌和书包一次
+14.妈妈陪学数学难题三个小时
+15.妈妈牌洗剪吹一次
+16.免打金牌🥇有效期一个月
+17.妈妈解答任何问题一个小时（在妈妈的认知范围内）
+18.五元红包🧧
+19.100元大钞一张
+20.一天免做作业.
+21.免做家务一周（妈妈代做）
+22.素食馆一次
+23.给妈妈按摩一次30分钟
+24.艾灸肚脐眼一次20分钟
+25.看电影一次
+</textarea>
+</body>
+</html>
+
+
+<script language="javascript" type="text/javascript">
+/**
+ * 这是错误调试程序
+ * 当页面发生错误时，提示错误讯息；仅测试环境里会提示，正式环境下不提示错误。
+ * 注意：仅IE、fiefox有效,w3c标准里面没有此定义, chrome、opera 和 safari 浏览器不支持此事件
+ */
+window.onerror = function(msg, url, sLine) {
+    var hostUrl = window.location.href;
+    // 判断网址,测试时可以提示出错信息;正式发布时不提示
+    // 127 开头,本机或者同一IP段；局域网ip: 10.0.0.0-10.255.255.255 / 192.168.0.0-192.168.255.255 / 172.16.0.0-172.31.255.255
+    if (hostUrl.indexOf("http://localhost") === 0 || hostUrl.indexOf("http://127.") === 0 ||
+        hostUrl.indexOf("http://192.168.") === 0 || hostUrl.indexOf("http://10.") === 0 ||
+        hostUrl.indexOf("http://172.") === 0 || hostUrl.indexOf("file://") === 0
+    ) {
+        var errorMsg = "当前页面的javascript发生错误.\n\n";
+        errorMsg += "错误: " + msg + "\n";   // 出错信息
+        errorMsg += "URL: " + url + "\n";    // 出错文件的地址
+        errorMsg += "行: " + sLine + "\n\n"; // 发生错误的行
+        errorMsg += "点击“确定”以继续。\n\n";
+        window.alert( errorMsg );
+    }
+    // 返回true,会消去 IE下那个恼人的“网页上有错误”的提示
+    return true;
+};
+
+// 输入框
+var inputText = document.getElementById('Text1');
+var btn1 = document.getElementById('btn1');
+var outputText = document.getElementById('Text2');
+var maxValue = 26;
+
+// 给文本框赋值
+function getRandom() {
+    // var value = inputText.value;
+    // var maxValue = parseInt(value || 100) + 1;
+    var randomNum = Math.floor(Math.random() * maxValue);
+    while (randomNum === 0) {
+        randomNum = Math.floor(Math.random() * maxValue);
+    }
+    outputText.value = randomNum;
+    btn1.disabled = true;
+}
+</script>
