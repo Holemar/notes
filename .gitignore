@@ -13,3 +13,4 @@
 .pydevproject
 ~$*.docx
 *.docx
+nohup.out
