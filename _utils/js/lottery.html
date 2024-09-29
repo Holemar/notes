@@ -3,23 +3,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>随机数</title>
-    <META http-equiv='content-type' content="text/html; charset=utf-8"/>
+    <META http-equiv='content-type' content="text/html; charset=utf-8"></META>
 <style type="text/css">
-.btn {font-weight:bolder; height:80%; width:80%; }
-.text{font-weight:bolder; height:50%; width:50%; }
-.main{height:15%; width:15%; text-align: center; margin:auto;}
+.btn {font-weight:bolder; height:80%; width:80%; font-size: 2rem; }
+.text{font-weight:bolder; height:50%; width:50%; font-size: 2rem; }
+textarea{font-weight:bolder; height:60%; width:95%; font-size: 1.5rem; }
+.main{height:15%; width:80%; text-align: center; margin:auto; font-size: 2rem; }
 </style>
 </head>
 <body>
     <div class="main">
         抽奖结果：<input class="text" id='Text2' type="text" readonly="readonly"/>
-    </div><br/>
+    </div>
     <div class="main">
         <!-- <input class="text" id='Text1' type="text"/>个奖项 -->
         <input class='btn' id='btn1' type="button" value="开始抽奖" onclick="getRandom()"/>
     </div>
-    <br/><br/><br/>
-<textarea style="width:98%" rows="32" id="logText">
+    <br/><br/>
+<textarea rows="32" id="logText" cols="50">
 1.全家陪你爬深圳最高的山
 2.妈妈牌奶茶一杯
 3.提高卷一张
