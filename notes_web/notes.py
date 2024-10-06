@@ -133,4 +133,10 @@ def page(file_path):
 
 if __name__ == '__main__':  # pragma: no coverage
     port = os.getenv('PORT', '8080')
-    run(host='0.0.0.0', port=int(port))
+    port = int(port)
+    try:
+        import gunicorn
+        # 使用 gunicorn 启动
+        run(server='gunicorn', host='0.0.0.0', port=port)
+    except ImportError:
+        run(host='0.0.0.0', port=port)
