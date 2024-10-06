@@ -137,6 +137,6 @@ if __name__ == '__main__':  # pragma: no coverage
     try:
         import gunicorn
         # 使用 gunicorn 启动
-        run(server='gunicorn', host='0.0.0.0', port=port)
+        run(server='gunicorn', host='0.0.0.0', port=port, daemon=True)
     except ImportError:
         run(host='0.0.0.0', port=port)
