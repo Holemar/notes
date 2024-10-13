@@ -36,8 +36,15 @@ __all__ = ("send_mail",)
 
 logger = logging.getLogger(__name__)
 
-# 发邮件的超时时间(秒)
-EMAIL_TIMEOUT = int(os.environ.get('EMAIL_TIMEOUT', 180))
+# 发邮件配置
+EMAIL_TIMEOUT = int(os.environ.get('EMAIL_TIMEOUT', 180))  # 超时时间(秒)
+EMAIL_SERVER = os.environ.get('EMAIL_SERVER')  # SMTP server address
+EMAIL_PORT = os.environ.get('EMAIL_PORT')  # SMTP server port
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL')  # 是否使用 ssl 协议
+EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME')  # 发件人邮箱登陆账号
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')  # 发件人邮箱登陆密码
+EMAIL_SENDER = os.environ.get('EMAIL_SENDER') or os.environ.get('EMAIL_USERNAME')  # 发件人邮箱地址
+
 COMMASPACE = ', '
 
 # 图片类型
@@ -72,17 +79,18 @@ def set_file_name(mime, file_name):
         mime.add_header('Content-Disposition', 'attachment', filename=('utf-8', '', file_name))
 
 
-def send_mail(host, user, password, to_list, **kwargs):
+def send_mail(host=EMAIL_SERVER, user=EMAIL_USERNAME, password=EMAIL_PASSWORD, port=EMAIL_PORT, use_ssl=EMAIL_USE_SSL,
+              From=EMAIL_SENDER, to_list=None, **kwargs):
     """
     发邮件
     :param {string} host: 连接smtp服务器
     :param {string} user: 登陆账号
     :param {string} password: 登陆密码
-    :param {list} to_list: 收信人列表, 如： ["收件人1 <to1@qq.com>", "to2@qq.com"]
-
     :param {int} port: 连接smtp服务器的端口号,默认是 25
     :param {bool} use_ssl: 是否使用 ssl 协议连接smtp服务器, 使用之后的默认端口是 465
     :param {string} From: 收到信时显示的发信人设置，如："测试邮件<daillo@163.com>"
+
+    :param {list} to_list: 收信人列表, 如： ["收件人1 <to1@qq.com>", "to2@qq.com"]
     :param {string} Cc: 抄送人, 多人用英文逗号分开, 如："cc1@163.com, cc2@163.com"
     :param {string} BCc: 暗抄邮箱(有抄送效果,但抄送人列表不展示), 多人用英文逗号分开, 如："bcc1@163.com, bcc2@163.com"
     :param {string} Subject: 邮件主题
@@ -97,7 +105,7 @@ def send_mail(host, user, password, to_list, **kwargs):
     msg['Date'] = formatdate(localtime=True)
 
     # 发信人
-    from_address = to_str(kwargs.get('From') or '')
+    from_address = to_str(From or '')
     msg['From'] = from_address
 
     # 邮件主题
@@ -151,6 +159,8 @@ def send_mail(host, user, password, to_list, **kwargs):
             elif isinstance(file_path, dict):
                 file_content = file_path['file_content']
                 file_name = file_path['file_name']
+            else:
+                raise ValueError('files参数错误, 请检查')
 
             # 取文件后缀
             suffix = file_name.split('.')[-1]
@@ -175,15 +185,14 @@ def send_mail(host, user, password, to_list, **kwargs):
 
     # 发送邮件
     try:
-        use_ssl = kwargs.get('use_ssl')
-        port = kwargs.get('port')
+        use_ssl = use_ssl if isinstance(use_ssl, bool) else (use_ssl and use_ssl.lower() == 'true')
         if use_ssl:
             port = port or 465
             smtp = smtplib.SMTP_SSL(timeout=EMAIL_TIMEOUT)
         else:
             port = port or 25
             smtp = smtplib.SMTP(timeout=EMAIL_TIMEOUT)
-        smtp.connect(host, port)  # 连接 smtp 服务器
+        smtp.connect(host, int(port))  # 连接 smtp 服务器
         smtp.login(user, password)  # 登陆服务器
         smtp.sendmail(from_address, to_address, msg.as_string())  # 发送邮件
         # smtp.close()
@@ -205,21 +214,21 @@ if __name__ == '__main__':
     password = "123456"
     text = """请查收验证码:<font color='red'>88593</font>
     """
-    params = {
-        'port': 25,  # 默认端口
-        'use_ssl': False,  # 是否使用 ssl 协议, 使用之后的默认端口是 465
-        'From': "测试邮件<oaxxx@163.com>",  # 这里可以任意设置，收到信后，将按照设置显示收件人
-        'Subject': "测试邮件。。。",
-        # 'Cc': '415372820@qq.com', # 抄送人
-        'html': text,  # 邮件内容
-        'files': [  # 附件列表
+    res = send_mail(
+        host=host, user=user, password=password,
+        port=25,  # 默认端口
+        use_ssl=False,  # 是否使用 ssl 协议, 使用之后的默认端口是 465。 不使用 ssl 协议时，端口号为 25
+        to_list=["123456@qq.com", 'test@qq.com'],  # 收件人列表,发多个人需要用列表,只用字符串则只发第一个
+        From="测试邮件<oaxxx@163.com>",
+        Subject="测试邮件。。。",
+        # Cc='415372820@qq.com', # 抄送人
+        html=text,  # 邮件内容
+        files=[  # 附件列表
             __file__,
             # {'file_name': u'备忘.txt', 'file_content': open(u'C:\\workspace\\备忘.txt', 'rb').read()}
             # 'C:\\workspace\\备忘.txt', # 中文名称的文件名，会导致显示乱码，暂时无法解决
-        ],
-    }
-    mail_to_list = ["123456@qq.com", 'test@qq.com']  # 收信人,发多个人需要用列表,只用字符串则只发第一个
-    res = send_mail(host, user, password, mail_to_list, **params)
+        ]
+    )
     if res:
         print("发送成功")
     else:
