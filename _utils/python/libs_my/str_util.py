@@ -11,8 +11,8 @@ import base64
 
 
 # string encoding, try to encode str or decode bytes by this list
-DECODE_CODING_LIST = ['utf-8', 'gbk', 'big5', 'gb18030']
-ENCODE_CODING_LIST = ['big5', 'gb18030', 'utf-8']
+DECODE_CODING_LIST = ['utf-8', 'gbk', 'big5', 'gb18030', 'Shift_JIS', 'EUC-JP']
+ENCODE_CODING_LIST = ['big5', 'gb18030', 'Shift_JIS', 'EUC-JP', 'utf-8']
 default_code = sys.getdefaultencoding()
 if default_code not in DECODE_CODING_LIST:
     DECODE_CODING_LIST.append(default_code)
@@ -71,9 +71,12 @@ def to_utf8_str(content):
         return content.decode("utf-8", "ignore")
     elif isinstance(content, str):
         # unicode-escape
-        try_s = [ord(a) for a in content if ord(a) <= 256]
-        if len(try_s) == len(content):
-            return bytes(try_s).decode("utf-8")
+        try:
+            try_s = [ord(a) for a in content if ord(a) <= 256]
+            if len(try_s) == len(content):
+                return bytes(try_s).decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError) as e:
+            pass
         # try code list
         for encoding in ENCODE_CODING_LIST:
             try:
