@@ -9,6 +9,18 @@ Nginx(发音同 engine x)是一款轻量级的Web 服务器/反向代理服务�
 nginx 源码下载地址(官方网站)：
     http://www.nginx.net/
 
+安装、启动
+    # 安装nginx
+    yum install -y nginx
+    # 启动nginx
+    systemctl start nginx
+    # 查看nginx运行状态
+    systemctl status nginx
+
+
+Nginx的配置文件，一般位于/etc/nginx目录下
+    我们基本只需要关注文件nginx.conf和conf.d目录下的配置文件即可。
+
 
 nginx 源码
     源码学习是一个痛苦又快乐的过程，下面列出了一些nginx的学习资源。
@@ -44,6 +56,8 @@ nginx 命令
     启动的命令是 nginx
     重启的命令是 nginx -s reload
     停止运行命令是 nginx -s stop
+    启动的命令 nginx -s start
+    检查nginx配置文件是否正确 nginx -t
 
 
 	Nginx 的参数包括有如下几个：
