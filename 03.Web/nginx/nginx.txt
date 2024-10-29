@@ -9,6 +9,10 @@ Nginx(发音同 engine x)是一款轻量级的Web 服务器/反向代理服务�
 nginx 源码下载地址(官方网站)：
     http://www.nginx.net/
 
+教程参考：
+    http://www.cnblogs.com/yjf512/archive/2012/05/10/2494635.html
+    https://juejin.cn/post/7295926959842033699
+
 安装、启动
     # 安装nginx
     yum install -y nginx
@@ -69,6 +73,70 @@ nginx 命令
 	例如我们要测试某个配置文件是否书写正确，我们可以使用以下命令
 		sbin/nginx -t -c conf/nginx.conf
 
+
+配置中的 location
+    语法：location[=|~|~*|^~|@]/uri/{……}
+
+    配置块：server
+
+    =  开头表示精确匹配，以便与参数中的uri做完全匹配。
+    ~  开头表示正则匹配URI时是字母大小写敏感的。
+    ~* 开头表示正则匹配URI时忽略字母大小写问题。
+    ~  表示正则匹配URI时只需要其前半部分与uri参数匹配即可。
+    ^~ 开头表示uri以某个常规字符串开头，理解为匹配 url路径即可。
+        nginx不对url做编码，因此请求为/static/20%/aa，可以被规则^~ /static/ /aa匹配到（注意是空格）
+    !~  区分大小写不匹配的正则
+    !~* 不区分大小写不匹配的正则
+    /   通用匹配，任何请求都会匹配到
+
+rewrite 语法
+    last       – 基本上都用这个 Flag
+    break      – 中止 Rewirte，不在继续匹配
+    redirect   – 返回临时重定向的HTTP状态302
+    permanent  – 返回永久重定向的HTTP状态301
+
+文件/目录 判断
+    -f 和 !-f    用来判断是否存在文件
+    -d 和 !-d    用来判断是否存在目录
+    -e 和 !-e    用来判断是否存在文件或目录
+    -x 和 !-x    用来判断文件是否可执行
+
+全局变量
+    $args    请求中的参数
+    $content_length   请求头中的 Content-Length 字段
+    $content_type     请求头中的 Content-Type 字段
+    $document_root    当前请求的文档根目录(如: /usr/share/nginx/html)
+    $document_uri     当前请求的 URI（不含请求参数）(如: /test1/test2/test.php)
+    $host            请求中的主机头字段(如: www.example.com)
+    $http_user_agent  客户端请求中的 User-Agent 字段
+    $http_cookie      客户端请求中的 Cookie 字段
+    $limit_rate       用于限制响应速度的配置指令
+    $request_body_file 请求体文件的路径（如果请求体是通过文件上传的话）
+    $request_method   请求方法（如 GET、POST 等）
+    $remote_addr
+
+
+
+    $args    此变量与请求行中的参数相等
+    $content_length    等于请求行的“Content_Length”的值。
+    $content_type    等同与请求头部的”Content_Type”的值
+    $document_root    等同于当前请求的root指令指定的值
+    $document_uri 与 $uri 一样
+    $host    与请求头部中“Host”行指定的值或是request到达的server的名字（没有Host行）一样
+    $limit_rate     允许限制的连接速率
+    $request_method    等同于request的method，通常是“GET”或“POST”
+    $remote_addr    客户端ip
+    $remote_port    客户端port
+    $remote_user    等同于用户名，由ngx_http_auth_basic_module认证
+    $request_filename    当前请求的文件的路径名，由root或alias和URI request组合而成(如: /ubuntu/test1/test2/test.php)
+    $request_body_file
+    $request_uri    含有参数的完整的初始URI(如: http://localhost:88/test1/test2/test.php?id=1)
+    $query_string 与 $args一样
+    $server_protocol   等同于request的协议，使用“HTTP/1.0”或“HTTP/1.1”
+    $server_addr request 到达的server的ip，一般获得此变量的值的目的是进行系统调用。为了避免系统调用，有必要在listen指令中指明ip，并使用bind参数。
+    $server_name    请求到达的服务器名
+    $server_port    请求到达的服务器的端口号(如: 80)
+    $uri   等同于当前request中的URI，可不同于初始值，例如内部重定向时或使用index
 
 如何编写 nginx 的第三方模块？miller的文章很好，codinglabs的文章也不错，推荐
     http://www.codinglabs.org/html/intro-of-nginx-module-development.html
