@@ -102,21 +102,6 @@ rewrite 语法
     -x 和 !-x    用来判断文件是否可执行
 
 全局变量
-    $args    请求中的参数
-    $content_length   请求头中的 Content-Length 字段
-    $content_type     请求头中的 Content-Type 字段
-    $document_root    当前请求的文档根目录(如: /usr/share/nginx/html)
-    $document_uri     当前请求的 URI（不含请求参数）(如: /test1/test2/test.php)
-    $host            请求中的主机头字段(如: www.example.com)
-    $http_user_agent  客户端请求中的 User-Agent 字段
-    $http_cookie      客户端请求中的 Cookie 字段
-    $limit_rate       用于限制响应速度的配置指令
-    $request_body_file 请求体文件的路径（如果请求体是通过文件上传的话）
-    $request_method   请求方法（如 GET、POST 等）
-    $remote_addr
-
-
-
     $args    此变量与请求行中的参数相等
     $content_length    等于请求行的“Content_Length”的值。
     $content_type    等同与请求头部的”Content_Type”的值
