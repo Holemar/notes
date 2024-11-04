@@ -215,7 +215,7 @@ class TimeUtilTest(unittest.TestCase):
     # add 测试
     def test_add(self):
         test_time = datetime(2014, 10, 16)  # 测试时间
-        self.assertEqual(add(), None)
+        self.assertEqual(add().replace(microsecond=0), now())
         self.assertEqual(add(now(), days=11).replace(microsecond=0), now() + timedelta(days=11))
         self.assertEqual(add(now(), days=11, number=2).replace(microsecond=0), now() + timedelta(days=22))
         self.assertEqual(add(test_time), test_time)

@@ -366,7 +366,7 @@ def add(original_time=None, years=0, months=0, days=0, hours=0, minutes=0, secon
     :param {int} number: 倍数(默认1个,如果值为2表示所有添加时间是其它时间参数的2倍)
     :return {datetime}: 添加完时间后的时间
     """
-    after_time = to_datetime(original_time)
+    after_time = to_datetime(original_time, default_now=True)
     if after_time is None:
         logging.debug("时间参数无法解析:%s" % original_time)
         return None
