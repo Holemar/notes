@@ -398,6 +398,10 @@ mongo 是 MongoDB 自带的交互式 Javascript shell，用来对 Mongod 进行�
     // 两个字段比较，且两个字段都是 Date/ISODate 时间类型， 下面是取出 1000 条 synced_at字段比 received_at字段 晚一天的数据
     db.message.find({$where:"this.synced_at != null && this.received_at != null && this.synced_at.getTime() > this.received_at.getTime() + 24*60*60*1000"}).sort({'synced_at':-1}).limit(1000);
 
+    $expr可以构建查询表达式，以比较$match阶段中同一文档中的字段。
+        查询两个字段相等：  {$expr:{$eq: ["$field1","$field2"]}}
+        查询比较两个字段：  {$expr:{$gt: ["$field1","$field2"]}}
+    db.getCollection("message").find({$expr:{$gt: ["$synced_at","$received_at"]}}).sort({'_id':-1}).limit(100);
 
   (11) 多表关联查询
     db.shops.insert({_id:3,name:'name3',t:2})
