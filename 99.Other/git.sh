@@ -103,6 +103,7 @@
         $ git gc  # 清理无用数据
         $ git rebase [startpoint] [endpoint] --onto [branchName]  # 将当前分支的指定区间(startpoint ~ endpoint)的几个提交复制到 branchName 分支上
         $ git clone --branch [tag] [git地址]  # 拉取指定tag的代码(git clone 指定的tag)
+        $ git branch --set-upstream-to=origin/<branch> <branch>  # 设置本地默认分支(直接 git pull 和 git push 时不用指定分支)
 
         在 Git 中 "HEAD" 表示仓库中最后一个提交版本, "HEAD^" 是倒数第二个版本, "HEAD~2" 、"HEAD~4"则是更老的版本。
 
