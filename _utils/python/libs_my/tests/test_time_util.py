@@ -3,11 +3,11 @@
 """
 公用函数 time_util.py 的测试
 Created on 2014/10/16
-Updated on 2024/08/16
+Updated on 2024/11/12
 @author: Holemar
 """
 import time
-from datetime import datetime, date, timedelta, time as dt
+from datetime import datetime, date, timedelta, timezone, time as dt
 import unittest
 
 from __init__ import *
@@ -99,8 +99,6 @@ class TimeUtilTest(unittest.TestCase):
         self.assertEqual(fun('2014/2/6 8:51:6'), test_time)
         self.assertEqual(fun('2014/2/06 08:51:6'), test_time)
         self.assertEqual(fun('2014-02-06T08:51:06'), test_time)
-        self.assertEqual(fun('2014-02-06T08:51:06+08:00'), test_time)
-        self.assertEqual(fun('2014-02-06T08:51:06-07:00'), test_time)
         self.assertEqual(fun('2014-02-06T08:51:06.000Z'), test_time)
         self.assertEqual(fun('2014-02-06 AM 08:51:06'), test_time)
         self.assertEqual(fun('2014-02-06 上午 08:51:06'), test_time)
@@ -138,6 +136,8 @@ class TimeUtilTest(unittest.TestCase):
         test_time = datetime(2014, 2, 6, 8, 51, 6)  # datetime
         test_date = datetime(2014, 2, 6)  # date
         self.fun_test(self.my_to_datetime, now, test_time, test_date)
+        self.assertEqual(to_datetime('2014-02-06T08:51:06+08:00'), test_time.replace(tzinfo=timezone(timedelta(hours=8))))
+        self.assertEqual(to_datetime('2014-02-06T08:51:06-07:00'), test_time.replace(tzinfo=timezone(timedelta(hours=-7))))
 
     def test_to_date(self):
         now_time = date.today
