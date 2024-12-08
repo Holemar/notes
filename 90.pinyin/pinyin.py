@@ -61,7 +61,7 @@ def read_file(file_path):
     if not os.path.exists(file_path):
         raise Exception('没有相关文件: %s' % file_path)
     # 读取文件内容
-    with open(file_path, 'r') as txt_f:
+    with open(file_path, 'r', encoding='utf-8') as txt_f:
         context = txt_f.read()
         return context
 
