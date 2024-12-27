@@ -39,6 +39,7 @@
 "亘": {"right": 1, "wrong": 1, "gèn": {"words": "横亘、亘古", "mean": "空间和时间上延续不断", "letter": "gen4"}}, 
 "彀": {"right": 0, "wrong": 0, "gòu": {"words": "入彀、入我彀中", "mean": "使劲张弓。彀中：弓箭射程所及的范围，喻圈套、牢笼。古同“够”", "letter": "gou4"}}, 
 "罡": {"right": 2, "wrong": 0, "gāng": {"words": "天罡、罡风", "mean": "天罡星:北斗七星的斗柄。罡风:道教称高空的风，现有时指强劲的风", "letter": "gang1"}}, 
+"豢": {"right": 0, "wrong": 0, "huàn": {"words": "豢养", "mean": "喂养，特指喂养牲畜", "letter": "huan4"}}, 
 "圜": {"right": 1, "wrong": 0, "huán": {"words": "转【zhuǎn】圜", "mean": "围绕", "letter": "huan2"}, 
 "yuán": {"words": "圜则九重", "mean": "同“圆”。指天体", "letter": "yuan2"}}, 
 "诲": {"right": 2, "wrong": 2, "huì": {"words": "教诲、诲人不倦", "mean": "教导，明示", "letter": "hui4"}}, 
