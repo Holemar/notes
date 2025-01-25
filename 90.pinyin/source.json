@@ -34,6 +34,7 @@
 "忿": {"right": 2, "wrong": 1, "fèn": {"words": "忿恨、忿忿不平", "mean": "生气，恨", "letter": "fen4"}}, 
 "焚": {"right": 1, "wrong": 0, "fén": {"words": "焚烧、焚书坑儒、忧心如焚", "mean": "烧", "letter": "fen2"}}, 
 "怫": {"right": 3, "wrong": 1, "fú": {"words": "怫郁、怫然作色", "mean": "忿怒的样子", "letter": "fu2"}}, 
+"凫": {"right": 0, "wrong": 0, "fú": {"words": "-", "mean": "水鸟，俗称“野鸭”。同“浮”。", "letter": "fu2"}}, 
 "枫": {"right": 0, "wrong": 0, "fēng": {"words": "枫香树", "mean": "落叶乔木，春季开花，叶互生，通常三裂，边缘有锯齿，秋季变成红色，树脂可入药，亦称“枫香树”。", "letter": "feng1"}}, 
 "孵": {"right": 1, "wrong": 0, "fū": {"words": "孵化、孵育", "mean": "鸟类伏在卵上（亦指用人工的方法），使卵内的胚胎发育成雏鸟", "letter": "fu1"}}, 
 "瑰": {"right": 1, "wrong": 1, "guī": {"words": "瑰丽、瑰宝", "mean": "珍奇。次于玉的石头", "letter": "gui1"}}, 
