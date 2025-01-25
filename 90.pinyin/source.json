@@ -130,6 +130,7 @@
 "蛆": {"right": 0, "wrong": 2, "qū": {"words": "跗骨之蛆", "mean": "苍蝇的幼虫", "letter": "qu1"}}, 
 "睿": {"right": 1, "wrong": 0, "ruì": {"words": "睿智、睿旨", "mean": "深明，通达。古代颂扬帝王用语", "letter": "rui4"}}, 
 "髯": {"right": 0, "wrong": 0, "rán": {"words": "髯须、髯发", "mean": "两腮的胡子，亦泛指胡子。指头发。", "letter": "ran2"}}, 
+"礽": {"right": 0, "wrong": 0, "réng": {"words": "礽孙", "mean": "福。从本身起第八代孙，称“礽孙”。", "letter": "reng2"}}, 
 "孺": {"right": 0, "wrong": 0, "rú": {"words": "孺子牛、妇孺皆知", "mean": "小孩子，幼儿", "letter": "ru2"}}, 
 "儒": {"right": 1, "wrong": 0, "rú": {"words": "儒生、儒雅、儒家", "mean": "指读书人。中国春秋战国时代以孔子、孟子为代表的一个学派", "letter": "ru2"}}, 
 "濡": {"right": 0, "wrong": 0, "rú": {"words": "濡笔、耳濡目染、相濡以沫", "mean": "沾湿，润泽。停留，迟滞。含忍", "letter": "ru2"}}, 
