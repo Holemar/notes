@@ -46,6 +46,8 @@ elif PY3:
 
 __all__ = ('ExcelExport', 'excel_reader', 'excel_abstract', 'is_excel')
 
+LOGGER = logging.getLogger(__name__)
+
 
 def is_excel(file_path):
     """判定文件是否Excel"""
@@ -565,20 +567,15 @@ def excel_openpyxl_reader(url, sheet_name=None):
     for sheet in workbook:
         if sheet_name and sheet.title != sheet_name: continue
         max_row = sheet.max_row  # 最大行数
-        max_column = sheet.max_column  # 最大列数
+        # max_column = sheet.max_column  # 最大列数
         keep_data = []  # 解析类型后的新结果
-        for row_num in range(1, max_row + 1):
-            row_values = []
-            # 倒序读取，未位为空的不取(有可能手误导致后面各列都是空)
-            for col_num in range(max_column, 0, -1):
-                value = sheet.cell(row=row_num, column=col_num).value
-                if value is None and len(row_values) == 0:
-                    continue
-                row_values.append(value)
+        # 遍历工作表中的所有行
+        for row_num, row_values in enumerate(sheet.iter_rows(values_only=True)):
             # 完全为空的一行数据，不添加进来
             if row_values:
-                row_values.reverse()  # 倒序，让数据恢复顺序
                 keep_data.append(row_values)
+            if row_num % 100 == 0:  # 每读取100行打一次日志，减少日志量
+                LOGGER.info(f'读取数据 {row_num}/{max_row} 完成 {row_num/max_row*100:.2f}%')
         # 没有内容的标签页，不处理
         if not keep_data:
             continue

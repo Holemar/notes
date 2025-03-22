@@ -280,9 +280,12 @@ mongorestore 恢复
     --nsExclude：指定不还原的集合，支持通配符（*）
     --nsFrom：修改集合名称，原来集合的名称，支持使用变量
     --nsTo：修改集合名称，修改之后集合的名称，支持使用变量
+    --gzip: 恢复数据时使用gzip进行解压缩
+    --quiet: 禁止输出日志信息
+    --archive: 从归档文件中恢复。
+    --dir: 指定还原数据储存目录。
 
     <path>：    mongorestore 最后的一个参数，设置备份数据所在位置，例如：c:\data\dump\test。
-    --dir：    指定备份的目录
     你不能同时指定 <path> 和 --dir 选项，--dir也可以设置备份目录。
 
     ### 还原指定数据库的指定集合 ###
@@ -311,6 +314,12 @@ mongorestore 恢复
         customer2_sales
         customer1_users
         customer2_users
+
+    实例:
+    # uri中指定了 db，则不再需要 host,port,username,password,db 等参数，避免冲突
+    mongorestore --uri "mongodb://formula:1A2B3C4D5E@127.0.0.1:27017/overseas?authSource=admin" --gzip --archive=overseas.gz
+    # 原集合名为 overseas_dev，新集合名为 overseas。这里需要一个改集合名的动作
+    mongorestore --uri "mongodb://formula:1A2B3C4D5E@127.0.0.1:27017/overseas?authSource=admin" --drop --nsInclude=* --nsFrom=overseas_dev.* --nsTo=overseas.* --gzip --archive=overseas_dev.gz
 
 
 mongoexport 备份
