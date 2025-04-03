@@ -3,7 +3,7 @@
 """
 公用函数(时间处理)
 Created on 2014/10/16
-Updated on 2024/11/12
+Updated on 2025/04/03
 @author: Holemar
 """
 import re
@@ -28,7 +28,7 @@ FORMAT_LIST = (
     '%Y/%m/%d %H:%M:%S', '%Y/%m/%d %H:%M:%S.%f', '%Y/%m/%d', '%Y%m%d', '%Y%m%d%H%M%S', '%Y.%m.%d',
     '%Y/%m/%d %H:%M', '%Y-%m-%d %H:%M', "%Y-%m-%dT%H:%M",  "%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%fZ",
     '%Y-%m-%d %p %I:%M:%S', '%Y-%m-%d %p %I:%M', '%Y/%m/%d %p %I:%M:%S', '%Y/%m/%d %p %I:%M',
-    "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z", '%B %d, %Y', '%d %B %Y', '%m/%d/%Y %I:%M:%S %p',
+    "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z", '%B %d, %Y', '%d %B %Y', '%d %b %Y', '%m/%d/%Y %I:%M:%S %p',
 )
 
 # fix py3
@@ -84,7 +84,7 @@ def to_string(value=None, format_str=None, default_now=False):
         return time.strftime(this_format, value)
     # string, change type first
     elif isinstance(value, basestring):
-        value = _str_2_datetime(value)
+        value = _str_2_datetime(value, from_format=format_str)
         return value.strftime(this_format)
     # number, treated as a timestamp
     elif isinstance(value, (int, long, float)):
