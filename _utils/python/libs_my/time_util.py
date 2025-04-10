@@ -21,15 +21,19 @@ DEFAULT_FORMAT = '%Y-%m-%d %H:%M:%S'  # 默认时间格式
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'  # 默认日期格式
 DEFAULT_MONTH_FORMAT = '%Y-%m'  # 默认月份格式
 DEFAULT_TIME_FORMAT = '%H:%M:%S'
-FORMAT_LIST = (
+DATES_FORMAT = ('%Y-%m-%d', '%Y/%m/%d', '%Y%m%d', '%Y.%m.%d', '%m/%d/%Y',
+                '%B %d, %Y', '%b %d, %Y', '%B %d,%Y', '%b %d,%Y', '%d %B %Y', '%d %b %Y', '%d-%B-%Y', '%d-%b-%Y')
+TIMES_FORMAT = (' %H:%M:%S', ' %H:%M', '%I:%M:%S %p', '%I:%M %p', ' %p %I:%M:%S', ' %p %I:%M', ' %H:%M:%S.%f')
+FORMAT_LIST = [
     DEFAULT_FORMAT, '%Y-%m-%d %H:%M:%S.%f', DEFAULT_DATE_FORMAT, DEFAULT_MONTH_FORMAT,
     '%Y年%m月%d日 %H时%M分%S秒', '%Y年%m月%d日　%H时%M分%S秒', '%Y年%m月%d日 %H时%M分', '%Y年%m月%d日　%H时%M分',
     '%Y年%m月%d日 %H:%M:%S', '%Y年%m月%d日　%H:%M:%S', '%Y年%m月%d日 %H:%M', '%Y年%m月%d日　%H:%M', '%Y年%m月%d日',
-    '%Y/%m/%d %H:%M:%S', '%Y/%m/%d %H:%M:%S.%f', '%Y/%m/%d', '%Y%m%d', '%Y%m%d%H%M%S', '%Y.%m.%d',
-    '%Y/%m/%d %H:%M', '%Y-%m-%d %H:%M', "%Y-%m-%dT%H:%M",  "%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%fZ",
-    '%Y-%m-%d %p %I:%M:%S', '%Y-%m-%d %p %I:%M', '%Y/%m/%d %p %I:%M:%S', '%Y/%m/%d %p %I:%M',
-    "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z", '%B %d, %Y', '%d %B %Y', '%d %b %Y', '%m/%d/%Y %I:%M:%S %p',
-)
+    "%Y-%m-%dT%H:%M",  "%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z",
+]
+for d in DATES_FORMAT:
+    if d not in FORMAT_LIST: FORMAT_LIST.append(d)
+    for t in TIMES_FORMAT:
+        if d + t not in FORMAT_LIST: FORMAT_LIST.append(d + t)
 
 # fix py3
 try:
@@ -84,7 +88,7 @@ def to_string(value=None, format_str=None, default_now=False):
         return time.strftime(this_format, value)
     # string, change type first
     elif isinstance(value, basestring):
-        value = _str_2_datetime(value, from_format=format_str)
+        value = _str_2_datetime(value)
         return value.strftime(this_format)
     # number, treated as a timestamp
     elif isinstance(value, (int, long, float)):
