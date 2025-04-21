@@ -7,11 +7,9 @@ Updated on 2019/1/18
 @author: Holemar
 
 依赖第三方库:
-    xlrd>=0.9.0,<1.0
-    XlsxWriter==0.7.7
-    openpyxl==2.4.8
-    comtypes==1.1.4
-    xlwings==0.11.7
+    xlrd
+    xlsxwriter
+    openpyxl
 """
 import os
 import sys
